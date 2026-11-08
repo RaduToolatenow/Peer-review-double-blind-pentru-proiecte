@@ -1,0 +1,15 @@
+# Agent files: skills and agents are tracked, local settings are not
+.claude/*
+!.claude/skills/
+!.claude/agents/
+.claude/worktrees/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
