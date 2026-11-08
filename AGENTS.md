@@ -84,7 +84,7 @@ aggregates grades. Users are students, professors and admins at the student's fa
 The full brief is in `docs/brief.md`. The app does not exist yet.
 
 ## 2. Stack and commands
-TypeScript on Node for the API, React for the UI, PostgreSQL, pg-boss for jobs (D-001).
+TypeScript on Node with NestJS for the API (D-002), React for the UI, PostgreSQL, pg-boss for jobs (D-001).
 
 ```bash
 # not run: no code yet. Fill these in when the project skeleton exists.

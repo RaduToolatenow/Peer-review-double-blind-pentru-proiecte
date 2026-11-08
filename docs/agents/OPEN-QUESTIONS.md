@@ -9,21 +9,23 @@
 <!-- graffino-agentic:end -->
 
 ## Index
-- Q-001 · Fastify or NestJS for the API?
+- Q-001 · Fastify or NestJS for the API? · _answered_
 - Q-002 · What can the pilot review, given that colleagues' P1 projects are due the same day as this one?
 - Q-003 · Which professor or teaching assistant is interviewed, and what would make them use the results?
 - Q-004 · What are the pilot rubric and the value of k?
 - Q-005 · What are the aggregation and reliability methods?
 - Q-006 · Where is the app deployed?
-- Q-007 · How do users authenticate: password accounts, invitations or something else?
+- Q-007 · How do users authenticate: password accounts, invitations or something else? · _answered_
 - Q-008 · Are pilot submissions individual, or do teams exist?
 
 ---
 
 ## Q-001 · Fastify or NestJS for the API?
-- **Status:** open
+- **Status:** answered 2026-11-08
 - **Blocks:** the project skeleton and every API route.
 - **Who answers:** the student
+- **Answer:** NestJS.
+- **Recorded as:** D-002
 
 ## Q-002 · What can the pilot review, given that colleagues' P1 projects are due the same day as this one?
 - **Status:** open
@@ -51,9 +53,11 @@
 - **Who answers:** the student
 
 ## Q-007 · How do users authenticate: password accounts, invitations or something else?
-- **Status:** open
+- **Status:** answered 2026-11-08
 - **Blocks:** the users schema and the login page.
 - **Who answers:** the student
+- **Answer:** Cookie sessions, argon2, and student accounts by email invitation from the professor's list.
+- **Recorded as:** D-003
 
 ## Q-008 · Are pilot submissions individual, or do teams exist?
 - **Status:** open
