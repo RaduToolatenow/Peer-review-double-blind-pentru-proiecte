@@ -81,32 +81,47 @@ without new evidence. A rejected proposal is added there with the reason.
 A platform where students review each other's projects, anonymous in both directions.
 A professor defines the rubric. The system allocates reviewers, calibrates them and
 aggregates grades. Users are students, professors and admins at the student's faculty.
-The full brief is in `docs/brief.md`. The app does not exist yet.
+The full brief is in `docs/brief.md`. So far only login and roles are built.
 
 ## 2. Stack and commands
-TypeScript on Node with NestJS for the API (D-002), React for the UI, PostgreSQL, pg-boss for jobs (D-001).
+TypeScript with NestJS 11 (D-002), React and Vite (D-001), PostgreSQL 17 with Prisma 7 (D-004).
 
 ```bash
-# not run: no code yet. Fill these in when the project skeleton exists.
-python3 docs/agents/tools/ledger-lint.py   # ledger check; run from the repo root
+docker compose up -d --wait   # PostgreSQL; needs .env, copied from .env.example
+npm ci                        # install
+npm run db:migrate            # apply migrations
+npm run db:seed               # test accounts
+npm run typecheck             # type-check api and web
+npm test                      # 12 tests; needs PostgreSQL running
+npm run build                 # build web, then api
+npm start                     # http://localhost:3000
+npm run dev:api               # API in watch mode
+npm run dev:web               # http://localhost:5173, proxies /api
+python3 docs/agents/tools/ledger-lint.py   # on Windows PowerShell set PYTHONUTF8=1 first
+npx playwright@1.56.1 screenshot -b chromium --color-scheme=dark --viewport-size=1280,800 --wait-for-selector=h1 http://localhost:3000/ out.png
 ```
 
 ## 3. Layout
-- `docs/brief.md`: the project brief from the course catalog.
+- `api/`: NestJS API, Prisma schema, migrations and tests.
+- `web/`: React interface.
+- `docker/`, `docker-compose.yml`: local PostgreSQL.
+- `docs/brief.md`: the project brief. `docs/db-schema.md`, `docs/API.md`: schema and routes.
 - `docs/agents/`: the decisions, patterns, contracts and questions ledger.
 - `docs/design/`: UI rules, screen registry, mocks and screenshots.
 - `.claude/`: the `/plan` and `/build` skills and their agents.
+- `.github/workflows/ci.yml`: tests, build and ledger lint on every push.
 
 ## 4. Rules for this repo
 - `INTERVIEW.md` and `PILOT.md` record only events that really happened, as the user reports them.
 - Every technical decision is the user's. The user must be able to explain each line without AI.
 - Commits use real dates and descriptive messages. Never backdate or make empty commits.
+- Never add a route that returns a user without `PUBLIC_USER_SELECT` or an equally narrow shape.
 
 ## 5. Release
 Not set up yet. The deploy target is open (Q-006). The user says go for every push and deploy.
 
 ## 6. Definition of done
-- Test command: not set yet; it must pass once it exists.
-- Build and type-check command: not set yet; it must pass once it exists.
+- `npm test` passes.
+- `npm run typecheck` and `npm run build` pass.
 - Screenshots of every changed screen, light and dark, compared with `docs/design/DESIGN.md`.
 - New practices recorded as candidate patterns; open points recorded as Q- entries.

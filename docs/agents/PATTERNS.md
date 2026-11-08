@@ -6,5 +6,14 @@
 <!-- graffino-agentic:end -->
 
 ## Index
+- PATTERN-001 · Protect a route with SessionGuard and Roles · candidate
 
 ---
+
+## PATTERN-001 · Protect a route with SessionGuard and Roles
+- **Status:** candidate
+- **Use when:** A route needs a signed-in user or a specific role.
+- **How:** Add `@UseGuards(SessionGuard)`, and `@Roles(...)` when only some roles may call it.
+- **Example:** api/src/users/users.controller.ts
+- **Why:** The check runs on the server and reads the current role from the database.
+- **Source:** code · confidence medium
