@@ -10,6 +10,10 @@
 - D-001 · TypeScript, React, PostgreSQL and pg-boss
 - D-002 · NestJS for the API
 - D-003 · Cookie sessions, argon2 and invitation-only accounts
+- D-004 · Prisma for schema and migrations
+- D-005 · Sessions with express-session and connect-pg-simple
+- D-006 · NestJS serves the React build from one origin
+- D-007 · A submission belongs to a team
 
 ---
 
@@ -21,6 +25,7 @@
 - **Rejected:** Next.js full-stack, Laravel and Django, offered as alternatives during setup.
 - **Evidence:** the user's answer in the setup session on 2026-11-08; no code exists yet.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-08
 
 ## D-002 · NestJS for the API
 - **Status:** approved
@@ -30,6 +35,7 @@
 - **Rejected:** Fastify directly, which has less built-in structure.
 - **Evidence:** the user's answer in the setup session on 2026-11-08; no code exists yet.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-08
 
 ## D-003 · Cookie sessions, argon2 and invitation-only accounts
 - **Status:** approved
@@ -38,4 +44,41 @@
 - **Why:** Inferred: server-side sessions can be revoked at once, and invitations limit accounts to enrolled students, which protects the reviewer pool.
 - **Rejected:** JWT and open self-registration.
 - **Evidence:** the user's approval in the setup session on 2026-11-08; no code exists yet.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-08
+
+## D-004 · Prisma for schema and migrations
+- **Status:** approved
+- **Date:** 2026-11-08
+- **Rule:** The schema and versioned migrations use Prisma, pinned to a stable 7.x release. Prisma writes each migration as a readable SQL file.
+- **Why:** The schema is due at the checkpoint, and SQL migration files can be read and extended with CHECK constraints. The latest npm tag for Prisma is a release candidate, so it is not used.
+- **Rejected:** Prisma 8 release candidates.
+- **Evidence:** api/prisma/schema.prisma, api/prisma/migrations/
+- **Source:** user · confidence high
+
+## D-005 · Sessions with express-session and connect-pg-simple
+- **Status:** approved
+- **Date:** 2026-11-08
+- **Rule:** D-003 sessions use express-session, stored in the PostgreSQL `session` table through connect-pg-simple.
+- **Why:** Mature libraries avoid custom security code, and sessions survive a server restart.
+- **Rejected:** A hand-written session store.
+- **Evidence:** api/src/configure-app.ts
+- **Source:** user · confidence high
+
+## D-006 · NestJS serves the React build from one origin
+- **Status:** approved
+- **Date:** 2026-11-08
+- **Rule:** In production one NestJS service serves the API under `/api` and the React build. Locally, Vite proxies `/api` to NestJS.
+- **Why:** The session cookie works without CORS, and there is one service to deploy.
+- **Rejected:** A separately hosted React app, which needs CORS and two services.
+- **Evidence:** api/src/main.ts, web/vite.config.ts
+- **Source:** user · confidence high
+
+## D-007 · A submission belongs to a team
+- **Status:** approved
+- **Date:** 2026-11-08
+- **Rule:** Submissions belong to teams. An individual student is a team with one member.
+- **Why:** The brief requires the same-team allocation constraint, and this model also fits an individual pilot.
+- **Rejected:** Separate individual and team submission paths.
+- **Evidence:** api/prisma/schema.prisma
 - **Source:** user · confidence high
