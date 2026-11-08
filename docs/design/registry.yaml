@@ -1,4 +1,16 @@
 # docs/design/registry.yaml — every screen and shared component, by DS- ID.
 # Plans, commits, mocks and board files use the ID (tickets don't). kind: foundation | component | screen
 # status: draft (mock drawn) | approved (confirmed on the board) | implemented | deprecated (never delete an entry)
-designs: []
+designs:
+  - id: DS-pr-login
+    kind: screen
+    source: web/src/LoginPage.tsx
+    screenshots: [screens/DS-pr-login.light.png, screens/DS-pr-login.dark.png]
+    design_ref: mocks/DS-pr-login.html
+    status: implemented
+  - id: DS-pr-home
+    kind: screen
+    source: web/src/HomePage.tsx
+    screenshots: [screens/DS-pr-home.light.png, screens/DS-pr-home.dark.png]
+    design_ref: mocks/DS-pr-home.html
+    status: implemented

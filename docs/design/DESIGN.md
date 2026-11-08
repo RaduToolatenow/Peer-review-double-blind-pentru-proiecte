@@ -98,25 +98,43 @@ them; a ticket with UI has a design subtask instead (team addon).
 ## Source
 - Design board: none yet (published from `mocks/`, never pulled)
 - Figma: none (regenerated on request)
-- Token source in code: not created yet
+- Token source in code: web/src/tokens.css
 
 ## Tokens
 
 ### Color
 | Token | Light | Dark | Use |
 |---|---|---|---|
+| --color-bg | #f8fafc | #0f172a | page background |
+| --color-surface | #ffffff | #1e293b | cards and inputs |
+| --color-text | #111827 | #f1f5f9 | body text |
+| --color-muted | #4b5563 | #cbd5e1 | secondary text |
+| --color-border | #6b7280 | #94a3b8 | card and input borders |
+| --color-primary | #1d4ed8 | #93c5fd | primary button |
+| --color-on-primary | #ffffff | #0f172a | text on the primary button |
+| --color-error | #b91c1c | #fca5a5 | error text |
+| --color-focus | #1d4ed8 | #93c5fd | focus ring |
 
 ### Typography
 | Token | Family | Size / line height | Weight | Use |
 |---|---|---|---|---|
+| --font-size-body | system-ui stack | 1rem / 1.5 | 400 | body text |
+| --font-size-title | system-ui stack | 1.5rem / 1.5 | 600 | page heading |
 
 ### Spacing
 | Token | Value |
 |---|---|
+| --space-1 | 0.25rem |
+| --space-2 | 0.5rem |
+| --space-3 | 1rem |
+| --space-4 | 1.5rem |
+| --space-5 | 2rem |
 
 ### Radius, shadow, motion
 | Token | Value | Use |
 |---|---|---|
+| --radius | 0.5rem | cards and controls |
+| --control-height | 2.75rem | minimum input and button height |
 
 ### Breakpoints / window sizes
 | Name | Min | Max |
