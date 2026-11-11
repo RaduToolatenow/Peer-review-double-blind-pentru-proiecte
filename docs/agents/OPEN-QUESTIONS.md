@@ -16,7 +16,7 @@
 - Q-005 · What are the aggregation and reliability methods?
 - Q-006 · Where is the app deployed?
 - Q-007 · How do users authenticate: password accounts, invitations or something else? · _answered_
-- Q-008 · Are pilot submissions individual, or do teams exist?
+- Q-008 · Are pilot submissions individual, or do teams exist? · _answered_
 
 ---
 
@@ -60,6 +60,8 @@
 - **Recorded as:** D-003
 
 ## Q-008 · Are pilot submissions individual, or do teams exist?
-- **Status:** open
+- **Status:** answered 2026-11-08
 - **Blocks:** the teams schema and the same-team allocation constraint.
-- **Who answers:** the student, with the pilot colleagues
+- **Who answers:** the student
+- **Answer:** Model teams; an individual student is a team with one member.
+- **Recorded as:** D-007

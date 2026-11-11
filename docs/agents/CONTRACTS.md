@@ -9,10 +9,20 @@
 <!-- graffino-agentic:end -->
 
 ## Index
+- C-001 · HTTP API under /api · provided
 
 ---
 
 ## Provided
+
+### C-001 · HTTP API under /api
+- **Status:** approved
+- **Interface:** HTTP JSON routes under `/api`, documented in [API.md](../API.md).
+- **Consumers:** `web/src/api.ts`
+- **Shape:** Routes, bodies and status codes as listed in API.md. The session is the httpOnly cookie `sid`.
+- **Rules:** Authentication and roles are checked on the server. A user response never contains the password hash.
+- **Evidence:** api/src/auth/auth.controller.ts, api/src/users/users.controller.ts, api/test/auth.spec.ts
+- **Source:** user · confidence high
 
 ## Consumed
 
