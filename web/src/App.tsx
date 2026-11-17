@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { fetchCurrentUser, User } from './api';
-import { HomePage } from './HomePage';
 import { Layout } from './Layout';
 import { LoginPage } from './LoginPage';
 import { ActiveRubricDetailPage } from './pages/ActiveRubricDetailPage';
@@ -9,6 +8,7 @@ import { ActiveRubricsPage } from './pages/ActiveRubricsPage';
 import { ClassDetailPage } from './pages/ClassDetailPage';
 import { ClassesPage } from './pages/ClassesPage';
 import { JoinTeamPage } from './pages/JoinTeamPage';
+import { MyAssignmentsPage } from './pages/MyAssignmentsPage';
 import { ProfessorRubricsPage, ProfessorsPage } from './pages/ProfessorsPage';
 import { RubricDraftsPage } from './pages/RubricDraftsPage';
 import { RubricEditorPage } from './pages/RubricEditorPage';
@@ -64,7 +64,7 @@ export function App() {
             </>
           ) : (
             <>
-              <Route index element={<HomePage user={user} />} />
+              <Route index element={<MyAssignmentsPage />} />
               <Route path="echipa" element={<JoinTeamPage />} />
             </>
           )}

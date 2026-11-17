@@ -115,12 +115,12 @@ Gata:
 - deploy pe Render, cu baza de date pe Supabase;
 - pentru profesor și admin: schițe de grile, trimiterea unei grile către o clasă, grile active cu termene, clase și echipe cu cod de intrare;
 - pentru admin: grilele fiecărui profesor, doar citire;
-- pentru student: intrarea în echipă cu codul primit.
+- pentru student: intrarea în echipă cu codul primit și predarea proiectului (link și fișier PDF sau DOCX curățat de autor) până la termenul de predare.
 
 Nu e gata:
 
 - înscrierea prin link cu email `@ulbsibiu.ro` verificat;
-- predările, alocarea, evaluările, agregarea și contestațiile;
+- alocarea, evaluările, agregarea și contestațiile;
 - pilotul cu colegii.
 
 Lista de task-uri este în [TODO.md](TODO.md), iar întrebările deschise în [docs/agents/OPEN-QUESTIONS.md](docs/agents/OPEN-QUESTIONS.md).

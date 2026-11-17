@@ -134,7 +134,20 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
               {a.teams.map((team) => (
                 <tr key={team.id}>
                   <td>{team.name}</td>
-                  <td>{!team.evaluated ? 'nu e evaluată' : team.submitted ? 'predat' : 'nepredat'}</td>
+                  <td>
+                    {!team.evaluated ? (
+                      'nu e evaluată'
+                    ) : team.link && team.fileUrl ? (
+                      <>
+                        <a href={team.link} target="_blank" rel="noreferrer noopener">
+                          Link
+                        </a>{' '}
+                        · <a href={team.fileUrl}>Descarcă fișierul</a>
+                      </>
+                    ) : (
+                      'nepredat'
+                    )}
+                  </td>
                   <td>{team.evaluated && team.submitted ? `${team.reviewsReceived} din ${a.k}` : '—'}</td>
                 </tr>
               ))}

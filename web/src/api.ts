@@ -74,7 +74,37 @@ export interface AssignmentSummary extends Deadlines {
 export interface AssignmentDetail extends AssignmentSummary {
   rubric: Rubric;
   archivableFrom: string;
-  teams: { id: string; name: string; memberNames: string; evaluated: boolean; submitted: boolean; reviewsReceived: number }[];
+  teams: {
+    id: string;
+    name: string;
+    memberNames: string;
+    evaluated: boolean;
+    submitted: boolean;
+    reviewsReceived: number;
+    link: string | null;
+    description: string | null;
+    fileUrl: string | null;
+  }[];
+}
+
+export interface Submission {
+  id: string;
+  link: string;
+  description: string | null;
+  fileType: 'pdf' | 'docx';
+  fileUrl: string;
+  submittedAt: string;
+  updatedAt: string;
+}
+
+export interface MyAssignment extends Deadlines {
+  id: string;
+  title: string;
+  description: string | null;
+  className: string;
+  teamName: string;
+  phase: Phase;
+  submission: Submission | null;
 }
 
 export interface ClassSummary {
@@ -175,7 +205,21 @@ export async function logout(): Promise<void> {
   }
 }
 
+/** Uploads a team's link, description and file (D-016); multipart, so not through request(). */
+export async function submitProject(assignmentId: string, link: string, description: string, file: File): Promise<MyAssignment> {
+  const form = new FormData();
+  form.append('link', link);
+  form.append('description', description);
+  form.append('file', file);
+  const response = await call(`/my/assignments/${assignmentId}/submission`, { method: 'PUT', body: form });
+  if (!response.ok) {
+    throw await failure(response);
+  }
+  return response.json();
+}
+
 export const api = {
+  myAssignments: () => request<MyAssignment[]>('GET', '/my/assignments'),
   drafts: () => request<RubricSummary[]>('GET', '/rubrics'),
   rubric: (id: string) => request<Rubric>('GET', `/rubrics/${id}`),
   createRubric: (title: string, criteria: CriterionInput[]) => request<Rubric>('POST', '/rubrics', { title, criteria }),

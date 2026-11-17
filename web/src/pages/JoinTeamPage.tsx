@@ -50,7 +50,7 @@ export function JoinTeamPage() {
       </button>
       <p className="muted after">Profesorul vede doar câte persoane au intrat în echipă, nu cine.</p>
       <p>
-        <Link to="/">← Pagina de start</Link>
+        <Link to="/">← Temele mele</Link>
       </p>
     </form>
   );

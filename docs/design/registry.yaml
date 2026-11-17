@@ -10,10 +10,10 @@ designs:
     status: implemented
   - id: DS-pr-home
     kind: screen
-    source: web/src/HomePage.tsx
+    source: null   # replaced by DS-pr-my-assignments
     screenshots: [screens/DS-pr-home.light.png, screens/DS-pr-home.dark.png]
     design_ref: mocks/DS-pr-home.html
-    status: implemented
+    status: deprecated
   - id: DS-pr-menu
     kind: component
     source: web/src/Layout.tsx
@@ -76,7 +76,7 @@ designs:
     status: implemented
   - id: DS-pr-my-assignments
     kind: screen
-    source: null
-    screenshots: []
+    source: web/src/pages/MyAssignmentsPage.tsx
+    screenshots: [screens/DS-pr-my-assignments.light.png, screens/DS-pr-my-assignments.dark.png]
     design_ref: mocks/DS-pr-my-assignments.html
-    status: draft
+    status: implemented

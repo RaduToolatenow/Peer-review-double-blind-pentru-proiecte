@@ -23,8 +23,8 @@
 - [x] Clase și echipe cu cod, schițe de grile (1–100 criterii), trimiterea către o clasă, grile active cu termene (D-011–D-015)
 - [ ] Termenele aplicate la predare, evaluare și contestații (cu jobul programat)
 - [ ] Job programat cu pg-boss pentru închiderea fazelor și notificări
-- [ ] Predări cu link și fișier, în object storage
-- [ ] Curățarea metadatelor din PDF și DOCX; servire prin proxy, fără numele original
+- [x] Predări cu link și fișier, în Supabase Storage (D-016)
+- [x] Curățarea metadatelor din PDF și DOCX; servire prin proxy, fără numele original
 - [ ] Alocarea evaluatorilor cu toate constrângerile
 - [ ] Sosiri târzii și retrageri, cu realocare minimală
 - [ ] Evaluare double-blind cu feedback obligatoriu per criteriu
