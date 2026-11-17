@@ -16,6 +16,7 @@
 - D-008 · NestJS stays on major version 11
 - D-009 · Deploy on Render and Supabase
 - D-010 · Self sign-up through the assignment link with a verified university email
+- D-011 · Rubrics are reusable and apply to all or chosen teams
 
 ---
 
@@ -98,4 +99,13 @@
 - **Why:** The user wants anyone at the university with the link to be able to review, without the professor's list. A verified email stops one person from reviewing the same project twice under several accounts.
 - **Rejected:** Invitation-only accounts from the professor's list (D-003). Reviewers choosing which projects to open, which would break the allocation constraints in the brief.
 - **Evidence:** api/prisma/schema.prisma (`users.email` unique, `reviews` unique on submission and reviewer); sign-up and verification are not built yet.
+- **Source:** user · confidence high
+
+## D-011 · Rubrics are reusable and apply to all or chosen teams
+- **Status:** approved
+- **Date:** 2026-11-17
+- **Rule:** A rubric is its own record, created by a professor, with 1 to 100 criteria, checked on the server. One rubric may be used by several assignments. An assignment's rubric applies either to all its teams or only to the teams the professor chooses. A team may be given a different rubric. A team with no rubric is not evaluated: its submission is left out of allocation and gets no grade, but its members may still review. Once the first review on a rubric is submitted, the rubric is locked; a change is made on a copy.
+- **Why:** The user wants a rubric per assignment, reuse across assignments, and rubrics for chosen teams only. Locking keeps submitted scores tied to the criteria they were given against.
+- **Rejected:** One rubric fixed to one assignment, the current schema. Editing a rubric after reviews exist.
+- **Evidence:** not built yet; the schema change goes through /plan.
 - **Source:** user · confidence high

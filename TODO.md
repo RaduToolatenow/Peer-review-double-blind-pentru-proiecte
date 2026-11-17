@@ -20,7 +20,7 @@
 - [ ] Înscriere prin linkul temei, doar cu email `@ulbsibiu.ro` verificat (D-010)
 - [ ] Limitarea încercărilor de autentificare
 - [ ] Timp de răspuns egal la login pentru email existent și inexistent
-- [ ] Teme, grilă și termene aplicate pe server
+- [ ] Teme, grile refolosibile (1–100 criterii, toate echipele sau doar cele alese) și termene aplicate pe server (D-011)
 - [ ] Job programat cu pg-boss pentru închiderea fazelor și notificări
 - [ ] Predări cu link și fișier, în object storage
 - [ ] Curățarea metadatelor din PDF și DOCX; servire prin proxy, fără numele original
