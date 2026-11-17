@@ -6,6 +6,13 @@ import { teamIsEvaluated } from './assignment-scope';
 import { checkDeadlinesStillOpen, checkNewDeadlines, DEADLINE_KEYS, Deadlines } from './deadlines';
 import { UpdateAssignmentDto } from './update-assignment.dto';
 
+/** The link, description and file URL of a team's submission; never who submitted it (D-014). */
+function submissionFields(submission?: { id: string; link: string; description: string | null }) {
+  return submission
+    ? { link: submission.link, description: submission.description, fileUrl: `/api/submissions/${submission.id}/file` }
+    : { link: null, description: null, fileUrl: null };
+}
+
 const DAY_MS = 24 * 60 * 60 * 1000;
 const ARCHIVE_DELAY_MS = 2 * DAY_MS;
 
@@ -64,10 +71,7 @@ export class AssignmentsService {
           },
         },
         submissions: {
-          select: {
-            teamId: true,
-            _count: { select: { reviews: { where: { status: ReviewStatus.SUBMITTED } } } },
-          },
+          include: { _count: { select: { reviews: { where: { status: ReviewStatus.SUBMITTED } } } } },
         },
       },
     });
@@ -77,7 +81,7 @@ export class AssignmentsService {
 
     const chosenTeamIds = assignment.chosenTeams.map((t) => t.teamId);
     const scope = { rubricAppliesTo: assignment.rubricAppliesTo, chosenTeamIds };
-    const submissionByTeam = new Map(assignment.submissions.map((s) => [s.teamId, s._count.reviews]));
+    const submissionByTeam = new Map(assignment.submissions.map((s) => [s.teamId, s]));
     const reviewsSubmitted = assignment.submissions.reduce((sum, s) => sum + s._count.reviews, 0);
 
     return {
@@ -94,7 +98,8 @@ export class AssignmentsService {
         memberNames: team.memberNames,
         evaluated: teamIsEvaluated(scope, team.id),
         submitted: submissionByTeam.has(team.id),
-        reviewsReceived: submissionByTeam.get(team.id) ?? 0,
+        reviewsReceived: submissionByTeam.get(team.id)?._count.reviews ?? 0,
+        ...submissionFields(submissionByTeam.get(team.id)),
       })),
     };
   }

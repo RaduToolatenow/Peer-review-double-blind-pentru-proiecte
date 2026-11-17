@@ -197,8 +197,12 @@ model Submission {
   assignmentId String   @map("assignment_id") @db.Uuid
   teamId       String   @map("team_id") @db.Uuid
   link         String
-  fileKey      String?  @map("file_key")
+  description  String?
+  // D-016: the cleaned file's key in the file store, and whether it is a PDF or a DOCX.
+  fileKey      String   @map("file_key")
+  fileType     String   @map("file_type")
   submittedAt  DateTime @default(now()) @map("submitted_at") @db.Timestamptz
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   team       Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)

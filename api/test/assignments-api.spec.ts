@@ -38,7 +38,7 @@ describe('assignments API, the active rubrics (D-013, D-014)', () => {
     // One submitted review on team 1.
     const reviewer = await createUser(ctx.prisma, 'rev@test.example', 'parola', Role.STUDENT);
     const submission = await ctx.prisma.submission.create({
-      data: { assignmentId: assignment.id, teamId: klass.teams[0].id, link: 'https://example.com' },
+      data: { assignmentId: assignment.id, teamId: klass.teams[0].id, link: 'https://example.com', fileKey: 'test.pdf', fileType: 'pdf' },
     });
     await ctx.prisma.review.create({
       data: { submissionId: submission.id, reviewerId: reviewer.id, status: 'SUBMITTED', submittedAt: new Date() },

@@ -24,7 +24,7 @@ describe('rubric constraints (D-011, D-013)', () => {
   async function scoreOnce(rubric: Awaited<ReturnType<typeof createRubric>>, assignmentId: string, teamId: string) {
     const reviewer = await createUser(ctx.prisma, 'rev@test.example', 'parola', Role.STUDENT);
     const submission = await ctx.prisma.submission.create({
-      data: { assignmentId, teamId, link: 'https://example.com/proiect' },
+      data: { assignmentId, teamId, link: 'https://example.com/proiect', fileKey: 'test.pdf', fileType: 'pdf' },
     });
     const review = await ctx.prisma.review.create({
       data: { submissionId: submission.id, reviewerId: reviewer.id },

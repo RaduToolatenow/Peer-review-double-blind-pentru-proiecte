@@ -23,7 +23,7 @@ describe('database constraints', () => {
     const klass = await createClass(ctx.prisma, professor.id);
     const assignment = await createAssignment(ctx.prisma, professor.id, rubric.id, klass.id);
     const submission = await ctx.prisma.submission.create({
-      data: { assignmentId: assignment.id, teamId: klass.teams[0].id, link: 'https://example.com/proiect' },
+      data: { assignmentId: assignment.id, teamId: klass.teams[0].id, link: 'https://example.com/proiect', fileKey: 'test.pdf', fileType: 'pdf' },
     });
     const review = { submissionId: submission.id, reviewerId: reviewer.id };
     await ctx.prisma.review.create({ data: review });

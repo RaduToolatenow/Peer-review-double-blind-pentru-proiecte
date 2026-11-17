@@ -92,7 +92,9 @@ erDiagram
         uuid assignment_id FK
         uuid team_id FK
         text link
+        text description
         text file_key
+        text file_type
     }
     reviews {
         uuid id PK
@@ -135,6 +137,7 @@ Tabela `session` aparține bibliotecii `connect-pg-simple` și nu are relații c
 | O echipă aleasă pentru o temă este din clasa temei | chei străine compuse pe `assignments (id, class_id)` și `teams (id, class_id)` |
 | Codul unei echipe este unic | `teams.join_code` unic |
 | O echipă are o singură predare per temă | `submissions (assignment_id, team_id)` unic |
+| Fișierul unei predări este PDF sau DOCX | `CHECK file_type IN ('pdf', 'docx')` |
 | O clasă cu teme trimise nu se șterge | cheie străină `ON DELETE RESTRICT` din `assignments` |
 | Un criteriu are un singur scor per evaluare | cheie primară `review_scores (review_id, criterion_id)` |
 | `k` este cel puțin 1 | `CHECK` în migrare |
