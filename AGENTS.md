@@ -118,8 +118,9 @@ npx playwright@1.56.1 screenshot -b chromium --color-scheme=dark --viewport-size
 - Never add a route that returns a user without `PUBLIC_USER_SELECT` or an equally narrow shape.
 
 ## 5. Release
-Render web service with a Supabase database (D-009). Every push to `main` deploys, so
-the user says go for every push.
+Render web service with a Supabase database (D-009), live at
+https://peer-review-double-blind-pentru-proiecte.onrender.com. Every push to `main`
+deploys, so the user says go for every push.
 - Build command: `npm ci --include=dev && npm run build && npm run db:migrate`
 - Start command: `npm start`. Health check path: `/api/health`.
 - Variables, set in the Render dashboard only: `DATABASE_URL` (Supabase session pooler,
