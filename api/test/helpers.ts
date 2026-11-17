@@ -33,7 +33,7 @@ export async function createTestApp() {
 }
 
 export async function clearDatabase(prisma: PrismaService): Promise<void> {
-  await prisma.$executeRawUnsafe('TRUNCATE users, session, assignments CASCADE');
+  await prisma.$executeRawUnsafe('TRUNCATE users, session, rubrics, assignments CASCADE');
 }
 
 export async function createUser(prisma: PrismaService, email: string, password: string, role: Role) {
