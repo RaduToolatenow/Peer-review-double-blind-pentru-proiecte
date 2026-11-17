@@ -7,11 +7,17 @@
 
 Terms come from `docs/brief.md`. Update them with the words the professor and colleagues use.
 
-**Assignment** (noun) — work a professor creates, with a rubric and deadlines (RO: temă).
+**Assignment** (noun) — a rubric sent to a class, with deadlines and k (RO: temă, grilă activă). D-013.
 _Avoid_: task, homework
 
-**Rubric** (noun) — the evaluation criteria, their level descriptors and weights (RO: grilă). A professor's own record, reusable across assignments, locked once the first score is saved, and archived rather than deleted once used (D-011).
+**Rubric** (noun) — the evaluation criteria, their level descriptors and weights (RO: grilă). A professor's own record. A draft (RO: schiță) can be edited; sending it to a class locks it; once used it is archived, not deleted (D-011, D-013).
 _Avoid_: form, questionnaire
+
+**Class** (noun) — a professor's group of students, with teams entered from paper (RO: clasă). D-012.
+_Avoid_: course, group
+
+**Team code** (noun) — the short code a professor hands to a team; a student enters it once to join (RO: codul echipei). D-012.
+_Avoid_: password, invite
 
 **Criterion** (noun) — one weighted dimension of a rubric (RO: criteriu).
 _Avoid_: question

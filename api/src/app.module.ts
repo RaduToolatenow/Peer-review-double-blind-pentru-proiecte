@@ -1,8 +1,15 @@
 import { Module } from '@nestjs/common';
+import { AdminController } from './admin/admin.controller';
+import { AssignmentsModule } from './assignments/assignments.module';
 import { AuthModule } from './auth/auth.module';
+import { ClassesModule } from './classes/classes.module';
 import { HealthController } from './health/health.controller';
 import { PrismaModule } from './prisma/prisma.module';
+import { RubricsModule } from './rubrics/rubrics.module';
 import { UsersModule } from './users/users.module';
 
-@Module({ imports: [PrismaModule, AuthModule, UsersModule], controllers: [HealthController] })
+@Module({
+  imports: [PrismaModule, AuthModule, UsersModule, AssignmentsModule, RubricsModule, ClassesModule],
+  controllers: [HealthController, AdminController],
+})
 export class AppModule {}
