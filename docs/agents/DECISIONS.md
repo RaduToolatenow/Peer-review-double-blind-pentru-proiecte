@@ -14,6 +14,7 @@
 - D-005 · Sessions with express-session and connect-pg-simple
 - D-006 · NestJS serves the React build from one origin
 - D-007 · A submission belongs to a team
+- D-008 · NestJS stays on major version 11
 
 ---
 
@@ -78,4 +79,13 @@
 - **Why:** The brief requires the same-team allocation constraint, and this model also fits an individual pilot.
 - **Rejected:** Separate individual and team submission paths.
 - **Evidence:** api/prisma/schema.prisma
+- **Source:** user · confidence high
+
+## D-008 · NestJS stays on major version 11
+- **Status:** approved
+- **Date:** 2026-11-17
+- **Rule:** The API uses NestJS 11 and is compiled as CommonJS. Moving to NestJS 12 needs a new decision.
+- **Why:** NestJS 12 is ESM-only. The API, Jest with ts-jest and the Prisma client (`moduleFormat = "cjs"`) are set up as CommonJS.
+- **Rejected:** NestJS 12 with a switch of the whole API to ES modules.
+- **Evidence:** api/package.json, api/tsconfig.json, api/prisma/schema.prisma
 - **Source:** user · confidence high
