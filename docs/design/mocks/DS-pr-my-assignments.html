@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-my-assignments</title>
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <p class="brand">Peer review</p>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <main>
+        <div class="toolbar">
+          <h1>Temele mele</h1>
+          <a href="#">Intră într-o echipă cu un cod</a>
+        </div>
+        <ul class="list">
+          <li class="item">
+            <h2>Proiect P1 — evaluare colegi</h2>
+            <p>Clasa: Web Avansat, grupa 231 · Echipa ta: Echipa 1</p>
+            <p class="muted">Predare până pe 1 dec., 23:59 · Evaluare până pe 8 dec., 23:59</p>
+            <p><span class="badge">Predare deschisă</span> Nu ați predat încă.</p>
+            <form class="section" aria-label="Predarea echipei">
+              <h2>Predarea echipei</h2>
+              <div class="field">
+                <label for="link">Linkul proiectului</label>
+                <input id="link" type="url" placeholder="https://..." />
+              </div>
+              <p class="muted">Linkul și fișierul ajung la colegi fără numele tău. Nu pune în link numele tău sau al colegilor
+                de echipă (de exemplu, un repo pe contul tău personal).</p>
+              <div class="field">
+                <label for="desc">Descriere (opțional)</label>
+                <textarea id="desc">Aplicație de rezervări pentru sala de sport.</textarea>
+              </div>
+              <div class="field">
+                <label for="file">Fișierul proiectului (PDF sau DOCX, cel mult 10 MB)</label>
+                <input id="file" type="file" accept=".pdf,.docx" />
+              </div>
+              <p class="muted">Autorul din fișier se șterge automat înainte să fie salvat.</p>
+              <p class="error" role="alert">! Fișierul trebuie să fie PDF sau DOCX.</p>
+              <button class="primary inline" type="button">Predă proiectul</button>
+            </form>
+          </li>
+          <li class="item">
+            <h2>Proiect P2 — documentație</h2>
+            <p>Clasa: Web Avansat, grupa 231 · Echipa ta: Echipa 1</p>
+            <p class="muted">Predare până pe 20 nov., 23:59 · Evaluare până pe 27 nov., 23:59</p>
+            <p><span class="badge">Evaluare în curs</span> Predat pe 18 nov., 14:02</p>
+            <dl class="facts">
+              <dt>Link</dt><dd><a href="#">https://proiect-anonim.onrender.com</a></dd>
+              <dt>Fișier</dt><dd><a href="#">predare-3f9a1c2e.pdf</a></dd>
+            </dl>
+            <p class="muted">Termenul de predare a trecut; predarea nu se mai poate schimba.</p>
+          </li>
+        </ul>
+        <section class="section" aria-label="Stare goală">
+          <h2>Stare goală</h2>
+          <p class="muted">Nu ai încă nicio temă. Intră în echipa ta cu codul primit de la profesor; temele trimise clasei tale apar aici.</p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
