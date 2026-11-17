@@ -21,6 +21,7 @@
 - D-013 · A rubric sent to a class is the assignment
 - D-014 · Nobody can see who reviewed
 - D-015 · Professor and admin menu
+- D-016 · Submissions: link and cleaned PDF or DOCX file
 
 ---
 
@@ -102,6 +103,7 @@
 - **Rejected:** Neon, because pg-boss polling would use up its free compute hours. Supabase direct connection (IPv6 only) and transaction pooler.
 - **Evidence:** the Render service settings; AGENTS.md section 5.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-010 · Self sign-up through the assignment link with a verified university email
 - **Status:** approved
@@ -159,6 +161,16 @@
 - **Rule:** A professor's menu has Active rubrics, Rubric drafts and Classes, each showing only that professor's own records. An admin has the same menu and can also open each professor's rubrics, read only.
 - **Why:** The user's chosen layout; rubrics are private to their professor.
 - **Rejected:** Shared rubrics between professors, and copying another professor's rubric.
+- **Evidence:** not built yet.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
+
+## D-016 · Submissions: link and cleaned PDF or DOCX file
+- **Status:** approved
+- **Date:** 2026-11-17
+- **Rule:** A submission has a link and a PDF or DOCX file of at most 10 MB, both required, plus an optional description. Any member who joined a team that the assignment evaluates may submit, once per team, and may replace it until the submission deadline; after it the server refuses. The file is cleaned of author metadata before it is stored in a private Supabase Storage bucket, and is only served through the server under a generic name. The student is warned not to put their name in the link; the link is not checked further, since the account already has a verified university email (D-010).
+- **Why:** The brief requires link plus file, metadata cleaning and a proxy. Only PDF and DOCX can be cleaned reliably.
+- **Rejected:** Real Google Forms, which would take answers out of the app's control (D-014). Refusing links that contain a member's name.
 - **Evidence:** not built yet.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-17

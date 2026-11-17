@@ -52,8 +52,8 @@
 - **Status:** answered 2026-11-17
 - **Blocks:** the live URL, the file storage choice and the release section of AGENTS.md.
 - **Who answers:** the student
-- **Answer:** Render free web service for the app, Supabase free project for PostgreSQL through the session pooler, both in Frankfurt. File storage is still open.
-- **Recorded as:** D-009
+- **Answer:** Render free web service for the app, Supabase free project for PostgreSQL through the session pooler, both in Frankfurt. Files go to a private Supabase Storage bucket (answered 2026-11-17).
+- **Recorded as:** D-009, D-016
 
 ## Q-007 · How do users authenticate: password accounts, invitations or something else?
 - **Status:** answered 2026-11-08
