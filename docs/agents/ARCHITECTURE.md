@@ -57,6 +57,6 @@ Login:
 CI is in `.github/workflows/ci.yml`. The deploy target is open (Q-006).
 
 ## Boundaries
-- Authentication and roles are enforced on the server by `SessionGuard` (D-003).
+- Authentication and roles are enforced on the server by `SessionGuard` (D-005, D-010).
 - `PUBLIC_USER_SELECT` limits which user fields leave the server.
 - The anonymity boundary between authors and reviewers has no routes yet.

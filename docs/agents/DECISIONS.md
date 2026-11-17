@@ -9,13 +9,13 @@
 ## Index
 - D-001 · TypeScript, React, PostgreSQL and pg-boss
 - D-002 · NestJS for the API
-- D-003 · Cookie sessions, argon2 and invitation-only accounts
 - D-004 · Prisma for schema and migrations
 - D-005 · Sessions with express-session and connect-pg-simple
 - D-006 · NestJS serves the React build from one origin
 - D-007 · A submission belongs to a team
 - D-008 · NestJS stays on major version 11
 - D-009 · Deploy on Render and Supabase
+- D-010 · Self sign-up through the assignment link with a verified university email
 
 ---
 
@@ -37,15 +37,6 @@
 - **Evidence:** api/package.json, api/src/app.module.ts
 - **Source:** user · confidence high
 
-## D-003 · Cookie sessions, argon2 and invitation-only accounts
-- **Status:** approved
-- **Date:** 2026-11-08
-- **Rule:** Login uses server-side sessions in an httpOnly cookie. Passwords are hashed with argon2. Student accounts are created by email invitation, from a list the professor uploads.
-- **Why:** Inferred: server-side sessions can be revoked at once, and invitations limit accounts to enrolled students, which protects the reviewer pool.
-- **Rejected:** JWT and open self-registration.
-- **Evidence:** api/src/auth/, api/src/configure-app.ts, api/test/auth.spec.ts; invitations are not built yet.
-- **Source:** user · confidence high
-
 ## D-004 · Prisma for schema and migrations
 - **Status:** approved
 - **Date:** 2026-11-08
@@ -58,7 +49,7 @@
 ## D-005 · Sessions with express-session and connect-pg-simple
 - **Status:** approved
 - **Date:** 2026-11-08
-- **Rule:** D-003 sessions use express-session, stored in the PostgreSQL `session` table through connect-pg-simple.
+- **Rule:** D-010 sessions use express-session, stored in the PostgreSQL `session` table through connect-pg-simple.
 - **Why:** Mature libraries avoid custom security code, and sessions survive a server restart.
 - **Rejected:** A hand-written session store.
 - **Evidence:** api/src/configure-app.ts
@@ -98,4 +89,13 @@
 - **Why:** Both plans are free and give HTTPS. The session pooler works over IPv4, which Render needs. Port 5432 keeps Prisma migrations and the session store working, unlike the transaction pooler.
 - **Rejected:** Neon, because pg-boss polling would use up its free compute hours. Supabase direct connection (IPv6 only) and transaction pooler.
 - **Evidence:** the Render service settings; AGENTS.md section 5.
+- **Source:** user · confidence high
+
+## D-010 · Self sign-up through the assignment link with a verified university email
+- **Status:** approved
+- **Date:** 2026-11-17
+- **Rule:** Login keeps server-side sessions in an httpOnly cookie and argon2 hashes (D-005). Anyone with an assignment's link may create an account, but only with an `@ulbsibiu.ro` email, and the account is active only after the email is verified. The person becomes a reviewer for that assignment whether or not they submitted. The system allocates which submissions they review; they never choose. One email is one account, and an account reviews a submission at most once.
+- **Why:** The user wants anyone at the university with the link to be able to review, without the professor's list. A verified email stops one person from reviewing the same project twice under several accounts.
+- **Rejected:** Invitation-only accounts from the professor's list (D-003). Reviewers choosing which projects to open, which would break the allocation constraints in the brief.
+- **Evidence:** api/prisma/schema.prisma (`users.email` unique, `reviews` unique on submission and reviewer); sign-up and verification are not built yet.
 - **Source:** user · confidence high

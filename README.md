@@ -23,7 +23,7 @@ Roluri: student, profesor, admin. Aplicația finală acoperă:
 | API | TypeScript, NestJS 11 | D-001, D-002, D-008 |
 | Interfață | React, Vite | D-001, D-006 |
 | Bază de date | PostgreSQL 17, Prisma 7 | D-001, D-004 |
-| Autentificare | sesiuni în cookie `httpOnly`, argon2 | D-003, D-005 |
+| Autentificare | sesiuni în cookie `httpOnly`, argon2, cont cu email `@ulbsibiu.ro` verificat | D-005, D-010 |
 | Teste și CI | Jest, supertest, GitHub Actions | |
 | Deploy | Render (aplicația), Supabase (PostgreSQL), Frankfurt | D-009 |
 
@@ -116,7 +116,7 @@ Gata:
 
 Nu e gata:
 
-- invitațiile pe email;
+- înscrierea prin link cu email `@ulbsibiu.ro` verificat;
 - temele, predările, alocarea, evaluările, agregarea și contestațiile;
 - pilotul cu colegii.
 

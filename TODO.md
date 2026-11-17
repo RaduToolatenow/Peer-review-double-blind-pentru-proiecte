@@ -17,7 +17,7 @@
 
 ## S2: build
 
-- [ ] Invitații pe email, din lista încărcată de profesor (D-003)
+- [ ] Înscriere prin linkul temei, doar cu email `@ulbsibiu.ro` verificat (D-010)
 - [ ] Limitarea încercărilor de autentificare
 - [ ] Timp de răspuns egal la login pentru email existent și inexistent
 - [ ] Teme, grilă și termene aplicate pe server

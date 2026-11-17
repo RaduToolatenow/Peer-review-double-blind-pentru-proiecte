@@ -17,6 +17,7 @@
 - Q-006 · Where is the app deployed? · _answered_
 - Q-007 · How do users authenticate: password accounts, invitations or something else? · _answered_
 - Q-008 · Are pilot submissions individual, or do teams exist? · _answered_
+- Q-009 · What is the maximum number of criteria in a rubric, and what does a rubric apply to? · _investigating_
 
 ---
 
@@ -59,7 +60,7 @@
 - **Blocks:** the users schema and the login page.
 - **Who answers:** the student
 - **Answer:** Cookie sessions, argon2, and student accounts by email invitation from the professor's list.
-- **Recorded as:** D-003
+- **Recorded as:** D-003, later superseded-by D-010
 
 ## Q-008 · Are pilot submissions individual, or do teams exist?
 - **Status:** answered 2026-11-08
@@ -67,3 +68,10 @@
 - **Who answers:** the student
 - **Answer:** Model teams; an individual student is a team with one member.
 - **Recorded as:** D-007
+
+## Q-009 · What is the maximum number of criteria in a rubric, and what does a rubric apply to?
+- **Status:** investigating
+- **Blocks:** the rubric validation and the assignment routes.
+- **Who answers:** the student
+- **Known:** The professor sets the subject, the rubric and its criteria, and which projects the rubric applies to. A rubric has at least one criterion, and the app must allow at least 30.
+- **Proposed answer:** At most 100 criteria per rubric. Open: whether a rubric belongs to one assignment, is reused across assignments, or applies only to chosen teams within one assignment.
