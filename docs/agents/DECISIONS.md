@@ -42,6 +42,7 @@
 - **Rejected:** Fastify directly, which has less built-in structure.
 - **Evidence:** api/package.json, api/src/app.module.ts
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-004 · Prisma for schema and migrations
 - **Status:** approved
@@ -61,6 +62,7 @@
 - **Rejected:** A hand-written session store.
 - **Evidence:** api/src/configure-app.ts
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-006 · NestJS serves the React build from one origin
 - **Status:** approved
@@ -70,6 +72,7 @@
 - **Rejected:** A separately hosted React app, which needs CORS and two services.
 - **Evidence:** api/src/main.ts, web/vite.config.ts
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-007 · A submission belongs to a team
 - **Status:** approved
@@ -89,6 +92,7 @@
 - **Rejected:** NestJS 12 with a switch of the whole API to ES modules.
 - **Evidence:** api/package.json, api/tsconfig.json, api/prisma/schema.prisma
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-009 · Deploy on Render and Supabase
 - **Status:** approved
@@ -117,6 +121,7 @@
 - **Rejected:** One rubric fixed to one assignment, the current schema. Editing a rubric after reviews exist.
 - **Evidence:** not built yet; the schema change goes through /plan.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-012 · Classes and teams entered by the professor, joined by team code
 - **Status:** approved
@@ -126,6 +131,7 @@
 - **Rejected:** Teams built from student emails. Students choosing their team from a list, which anyone could fake.
 - **Evidence:** not built yet.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-013 · A rubric sent to a class is the assignment
 - **Status:** approved
@@ -135,6 +141,7 @@
 - **Rejected:** Editing a rubric after it was sent.
 - **Evidence:** not built yet.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-014 · Nobody can see who reviewed
 - **Status:** approved
@@ -144,6 +151,7 @@
 - **Rejected:** Double-blind only between students, with the professor seeing reviewers.
 - **Evidence:** api/src/users/users.controller.ts still lists every email; changed in S2 step 1.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-015 · Professor and admin menu
 - **Status:** approved
@@ -153,3 +161,4 @@
 - **Rejected:** Shared rubrics between professors, and copying another professor's rubric.
 - **Evidence:** not built yet.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
