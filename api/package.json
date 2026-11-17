@@ -22,6 +22,8 @@
     "connect-pg-simple": "^10.0.0",
     "dotenv": "^17.0.0",
     "express-session": "^1.19.0",
+    "fflate": "^0.8.3",
+    "pdf-lib": "^1.17.1",
     "pg": "^8.16.0",
     "prisma": "7.10.1",
     "reflect-metadata": "^0.2.2",
@@ -47,7 +49,9 @@
     "testEnvironment": "node",
     "rootDir": ".",
     "testRegex": "test/.*\\.spec\\.ts$",
-    "transform": { "^.+\\.ts$": "ts-jest" },
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
     "globalSetup": "<rootDir>/test/global-setup.ts"
   }
 }

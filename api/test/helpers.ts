@@ -1,3 +1,4 @@
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test } from '@nestjs/testing';
@@ -9,10 +10,15 @@ import { configureApp } from '../src/configure-app';
 import { Role } from '../src/generated/prisma/enums';
 import { PrismaService } from '../src/prisma/prisma.service';
 
+export const TEST_FILE_DIR = join(tmpdir(), 'peer-review-test-files');
+
 export function useTestDatabase(): void {
   config({ path: join(__dirname, '../../.env'), quiet: true });
   process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
   process.env.SESSION_SECRET = 'secret-used-only-by-tests';
+  // Files go to a temporary folder in tests, never to Supabase.
+  process.env.FILE_STORE = 'local';
+  process.env.FILE_STORE_DIR = TEST_FILE_DIR;
 }
 
 export async function createTestApp() {
