@@ -28,6 +28,7 @@
 - **Rejected:** Next.js full-stack, Laravel and Django, offered as alternatives during setup.
 - **Evidence:** api/package.json, web/package.json; pg-boss is added with the first job.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-002 · NestJS for the API
 - **Status:** approved
@@ -46,6 +47,7 @@
 - **Rejected:** Prisma 8 release candidates.
 - **Evidence:** api/prisma/schema.prisma, api/prisma/migrations/
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-005 · Sessions with express-session and connect-pg-simple
 - **Status:** approved
@@ -73,6 +75,7 @@
 - **Rejected:** Separate individual and team submission paths.
 - **Evidence:** api/prisma/schema.prisma
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-008 · NestJS stays on major version 11
 - **Status:** approved
@@ -100,6 +103,7 @@
 - **Rejected:** Invitation-only accounts from the professor's list (D-003). Reviewers choosing which projects to open, which would break the allocation constraints in the brief.
 - **Evidence:** api/prisma/schema.prisma (`users.email` unique, `reviews` unique on submission and reviewer); sign-up and verification are not built yet.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## D-011 · Rubrics are reusable and apply to all or chosen teams
 - **Status:** approved
@@ -109,3 +113,4 @@
 - **Rejected:** One rubric fixed to one assignment, the current schema. Editing a rubric after reviews exist.
 - **Evidence:** not built yet; the schema change goes through /plan.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17

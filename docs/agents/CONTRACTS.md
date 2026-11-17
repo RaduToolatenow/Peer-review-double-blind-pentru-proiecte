@@ -23,6 +23,7 @@
 - **Rules:** Authentication and roles are checked on the server. A user response never contains the password hash.
 - **Evidence:** api/src/auth/auth.controller.ts, api/src/users/users.controller.ts, api/test/auth.spec.ts
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-17
 
 ## Consumed
 
