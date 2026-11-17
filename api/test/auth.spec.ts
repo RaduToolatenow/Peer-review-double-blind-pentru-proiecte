@@ -101,13 +101,14 @@ describe('authentication', () => {
     await agent.get('/api/users').expect(403);
   });
 
-  it('lets an admin list users without hashes', async () => {
+  it('lets an admin list staff without hashes, and count students only (D-014)', async () => {
     const agent = await loggedInAs(ADMIN);
 
     const res = await agent.get('/api/users').expect(200);
 
-    expect(res.body).toHaveLength(2);
-    for (const user of res.body) {
+    expect(res.body.staff).toHaveLength(1);
+    expect(res.body.studentCount).toBe(1);
+    for (const user of res.body.staff) {
       expect(user).not.toHaveProperty('passwordHash');
     }
   });

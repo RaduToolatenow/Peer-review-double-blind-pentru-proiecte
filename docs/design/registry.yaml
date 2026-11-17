@@ -19,58 +19,58 @@ designs:
     source: null
     screenshots: []
     design_ref: mocks/DS-pr-menu.html
-    status: draft
+    status: approved
   - id: DS-pr-active-rubrics
     kind: screen
     source: null
     screenshots: []
     design_ref: mocks/DS-pr-active-rubrics.html
-    status: draft
+    status: approved
   - id: DS-pr-active-rubric-detail
     kind: screen
     source: null
     screenshots: []
     design_ref: mocks/DS-pr-active-rubric-detail.html
-    status: draft
+    status: approved
   - id: DS-pr-rubric-drafts
     kind: screen
     source: null
     screenshots: []
     design_ref: mocks/DS-pr-rubric-drafts.html
-    status: draft
+    status: approved
   - id: DS-pr-rubric-editor
     kind: screen
     source: null
     screenshots: []
     design_ref: mocks/DS-pr-rubric-editor.html
-    status: draft
+    status: approved
   - id: DS-pr-send-rubric
     kind: screen
     source: null
     screenshots: []
     design_ref: mocks/DS-pr-send-rubric.html
-    status: draft
+    status: approved
   - id: DS-pr-classes
     kind: screen
     source: null
     screenshots: []
     design_ref: mocks/DS-pr-classes.html
-    status: draft
+    status: approved
   - id: DS-pr-class-detail
     kind: screen
     source: null
     screenshots: []
     design_ref: mocks/DS-pr-class-detail.html
-    status: draft
+    status: approved
   - id: DS-pr-join-team
     kind: screen
     source: null
     screenshots: []
     design_ref: mocks/DS-pr-join-team.html
-    status: draft
+    status: approved
   - id: DS-pr-admin-professors
     kind: screen
     source: null
     screenshots: []
     design_ref: mocks/DS-pr-admin-professors.html
-    status: draft
+    status: approved

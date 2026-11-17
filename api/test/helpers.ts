@@ -2,6 +2,7 @@ import { join } from 'node:path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { Test } from '@nestjs/testing';
 import * as argon2 from 'argon2';
+import request from 'supertest';
 import { config } from 'dotenv';
 import { AppModule } from '../src/app.module';
 import { configureApp } from '../src/configure-app';
@@ -43,6 +44,20 @@ export async function createUser(prisma: PrismaService, email: string, password:
 }
 
 export const DAY_MS = 24 * 60 * 60 * 1000;
+export const TEST_PASSWORD = 'o-parola-de-test-lunga';
+
+/** Creates a user with TEST_PASSWORD and returns a supertest agent signed in as them. */
+export async function signedIn(ctx: Awaited<ReturnType<typeof createTestApp>>, email: string, role: Role) {
+  const user = await createUser(ctx.prisma, email, TEST_PASSWORD, role);
+  const agent = request.agent(ctx.app.getHttpServer());
+  await agent.post('/api/auth/login').send({ email, password: TEST_PASSWORD }).expect(200);
+  return { user, agent };
+}
+
+/** ISO date a number of days from now. */
+export function inDays(days: number): string {
+  return new Date(Date.now() + days * DAY_MS).toISOString();
+}
 
 /** A rubric draft with one criterion and two levels. */
 export async function createRubric(prisma: PrismaService, createdById: string, title = 'Grilă de test') {
