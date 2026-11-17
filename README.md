@@ -18,11 +18,12 @@ Roluri: student, profesor, admin. Aplicația finală acoperă:
 
 | Parte | Tehnologie | Decizie |
 |---|---|---|
-| API | TypeScript, NestJS 11 | D-001, D-002 |
+| API | TypeScript, NestJS 11 | D-001, D-002, D-008 |
 | Interfață | React, Vite | D-001, D-006 |
 | Bază de date | PostgreSQL 17, Prisma 7 | D-001, D-004 |
 | Autentificare | sesiuni în cookie `httpOnly`, argon2 | D-003, D-005 |
 | Teste și CI | Jest, supertest, GitHub Actions | |
+| Deploy | Render (aplicația), Supabase (PostgreSQL), Frankfurt | D-009 |
 
 Deciziile sunt în [docs/agents/DECISIONS.md](docs/agents/DECISIONS.md).
 
@@ -108,11 +109,11 @@ Gata:
 - Docker Compose pentru PostgreSQL;
 - autentificare, deconectare și roluri verificate pe server;
 - paginile de autentificare și de start;
-- teste automate și CI.
+- teste automate și CI;
+- deploy pe Render, cu baza de date pe Supabase.
 
 Nu e gata:
 
-- deploy-ul pe un URL public (Q-006);
 - invitațiile pe email;
 - temele, predările, alocarea, evaluările, agregarea și contestațiile;
 - pilotul cu colegii.

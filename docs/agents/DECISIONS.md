@@ -15,6 +15,7 @@
 - D-006 · NestJS serves the React build from one origin
 - D-007 · A submission belongs to a team
 - D-008 · NestJS stays on major version 11
+- D-009 · Deploy on Render and Supabase
 
 ---
 
@@ -88,4 +89,13 @@
 - **Why:** NestJS 12 is ESM-only. The API, Jest with ts-jest and the Prisma client (`moduleFormat = "cjs"`) are set up as CommonJS.
 - **Rejected:** NestJS 12 with a switch of the whole API to ES modules.
 - **Evidence:** api/package.json, api/tsconfig.json, api/prisma/schema.prisma
+- **Source:** user · confidence high
+
+## D-009 · Deploy on Render and Supabase
+- **Status:** approved
+- **Date:** 2026-11-17
+- **Rule:** The app runs as one Render free web service. PostgreSQL is a Supabase free project, reached through the session pooler on port 5432. Both are in Frankfurt. Migrations run in the Render build command, and every push to `main` deploys automatically.
+- **Why:** Both plans are free and give HTTPS. The session pooler works over IPv4, which Render needs. Port 5432 keeps Prisma migrations and the session store working, unlike the transaction pooler.
+- **Rejected:** Neon, because pg-boss polling would use up its free compute hours. Supabase direct connection (IPv6 only) and transaction pooler.
+- **Evidence:** the Render service settings; AGENTS.md section 5.
 - **Source:** user · confidence high

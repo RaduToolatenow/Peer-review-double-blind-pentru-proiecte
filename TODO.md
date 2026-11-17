@@ -11,7 +11,7 @@
 - [x] CI cu teste și `ledger-lint.py`
 - [x] README și listă de task-uri
 - [ ] Discuția cu cadrul didactic și `INTERVIEW.md` început
-- [ ] Deploy pe un URL public cu HTTPS (Q-006)
+- [x] Deploy pe un URL public cu HTTPS (D-009)
 - [ ] Repo public și push
 - [ ] Clarificat cu profesorul materialul pilotului (Q-002)
 

@@ -14,7 +14,7 @@
 - Q-003 · Which professor or teaching assistant is interviewed, and what would make them use the results?
 - Q-004 · What are the pilot rubric and the value of k?
 - Q-005 · What are the aggregation and reliability methods?
-- Q-006 · Where is the app deployed?
+- Q-006 · Where is the app deployed? · _answered_
 - Q-007 · How do users authenticate: password accounts, invitations or something else? · _answered_
 - Q-008 · Are pilot submissions individual, or do teams exist? · _answered_
 
@@ -48,9 +48,11 @@
 - **Who answers:** the student
 
 ## Q-006 · Where is the app deployed?
-- **Status:** open
+- **Status:** answered 2026-11-17
 - **Blocks:** the live URL, the file storage choice and the release section of AGENTS.md.
 - **Who answers:** the student
+- **Answer:** Render free web service for the app, Supabase free project for PostgreSQL through the session pooler, both in Frankfurt. File storage is still open.
+- **Recorded as:** D-009
 
 ## Q-007 · How do users authenticate: password accounts, invitations or something else?
 - **Status:** answered 2026-11-08

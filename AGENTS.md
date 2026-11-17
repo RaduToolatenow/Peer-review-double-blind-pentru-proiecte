@@ -84,7 +84,7 @@ aggregates grades. Users are students, professors and admins at the student's fa
 The full brief is in `docs/brief.md`. So far only login and roles are built.
 
 ## 2. Stack and commands
-TypeScript with NestJS 11 (D-002), React and Vite (D-001), PostgreSQL 17 with Prisma 7 (D-004).
+TypeScript with NestJS 11 (D-002, D-008), React and Vite (D-001), PostgreSQL 17 with Prisma 7 (D-004).
 
 ```bash
 docker compose up -d --wait   # PostgreSQL; needs .env, copied from .env.example
@@ -118,7 +118,14 @@ npx playwright@1.56.1 screenshot -b chromium --color-scheme=dark --viewport-size
 - Never add a route that returns a user without `PUBLIC_USER_SELECT` or an equally narrow shape.
 
 ## 5. Release
-Not set up yet. The deploy target is open (Q-006). The user says go for every push and deploy.
+Render web service with a Supabase database (D-009). Every push to `main` deploys, so
+the user says go for every push.
+- Build command: `npm ci --include=dev && npm run build && npm run db:migrate`
+- Start command: `npm start`. Health check path: `/api/health`.
+- Variables, set in the Render dashboard only: `DATABASE_URL` (Supabase session pooler,
+  port 5432), `SESSION_SECRET`, `NODE_ENV=production`, `NODE_VERSION=24`.
+- Seed accounts are created from the user's PC (`npm run db:seed` with the variables set in
+  the shell), never from the build.
 
 ## 6. Definition of done
 - `npm test` passes.
