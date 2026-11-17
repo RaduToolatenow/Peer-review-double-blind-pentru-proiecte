@@ -19,6 +19,12 @@ enum ReviewStatus {
   SUBMITTED
 }
 
+// D-011: an assignment's rubric applies to all its teams, or only to teams given a rubric.
+enum RubricScope {
+  ALL
+  SELECTED
+}
+
 enum DisputeStatus {
   OPEN
   UPHELD
@@ -34,6 +40,7 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   assignments     Assignment[]
+  rubrics         Rubric[]
   teamMemberships TeamMember[]
   reviews         Review[]
   disputesFiled   Dispute[]    @relation("DisputeAuthor")
@@ -53,35 +60,55 @@ model Session {
 }
 
 model Assignment {
-  id                 String   @id @default(uuid()) @db.Uuid
+  id                 String      @id @default(uuid()) @db.Uuid
   title              String
   description        String?
   k                  Int
-  submissionDeadline DateTime @map("submission_deadline") @db.Timestamptz
-  reviewDeadline     DateTime @map("review_deadline") @db.Timestamptz
-  disputeDeadline    DateTime @map("dispute_deadline") @db.Timestamptz
-  createdById        String   @map("created_by_id") @db.Uuid
-  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  submissionDeadline DateTime    @map("submission_deadline") @db.Timestamptz
+  reviewDeadline     DateTime    @map("review_deadline") @db.Timestamptz
+  disputeDeadline    DateTime    @map("dispute_deadline") @db.Timestamptz
+  rubricId           String?     @map("rubric_id") @db.Uuid
+  rubricAppliesTo    RubricScope @default(ALL) @map("rubric_applies_to")
+  createdById        String      @map("created_by_id") @db.Uuid
+  createdAt          DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
-  createdBy User              @relation(fields: [createdById], references: [id])
-  criteria  RubricCriterion[]
+  createdBy User    @relation(fields: [createdById], references: [id])
+  rubric    Rubric? @relation(fields: [rubricId], references: [id], onDelete: Restrict)
   teams     Team[]
 
   @@map("assignments")
 }
 
+// D-011: reusable across assignments. Locked by a trigger at the first saved score;
+// archiving and the 1..100 criteria limit are also enforced in the migration SQL.
+model Rubric {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String
+  createdById String    @map("created_by_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  lockedAt    DateTime? @map("locked_at") @db.Timestamptz
+  archivedAt  DateTime? @map("archived_at") @db.Timestamptz
+
+  createdBy   User              @relation(fields: [createdById], references: [id])
+  criteria    RubricCriterion[]
+  assignments Assignment[]
+  teams       Team[]
+
+  @@map("rubrics")
+}
+
 model RubricCriterion {
-  id           String @id @default(uuid()) @db.Uuid
-  assignmentId String @map("assignment_id") @db.Uuid
-  title        String
-  weight       Int
-  position     Int
+  id       String @id @default(uuid()) @db.Uuid
+  rubricId String @map("rubric_id") @db.Uuid
+  title    String
+  weight   Int
+  position Int
 
-  assignment Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
-  levels     CriterionLevel[]
-  scores     ReviewScore[]
+  rubric Rubric           @relation(fields: [rubricId], references: [id], onDelete: Cascade)
+  levels CriterionLevel[]
+  scores ReviewScore[]
 
-  @@unique([assignmentId, position])
+  @@unique([rubricId, position])
   @@map("rubric_criteria")
 }
 
@@ -99,10 +126,13 @@ model CriterionLevel {
 }
 
 model Team {
-  id           String @id @default(uuid()) @db.Uuid
-  assignmentId String @map("assignment_id") @db.Uuid
+  id           String  @id @default(uuid()) @db.Uuid
+  assignmentId String  @map("assignment_id") @db.Uuid
+  // Set: the team is evaluated on this rubric, which may be the assignment's own (D-011).
+  rubricId     String? @map("rubric_id") @db.Uuid
 
   assignment Assignment   @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  rubric     Rubric?      @relation(fields: [rubricId], references: [id], onDelete: Restrict)
   members    TeamMember[]
   submission Submission?
 

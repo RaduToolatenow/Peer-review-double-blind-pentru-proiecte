@@ -5,7 +5,10 @@ Sursa este [api/prisma/schema.prisma](../api/prisma/schema.prisma). Migrările v
 ```mermaid
 erDiagram
     users ||--o{ assignments : "creează"
-    assignments ||--o{ rubric_criteria : "are"
+    users ||--o{ rubrics : "creează"
+    rubrics ||--o{ assignments : "folosită de"
+    rubrics ||--o{ teams : "atribuită"
+    rubrics ||--o{ rubric_criteria : "are"
     rubric_criteria ||--o{ criterion_levels : "are"
     assignments ||--o{ teams : "are"
     teams ||--o{ team_members : "are"
@@ -33,11 +36,20 @@ erDiagram
         timestamptz submission_deadline
         timestamptz review_deadline
         timestamptz dispute_deadline
+        uuid rubric_id FK
+        enum rubric_applies_to
         uuid created_by_id FK
+    }
+    rubrics {
+        uuid id PK
+        text title
+        uuid created_by_id FK
+        timestamptz locked_at
+        timestamptz archived_at
     }
     rubric_criteria {
         uuid id PK
-        uuid assignment_id FK
+        uuid rubric_id FK
         text title
         int weight
         int position
@@ -51,6 +63,7 @@ erDiagram
     teams {
         uuid id PK
         uuid assignment_id FK
+        uuid rubric_id FK
     }
     team_members {
         uuid team_id PK
@@ -106,3 +119,20 @@ Tabela `session` aparține bibliotecii `connect-pg-simple` și nu are relații c
 | `k` este cel puțin 1 | `CHECK` în migrare |
 | Termenele sunt în ordine: predare, evaluare, contestații | `CHECK` în migrare |
 | Ponderea unui criteriu este pozitivă | `CHECK` în migrare |
+| O grilă are cel mult 100 de criterii | `rubric_criteria (rubric_id, position)` unic și `CHECK position BETWEEN 1 AND 100` |
+| Primul scor salvat blochează grila | trigger `review_scores_lock_rubric` setează `rubrics.locked_at` |
+| Criteriile și nivelurile unei grile blocate nu se schimbă | triggerele `rubric_criteria_guard_locked` și `criterion_levels_guard_locked` |
+| O grilă blocată nu se deblochează | trigger `rubrics_guard_update` |
+| O grilă folosită nu se șterge | chei străine `ON DELETE RESTRICT` din `assignments`, `teams` și `review_scores` |
+| Arhivarea e permisă la 2 zile după ultimul termen de evaluare al temelor care folosesc grila | trigger `rubrics_guard_update`; `archived_at` primește ora serverului |
+| O grilă arhivată nu poate fi aleasă | triggerele `assignments_guard_archived_rubric` și `teams_guard_archived_rubric` |
+
+## Ce grilă primește o echipă (D-011)
+
+Regula este în [api/src/rubrics/effective-rubric.ts](../api/src/rubrics/effective-rubric.ts):
+
+1. Dacă echipa are `rubric_id`, este evaluată pe acea grilă.
+2. Altfel, dacă tema are `rubric_applies_to = ALL`, este evaluată pe grila temei.
+3. Altfel echipa nu este evaluată: predarea ei nu intră în alocare. Membrii ei pot evalua în continuare.
+
+În modul `SELECTED`, profesorul alege echipele dându-le grila temei în `teams.rubric_id`.

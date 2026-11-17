@@ -10,7 +10,7 @@ Terms come from `docs/brief.md`. Update them with the words the professor and co
 **Assignment** (noun) — work a professor creates, with a rubric and deadlines (RO: temă).
 _Avoid_: task, homework
 
-**Rubric** (noun) — the evaluation criteria, their level descriptors and weights (RO: grilă).
+**Rubric** (noun) — the evaluation criteria, their level descriptors and weights (RO: grilă). A professor's own record, reusable across assignments, locked once the first score is saved, and archived rather than deleted once used (D-011).
 _Avoid_: form, questionnaire
 
 **Criterion** (noun) — one weighted dimension of a rubric (RO: criteriu).
