@@ -127,6 +127,9 @@ deploys, so the user says go for every push.
   port 5432), `SESSION_SECRET`, `NODE_ENV=production`, `NODE_VERSION=24`.
 - Seed accounts are created from the user's PC (`npm run db:seed` with the variables set in
   the shell), never from the build.
+- Keep-alive: a cron-job.org job, on the user's account, opens `/api/health` every 10
+  minutes so the free Render service never sleeps. Its 750 free hours a month cover one
+  always-on service only, so no second free Render service.
 
 ## 6. Definition of done
 - `npm test` passes.

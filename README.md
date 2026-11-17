@@ -4,7 +4,7 @@ Proiect P12, Web Avansat, anul 3. Studenții își evaluează reciproc proiectel
 
 Cerințele complete sunt în [docs/brief.md](docs/brief.md).
 
-Aplicația live: https://peer-review-double-blind-pentru-proiecte.onrender.com. Pe planul gratuit serverul doarme după 15 minute fără trafic, iar prima cerere durează aproximativ un minut.
+Aplicația live: https://peer-review-double-blind-pentru-proiecte.onrender.com. Pe planul gratuit Render oprește serverul după 15 minute fără trafic; un job pe cron-job.org accesează `/api/health` la fiecare 10 minute ca să-l țină pornit.
 
 ## Scope
 
