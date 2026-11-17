@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-rubric-drafts</title>
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+    <link rel="stylesheet" href="components.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <p class="brand">Peer review</p>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <nav class="nav" aria-label="Meniu">
+        <a href="#">Grile active</a>
+        <a href="#" aria-current="page">Schițe de grile</a>
+        <a href="#">Clase profesor</a>
+      </nav>
+      <main>
+        <div class="toolbar">
+          <h1>Schițe de grile</h1>
+          <button class="primary inline" type="button">Grilă nouă</button>
+        </div>
+        <ul class="list">
+          <li class="item">
+            <h2><a href="#">Grilă proiect web</a></h2>
+            <p class="muted">6 criterii · modificată 17 nov.</p>
+            <div class="actions">
+              <a href="#">Modifică</a>
+              <button class="primary inline" type="button">Trimite unei clase</button>
+              <button class="secondary" type="button">Copiază</button>
+              <button class="secondary" type="button">Șterge</button>
+            </div>
+          </li>
+          <li class="item">
+            <h2><a href="#">Grilă fără criterii</a></h2>
+            <p class="muted">0 criterii · nu poate fi trimisă până nu are cel puțin un criteriu</p>
+            <div class="actions">
+              <a href="#">Modifică</a>
+              <button class="secondary" type="button">Copiază</button>
+              <button class="secondary" type="button">Șterge</button>
+            </div>
+          </li>
+        </ul>
+        <section class="section" aria-label="Confirmare ștergere">
+          <h2>Confirmarea ștergerii</h2>
+          <div class="item" role="alertdialog" aria-labelledby="del-title">
+            <p id="del-title"><strong>Ștergi schița „Grilă proiect web”?</strong></p>
+            <p class="muted">Schița și criteriile ei se șterg definitiv.</p>
+            <div class="actions">
+              <button class="secondary" type="button">Șterge schița</button>
+              <button class="secondary" type="button">Renunță</button>
+            </div>
+          </div>
+        </section>
+        <section class="section" aria-label="Stare goală">
+          <h2>Stare goală</h2>
+          <p class="muted">Nu ai nicio schiță. O grilă nouă începe aici; după ce o trimiți unei clase, apare în Grile active.</p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

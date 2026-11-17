@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-send-rubric</title>
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+    <link rel="stylesheet" href="components.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <p class="brand">Peer review</p>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <nav class="nav" aria-label="Meniu">
+        <a href="#">Grile active</a>
+        <a href="#" aria-current="page">Schițe de grile</a>
+        <a href="#">Clase profesor</a>
+      </nav>
+      <main>
+        <p><a href="#">← Schițe de grile</a></p>
+        <h1>Trimite grila unei clase</h1>
+        <p>Grila: <strong>Grilă proiect web</strong> (6 criterii)</p>
+        <p class="muted">După trimitere grila se blochează și apare în Grile active. Pentru alte criterii, faci o copie.</p>
+        <div class="field"><label for="cls">Clasa</label>
+          <select id="cls"><option>Web Avansat, grupa 231 (8 echipe)</option><option>Web Avansat, grupa 232 (6 echipe)</option></select></div>
+        <div class="field"><label for="ttl">Titlul temei</label><input id="ttl" value="Proiect P1 — evaluare colegi" /></div>
+        <div class="field"><label for="k">Evaluări per proiect (k)</label><input id="k" type="number" min="1" value="3" /></div>
+        <fieldset>
+          <legend>Termene (ora României)</legend>
+          <div class="row">
+            <div class="field"><label for="d1">Predare</label><input id="d1" type="datetime-local" value="2026-12-01T23:59" /></div>
+            <div class="field"><label for="d2">Evaluare</label><input id="d2" type="datetime-local" value="2026-12-08T23:59" /></div>
+            <div class="field"><label for="d3">Contestații</label><input id="d3" type="datetime-local" value="2026-12-15T23:59" /></div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Se aplică</legend>
+          <label class="check"><input type="radio" name="scope" checked /> Tuturor echipelor din clasă</label>
+          <label class="check"><input type="radio" name="scope" /> Doar echipelor alese</label>
+          <div class="indent">
+            <label class="check"><input type="checkbox" checked /> Echipa 1</label>
+            <label class="check"><input type="checkbox" /> Echipa 2</label>
+            <label class="check"><input type="checkbox" checked /> Ionescu Maria (individual)</label>
+          </div>
+          <p class="muted">Echipele nealese nu sunt evaluate cu această grilă. Le poți trimite altă grilă separat.</p>
+        </fieldset>
+        <p class="error" role="alert">! Termenul de evaluare trebuie să fie după termenul de predare.</p>
+        <button class="primary inline" type="button">Trimite grila</button>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-class-detail</title>
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+    <link rel="stylesheet" href="components.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <p class="brand">Peer review</p>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <nav class="nav" aria-label="Meniu">
+        <a href="#">Grile active</a>
+        <a href="#">Schițe de grile</a>
+        <a href="#" aria-current="page">Clase profesor</a>
+      </nav>
+      <main>
+        <p><a href="#">← Clase profesor</a></p>
+        <h1>Web Avansat, grupa 231</h1>
+        <p class="muted">Dă fiecărei echipe codul ei. Studentul îl introduce o singură dată după ce se loghează.
+          Vezi doar câte persoane au intrat, nu cine.</p>
+        <fieldset>
+          <legend>Echipă nouă</legend>
+          <div class="row">
+            <div class="field"><label for="tn">Numele echipei</label><input id="tn" placeholder="ex. Echipa 9 sau numele studentului" /></div>
+            <div class="field"><label for="tm">Membri (text, cum sunt pe foaie)</label><input id="tm" placeholder="ex. Popescu A., Ionescu M." /></div>
+          </div>
+          <button class="primary inline" type="button">Adaugă echipa</button>
+        </fieldset>
+        <ul class="list">
+          <li class="item">
+            <h2>Echipa 1</h2>
+            <p>Popescu A., Ionescu M., Georgescu D.</p>
+            <dl class="facts"><dt>Cod</dt><dd class="code">K7P-4QX</dd><dt>Au intrat</dt><dd>2 persoane</dd></dl>
+            <div class="actions">
+              <button class="secondary" type="button">Cod nou</button>
+              <button class="secondary" type="button">Modifică</button>
+              <button class="secondary" type="button">Șterge</button>
+            </div>
+          </li>
+          <li class="item">
+            <h2>Ionescu Maria (individual)</h2>
+            <p>Ionescu Maria</p>
+            <dl class="facts"><dt>Cod</dt><dd class="code">M2D-9RT</dd><dt>Au intrat</dt><dd>nimeni încă</dd></dl>
+            <div class="actions">
+              <button class="secondary" type="button">Cod nou</button>
+              <button class="secondary" type="button">Modifică</button>
+              <button class="secondary" type="button">Șterge</button>
+            </div>
+          </li>
+        </ul>
+        <p class="muted">„Cod nou” anulează codul vechi; cine a intrat deja rămâne în echipă.</p>
+        <section class="section">
+          <h2>Ștergerea clasei</h2>
+          <p class="muted">O clasă căreia i-ai trimis o grilă nu se poate șterge.</p>
+          <button class="secondary" type="button" disabled>Șterge clasa</button>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

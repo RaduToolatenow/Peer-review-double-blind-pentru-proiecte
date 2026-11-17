@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-classes</title>
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+    <link rel="stylesheet" href="components.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <p class="brand">Peer review</p>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <nav class="nav" aria-label="Meniu">
+        <a href="#">Grile active</a>
+        <a href="#">Schițe de grile</a>
+        <a href="#" aria-current="page">Clase profesor</a>
+      </nav>
+      <main>
+        <div class="toolbar">
+          <h1>Clase profesor</h1>
+        </div>
+        <form class="row" aria-label="Clasă nouă">
+          <div class="field"><label for="cn">Numele clasei noi</label><input id="cn" placeholder="ex. Web Avansat, grupa 233" /></div>
+          <div class="field end"><button class="primary inline" type="button">Adaugă clasa</button></div>
+        </form>
+        <ul class="list">
+          <li class="item"><h2><a href="#">Web Avansat, grupa 231</a></h2><p class="muted">8 echipe · 1 grilă trimisă</p></li>
+          <li class="item"><h2><a href="#">Web Avansat, grupa 232</a></h2><p class="muted">6 echipe · nicio grilă trimisă</p></li>
+        </ul>
+        <section class="section" aria-label="Stare goală">
+          <h2>Stare goală</h2>
+          <p class="muted">Nu ai nicio clasă. Adaug-o mai sus, apoi introdu echipele de pe foaie.</p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-active-rubric-detail</title>
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+    <link rel="stylesheet" href="components.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <p class="brand">Peer review</p>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <nav class="nav" aria-label="Meniu">
+        <a href="#" aria-current="page">Grile active</a>
+        <a href="#">Schițe de grile</a>
+        <a href="#">Clase profesor</a>
+      </nav>
+      <main>
+        <p><a href="#">← Grile active</a></p>
+        <h1>Proiect P1 — evaluare colegi</h1>
+        <p><span class="badge">Evaluare în curs</span> <span class="badge">Blocată: nu se mai modifică</span></p>
+        <dl class="facts">
+          <dt>Clasa</dt><dd>Web Avansat, grupa 231</dd>
+          <dt>Evaluări per proiect (k)</dt><dd>3</dd>
+          <dt>Se aplică</dt><dd>tuturor echipelor (8)</dd>
+          <dt>Răspunsuri</dt><dd>14 din 24 de evaluări trimise</dd>
+        </dl>
+        <section class="section">
+          <h2>Termene (ora României)</h2>
+          <div class="row">
+            <div class="field"><label for="t1">Predare</label><input id="t1" type="datetime-local" value="2026-12-01T23:59" disabled /></div>
+            <div class="field"><label for="t2">Evaluare</label><input id="t2" type="datetime-local" value="2026-12-08T23:59" /></div>
+            <div class="field"><label for="t3">Contestații</label><input id="t3" type="datetime-local" value="2026-12-15T23:59" /></div>
+          </div>
+          <p class="muted">Termenul de predare a trecut și nu se mai poate schimba.</p>
+          <button class="primary inline" type="button">Salvează termenele</button>
+        </section>
+        <section class="section">
+          <h2>Echipe</h2>
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>Echipa</th><th>Predare</th><th>Evaluări primite</th></tr></thead>
+              <tbody>
+                <tr><td>Echipa 1</td><td>predat</td><td>3 din 3</td></tr>
+                <tr><td>Echipa 2</td><td>predat</td><td>1 din 3</td></tr>
+                <tr><td>Ionescu Maria (individual)</td><td>nepredat</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="muted">Nu se arată cine a evaluat, doar câte evaluări există.</p>
+        </section>
+        <section class="section">
+          <h2>Grila</h2>
+          <p><a href="#">Vezi criteriile (doar citire)</a> · <button class="secondary" type="button">Copiază ca schiță nouă</button></p>
+          <p class="muted">Arhivarea devine posibilă pe 10 dec. 23:59, la 2 zile după termenul de evaluare.</p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

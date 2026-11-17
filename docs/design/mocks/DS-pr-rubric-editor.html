@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-rubric-editor</title>
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+    <link rel="stylesheet" href="components.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <p class="brand">Peer review</p>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <nav class="nav" aria-label="Meniu">
+        <a href="#">Grile active</a>
+        <a href="#" aria-current="page">Schițe de grile</a>
+        <a href="#">Clase profesor</a>
+      </nav>
+      <main>
+        <p><a href="#">← Schițe de grile</a></p>
+        <h1>Modifică grila</h1>
+        <div class="field"><label for="title">Titlul grilei</label><input id="title" value="Grilă proiect web" /></div>
+        <p class="muted">2 din maximum 100 de criterii. Fiecare criteriu are o pondere și cel puțin 2 niveluri.</p>
+        <fieldset>
+          <legend>Criteriul 1</legend>
+          <div class="row">
+            <div class="field"><label for="c1">Denumire</label><input id="c1" value="Calitatea codului" /></div>
+            <div class="field"><label for="w1">Pondere</label><input id="w1" type="number" min="1" value="2" /></div>
+          </div>
+          <div class="level">
+            <div class="level-head">
+              <div class="field"><label for="n1">Nivelul 1: notă</label><input id="n1" type="number" value="1" /></div>
+              <button class="secondary" type="button" aria-label="Șterge nivelul 1">Șterge nivelul</button>
+            </div>
+            <div class="field"><label for="d1">Descriere</label><textarea id="d1">Cod greu de citit, fără structură.</textarea></div>
+          </div>
+          <div class="level">
+            <div class="level-head">
+              <div class="field"><label for="n2">Nivelul 2: notă</label><input id="n2" type="number" value="2" /></div>
+              <button class="secondary" type="button" aria-label="Șterge nivelul 2">Șterge nivelul</button>
+            </div>
+            <div class="field"><label for="d2">Descriere</label><textarea id="d2">Cod organizat, cu nume clare și teste.</textarea></div>
+          </div>
+          <div class="actions">
+            <button class="secondary" type="button">Adaugă nivel</button>
+            <button class="secondary" type="button" aria-label="Mută criteriul 1 mai jos">Mută mai jos</button>
+            <button class="secondary" type="button">Șterge criteriul</button>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Criteriul 2</legend>
+          <div class="row">
+            <div class="field"><label for="c2">Denumire</label><input id="c2" value="Interfața" /></div>
+            <div class="field"><label for="w2">Pondere</label><input id="w2" type="number" min="1" value="1" /></div>
+          </div>
+          <p class="error" role="alert">! Criteriul are un singur nivel. Adaugă cel puțin încă unul.</p>
+          <div class="actions">
+            <button class="secondary" type="button">Adaugă nivel</button>
+            <button class="secondary" type="button" aria-label="Mută criteriul 2 mai sus">Mută mai sus</button>
+            <button class="secondary" type="button">Șterge criteriul</button>
+          </div>
+        </fieldset>
+        <div class="actions">
+          <button class="secondary" type="button">Adaugă criteriu</button>
+          <button class="primary inline" type="button">Salvează schița</button>
+        </div>
+        <p class="muted">Cu multe criterii, fiecare criteriu e un bloc separat și pagina se derulează vertical; butonul de salvare rămâne la final.</p>
+      </main>
+    </div>
+  </body>
+</html>
