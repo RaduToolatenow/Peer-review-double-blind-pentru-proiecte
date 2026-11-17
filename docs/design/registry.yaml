@@ -16,61 +16,61 @@ designs:
     status: implemented
   - id: DS-pr-menu
     kind: component
-    source: null
-    screenshots: []
+    source: web/src/Layout.tsx
+    screenshots: [screens/DS-pr-admin-professors.light.png, screens/DS-pr-admin-professors.dark.png]
     design_ref: mocks/DS-pr-menu.html
-    status: approved
+    status: implemented
   - id: DS-pr-active-rubrics
     kind: screen
-    source: null
-    screenshots: []
+    source: web/src/pages/ActiveRubricsPage.tsx
+    screenshots: [screens/DS-pr-active-rubrics.light.png, screens/DS-pr-active-rubrics.dark.png]
     design_ref: mocks/DS-pr-active-rubrics.html
-    status: approved
+    status: implemented
   - id: DS-pr-active-rubric-detail
     kind: screen
-    source: null
-    screenshots: []
+    source: web/src/pages/ActiveRubricDetailPage.tsx
+    screenshots: [screens/DS-pr-active-rubric-detail.light.png, screens/DS-pr-active-rubric-detail.dark.png]
     design_ref: mocks/DS-pr-active-rubric-detail.html
-    status: approved
+    status: implemented
   - id: DS-pr-rubric-drafts
     kind: screen
-    source: null
-    screenshots: []
+    source: web/src/pages/RubricDraftsPage.tsx
+    screenshots: [screens/DS-pr-rubric-drafts.light.png, screens/DS-pr-rubric-drafts.dark.png]
     design_ref: mocks/DS-pr-rubric-drafts.html
-    status: approved
+    status: implemented
   - id: DS-pr-rubric-editor
     kind: screen
-    source: null
-    screenshots: []
+    source: web/src/pages/RubricEditorPage.tsx
+    screenshots: [screens/DS-pr-rubric-editor.light.png, screens/DS-pr-rubric-editor.dark.png]
     design_ref: mocks/DS-pr-rubric-editor.html
-    status: approved
+    status: implemented
   - id: DS-pr-send-rubric
     kind: screen
-    source: null
-    screenshots: []
+    source: web/src/pages/SendRubricPage.tsx
+    screenshots: [screens/DS-pr-send-rubric.light.png, screens/DS-pr-send-rubric.dark.png]
     design_ref: mocks/DS-pr-send-rubric.html
-    status: approved
+    status: implemented
   - id: DS-pr-classes
     kind: screen
-    source: null
-    screenshots: []
+    source: web/src/pages/ClassesPage.tsx
+    screenshots: [screens/DS-pr-classes.light.png, screens/DS-pr-classes.dark.png]
     design_ref: mocks/DS-pr-classes.html
-    status: approved
+    status: implemented
   - id: DS-pr-class-detail
     kind: screen
-    source: null
-    screenshots: []
+    source: web/src/pages/ClassDetailPage.tsx
+    screenshots: [screens/DS-pr-class-detail.light.png, screens/DS-pr-class-detail.dark.png]
     design_ref: mocks/DS-pr-class-detail.html
-    status: approved
+    status: implemented
   - id: DS-pr-join-team
     kind: screen
-    source: null
-    screenshots: []
+    source: web/src/pages/JoinTeamPage.tsx
+    screenshots: [screens/DS-pr-join-team.light.png, screens/DS-pr-join-team.dark.png]
     design_ref: mocks/DS-pr-join-team.html
-    status: approved
+    status: implemented
   - id: DS-pr-admin-professors
     kind: screen
-    source: null
-    screenshots: []
+    source: web/src/pages/ProfessorsPage.tsx
+    screenshots: [screens/DS-pr-admin-professors.light.png, screens/DS-pr-admin-professors.dark.png]
     design_ref: mocks/DS-pr-admin-professors.html
-    status: approved
+    status: implemented

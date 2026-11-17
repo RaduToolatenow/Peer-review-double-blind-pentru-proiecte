@@ -112,12 +112,15 @@ Gata:
 - autentificare, deconectare și roluri verificate pe server;
 - paginile de autentificare și de start;
 - teste automate și CI;
-- deploy pe Render, cu baza de date pe Supabase.
+- deploy pe Render, cu baza de date pe Supabase;
+- pentru profesor și admin: schițe de grile, trimiterea unei grile către o clasă, grile active cu termene, clase și echipe cu cod de intrare;
+- pentru admin: grilele fiecărui profesor, doar citire;
+- pentru student: intrarea în echipă cu codul primit.
 
 Nu e gata:
 
 - înscrierea prin link cu email `@ulbsibiu.ro` verificat;
-- temele, predările, alocarea, evaluările, agregarea și contestațiile;
+- predările, alocarea, evaluările, agregarea și contestațiile;
 - pilotul cu colegii.
 
 Lista de task-uri este în [TODO.md](TODO.md), iar întrebările deschise în [docs/agents/OPEN-QUESTIONS.md](docs/agents/OPEN-QUESTIONS.md).

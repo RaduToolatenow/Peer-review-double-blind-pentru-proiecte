@@ -7,6 +7,114 @@ export interface User {
   role: Role;
 }
 
+export type RubricStatus = 'draft' | 'active' | 'archived';
+export type Scope = 'ALL' | 'SELECTED';
+export type Phase = 'submission' | 'review' | 'disputes' | 'closed';
+
+export interface LevelInput {
+  score: number;
+  descriptor: string;
+}
+
+export interface CriterionInput {
+  title: string;
+  weight: number;
+  levels: LevelInput[];
+}
+
+export interface Rubric {
+  id: string;
+  title: string;
+  status: RubricStatus;
+  createdAt: string;
+  lockedAt: string | null;
+  archivedAt: string | null;
+  criteria: StoredCriterion[];
+}
+
+export interface StoredCriterion {
+  id: string;
+  title: string;
+  weight: number;
+  position: number;
+  levels: (LevelInput & { id: string })[];
+}
+
+export interface RubricSummary {
+  id: string;
+  title: string;
+  status: RubricStatus;
+  criteriaCount: number;
+  createdAt: string;
+}
+
+export interface Deadlines {
+  submissionDeadline: string;
+  reviewDeadline: string;
+  disputeDeadline: string;
+}
+
+export interface AssignmentSummary extends Deadlines {
+  id: string;
+  title: string;
+  description: string | null;
+  k: number;
+  appliesTo: Scope;
+  classId: string;
+  className: string;
+  rubricId: string;
+  rubricTitle: string;
+  rubricArchived: boolean;
+  evaluatedTeamCount: number;
+  reviewsSubmitted: number;
+  reviewsExpected: number;
+  phase: Phase;
+}
+
+export interface AssignmentDetail extends AssignmentSummary {
+  rubric: Rubric;
+  archivableFrom: string;
+  teams: { id: string; name: string; memberNames: string; evaluated: boolean; submitted: boolean; reviewsReceived: number }[];
+}
+
+export interface ClassSummary {
+  id: string;
+  name: string;
+  teamCount: number;
+  assignmentCount: number;
+}
+
+export interface Team {
+  id: string;
+  name: string;
+  memberNames: string;
+  joinCode: string;
+  joinedCount: number;
+}
+
+export interface ClassDetail {
+  id: string;
+  name: string;
+  assignmentCount: number;
+  teams: Team[];
+}
+
+export interface Professor {
+  id: string;
+  fullName: string;
+  email: string;
+  draftCount: number;
+  activeCount: number;
+}
+
+export interface SendRubricInput extends Deadlines {
+  classId: string;
+  title: string;
+  k: number;
+  appliesTo: Scope;
+  teamIds: string[];
+}
+
 const NETWORK_ERROR = 'Nu am putut contacta serverul. Încearcă din nou.';
 
 async function call(path: string, init?: RequestInit): Promise<Response> {
@@ -15,6 +123,25 @@ async function call(path: string, init?: RequestInit): Promise<Response> {
   } catch {
     throw new Error(NETWORK_ERROR);
   }
+}
+
+/** Throws the server's Romanian message when there is one. */
+async function failure(response: Response): Promise<Error> {
+  const body = await response.json().catch(() => null);
+  const message = Array.isArray(body?.message) ? body.message[0] : body?.message;
+  return new Error(typeof message === 'string' ? message : NETWORK_ERROR);
+}
+
+async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
+  const response = await call(path, {
+    method,
+    headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  if (!response.ok) {
+    throw await failure(response);
+  }
+  return response.status === 204 ? (undefined as T) : response.json();
 }
 
 /** Returns the signed-in user, or null when there is no session. */
@@ -36,9 +163,7 @@ export async function login(email: string, password: string): Promise<User> {
     body: JSON.stringify({ email, password }),
   });
   if (!response.ok) {
-    const body = await response.json().catch(() => null);
-    const message = Array.isArray(body?.message) ? body.message[0] : body?.message;
-    throw new Error(typeof message === 'string' ? message : NETWORK_ERROR);
+    throw await failure(response);
   }
   return response.json();
 }
@@ -49,3 +174,38 @@ export async function logout(): Promise<void> {
     throw new Error(NETWORK_ERROR);
   }
 }
+
+export const api = {
+  drafts: () => request<RubricSummary[]>('GET', '/rubrics'),
+  rubric: (id: string) => request<Rubric>('GET', `/rubrics/${id}`),
+  createRubric: (title: string, criteria: CriterionInput[]) => request<Rubric>('POST', '/rubrics', { title, criteria }),
+  saveRubric: (id: string, title: string, criteria: CriterionInput[]) =>
+    request<Rubric>('PUT', `/rubrics/${id}`, { title, criteria }),
+  deleteRubric: (id: string) => request<void>('DELETE', `/rubrics/${id}`),
+  copyRubric: (id: string) => request<Rubric>('POST', `/rubrics/${id}/copy`),
+  archiveRubric: (id: string) => request<Rubric>('POST', `/rubrics/${id}/archive`),
+  sendRubric: (id: string, input: SendRubricInput) => request<AssignmentDetail>('POST', `/rubrics/${id}/send`, input),
+
+  assignments: (archived: boolean) => request<AssignmentSummary[]>('GET', `/assignments${archived ? '?archived=true' : ''}`),
+  assignment: (id: string) => request<AssignmentDetail>('GET', `/assignments/${id}`),
+  updateAssignment: (id: string, changes: Partial<Deadlines>) =>
+    request<AssignmentDetail>('PATCH', `/assignments/${id}`, changes),
+
+  classes: () => request<ClassSummary[]>('GET', '/classes'),
+  klass: (id: string) => request<ClassDetail>('GET', `/classes/${id}`),
+  createClass: (name: string) => request<ClassDetail>('POST', '/classes', { name }),
+  renameClass: (id: string, name: string) => request<ClassDetail>('PATCH', `/classes/${id}`, { name }),
+  deleteClass: (id: string) => request<void>('DELETE', `/classes/${id}`),
+  addTeam: (classId: string, name: string, memberNames: string) =>
+    request<Team>('POST', `/classes/${classId}/teams`, { name, memberNames }),
+  updateTeam: (id: string, name: string, memberNames: string) =>
+    request<Team>('PATCH', `/teams/${id}`, { name, memberNames }),
+  deleteTeam: (id: string) => request<void>('DELETE', `/teams/${id}`),
+  newTeamCode: (id: string) => request<Team>('POST', `/teams/${id}/code`),
+  joinTeam: (code: string) => request<{ className: string; teamName: string }>('POST', '/teams/join', { code }),
+
+  professors: () => request<Professor[]>('GET', '/admin/professors'),
+  professorRubrics: (id: string) => request<RubricSummary[]>('GET', `/admin/professors/${id}/rubrics`),
+  adminRubric: (id: string) => request<Rubric>('GET', `/admin/rubrics/${id}`),
+  users: () => request<{ staff: User[]; studentCount: number }>('GET', '/users'),
+};
