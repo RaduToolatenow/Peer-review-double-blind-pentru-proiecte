@@ -17,6 +17,10 @@
 - D-009 · Deploy on Render and Supabase
 - D-010 · Self sign-up through the assignment link with a verified university email
 - D-011 · Rubrics are reusable and apply to all or chosen teams
+- D-012 · Classes and teams entered by the professor, joined by team code
+- D-013 · A rubric sent to a class is the assignment
+- D-014 · Nobody can see who reviewed
+- D-015 · Professor and admin menu
 
 ---
 
@@ -108,9 +112,44 @@
 ## D-011 · Rubrics are reusable and apply to all or chosen teams
 - **Status:** approved
 - **Date:** 2026-11-17
-- **Rule:** A rubric is its own record, created by a professor, with 1 to 100 criteria, checked on the server. One rubric may be used by several assignments. An assignment's rubric applies either to all its teams or only to the teams the professor chooses. A team may be given a different rubric. A team with no rubric is not evaluated: its submission is left out of allocation and gets no grade, but its members may still review. Once the first score on a rubric is saved, the rubric is locked; a change is made on a copy. A rubric never used may be deleted at any time. A used rubric is never deleted: 2 days after the latest review deadline of the assignments that use it, the professor may archive it, which hides it and stops it being chosen, while its scores and results stay.
+- **Rule:** A rubric is its own record, created by a professor, with 1 to 100 criteria, checked on the server. One rubric may be used by several assignments. An assignment's rubric applies either to all its teams or only to the teams the professor chooses. A team may be given a different rubric. A team with no rubric is not evaluated: its submission is left out of allocation and gets no grade, but its members may still review. A rubric is locked when it is sent to a class (D-013), and at the latest when the first score on it is saved; a change is made on a copy. A rubric never used may be deleted at any time. A used rubric is never deleted: 2 days after the latest review deadline of the assignments that use it, the professor may archive it, which hides it and stops it being chosen, while its scores and results stay.
 - **Why:** The user wants a rubric per assignment, reuse across assignments, and rubrics for chosen teams only. Locking keeps submitted scores tied to the criteria they were given against.
 - **Rejected:** One rubric fixed to one assignment, the current schema. Editing a rubric after reviews exist.
 - **Evidence:** not built yet; the schema change goes through /plan.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-17
+
+## D-012 · Classes and teams entered by the professor, joined by team code
+- **Status:** approved
+- **Date:** 2026-11-17
+- **Rule:** A professor creates classes and enters their teams from paper, with members as plain text and no emails. A student working alone is a team of one (D-007). Each team gets a short generated code that the professor hands out; a signed-in student enters it once to join the team. The professor sees how many accounts joined a team, never which.
+- **Why:** The professor keeps teams on paper and must not see students' emails (D-014). The system still needs each account's team so nobody reviews their own team, as the brief requires.
+- **Rejected:** Teams built from student emails. Students choosing their team from a list, which anyone could fake.
+- **Evidence:** not built yet.
+- **Source:** user · confidence high
+
+## D-013 · A rubric sent to a class is the assignment
+- **Status:** approved
+- **Date:** 2026-11-17
+- **Rule:** A rubric draft is sent to a class with deadlines and k; from then on it is an active rubric, which is the assignment, and it is locked. Other criteria mean a copy, which starts as a draft. A student sees only the active rubric sent to them, for the submissions allocated to them, and answers it.
+- **Why:** The user's model has no separate assignment screen: sending a rubric to a class is the assignment, and every student must answer the same rubric.
+- **Rejected:** Editing a rubric after it was sent.
+- **Evidence:** not built yet.
+- **Source:** user · confidence high
+
+## D-014 · Nobody can see who reviewed
+- **Status:** approved
+- **Date:** 2026-11-17
+- **Rule:** No page or route shows who submitted a review, to anyone, the professor and admin included; only how many reviewed. Reviewers appear as numbered anonymous reviewers. The system keeps the link between account and review internally, for allocation, duplicate checks and reliability. A student's email is used only for login and the `@ulbsibiu.ro` check, and is never shown; the admin sees emails of professors and admins only, and a count of student accounts.
+- **Why:** The user wants the email to be only a check that the person is from the university, and answers to stay anonymous.
+- **Rejected:** Double-blind only between students, with the professor seeing reviewers.
+- **Evidence:** api/src/users/users.controller.ts still lists every email; changed in S2 step 1.
+- **Source:** user · confidence high
+
+## D-015 · Professor and admin menu
+- **Status:** approved
+- **Date:** 2026-11-17
+- **Rule:** A professor's menu has Active rubrics, Rubric drafts and Classes, each showing only that professor's own records. An admin has the same menu and can also open each professor's rubrics, read only.
+- **Why:** The user's chosen layout; rubrics are private to their professor.
+- **Rejected:** Shared rubrics between professors, and copying another professor's rubric.
+- **Evidence:** not built yet.
+- **Source:** user · confidence high
