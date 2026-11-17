@@ -19,7 +19,7 @@ enum ReviewStatus {
   SUBMITTED
 }
 
-// D-011: an assignment's rubric applies to all its teams, or only to teams given a rubric.
+// D-011: an assignment's rubric applies to all teams of its class, or only to chosen ones.
 enum RubricScope {
   ALL
   SELECTED
@@ -41,6 +41,7 @@ model User {
 
   assignments     Assignment[]
   rubrics         Rubric[]
+  classes         Class[]
   teamMemberships TeamMember[]
   reviews         Review[]
   disputesFiled   Dispute[]    @relation("DisputeAuthor")
@@ -67,16 +68,49 @@ model Assignment {
   submissionDeadline DateTime    @map("submission_deadline") @db.Timestamptz
   reviewDeadline     DateTime    @map("review_deadline") @db.Timestamptz
   disputeDeadline    DateTime    @map("dispute_deadline") @db.Timestamptz
-  rubricId           String?     @map("rubric_id") @db.Uuid
+  // D-013: an assignment is a rubric sent to a class.
+  rubricId           String      @map("rubric_id") @db.Uuid
+  classId            String      @map("class_id") @db.Uuid
   rubricAppliesTo    RubricScope @default(ALL) @map("rubric_applies_to")
   createdById        String      @map("created_by_id") @db.Uuid
   createdAt          DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
-  createdBy User    @relation(fields: [createdById], references: [id])
-  rubric    Rubric? @relation(fields: [rubricId], references: [id], onDelete: Restrict)
-  teams     Team[]
+  createdBy   User             @relation(fields: [createdById], references: [id])
+  rubric      Rubric           @relation(fields: [rubricId], references: [id], onDelete: Restrict)
+  class       Class            @relation(fields: [classId], references: [id], onDelete: Restrict)
+  chosenTeams AssignmentTeam[]
+  submissions Submission[]
 
+  @@unique([id, classId])
   @@map("assignments")
+}
+
+// D-012: a professor's class; its teams are entered from paper.
+model Class {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  createdById String   @map("created_by_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  createdBy   User         @relation(fields: [createdById], references: [id])
+  teams       Team[]
+  assignments Assignment[]
+
+  @@map("classes")
+}
+
+// The teams an assignment applies to when rubric_applies_to is SELECTED.
+// class_id is repeated so the database can require the team and the assignment to share a class.
+model AssignmentTeam {
+  assignmentId String @map("assignment_id") @db.Uuid
+  teamId       String @map("team_id") @db.Uuid
+  classId      String @map("class_id") @db.Uuid
+
+  assignment Assignment @relation(fields: [assignmentId, classId], references: [id, classId], onDelete: Cascade)
+  team       Team       @relation(fields: [teamId, classId], references: [id, classId], onDelete: Cascade)
+
+  @@id([assignmentId, teamId])
+  @@map("assignment_teams")
 }
 
 // D-011: reusable across assignments. Locked by a trigger at the first saved score;
@@ -92,7 +126,6 @@ model Rubric {
   createdBy   User              @relation(fields: [createdById], references: [id])
   criteria    RubricCriterion[]
   assignments Assignment[]
-  teams       Team[]
 
   @@map("rubrics")
 }
@@ -126,44 +159,52 @@ model CriterionLevel {
 }
 
 model Team {
-  id           String  @id @default(uuid()) @db.Uuid
-  assignmentId String  @map("assignment_id") @db.Uuid
-  // Set: the team is evaluated on this rubric, which may be the assignment's own (D-011).
-  rubricId     String? @map("rubric_id") @db.Uuid
+  id          String   @id @default(uuid()) @db.Uuid
+  classId     String   @map("class_id") @db.Uuid
+  name        String
+  // Members as the professor wrote them on paper; never linked to emails (D-012, D-014).
+  memberNames String   @default("") @map("member_names")
+  // Handed out by the professor; a student enters it once to join (D-012).
+  joinCode    String   @unique @map("join_code")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
-  assignment Assignment   @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
-  rubric     Rubric?      @relation(fields: [rubricId], references: [id], onDelete: Restrict)
-  members    TeamMember[]
-  submission Submission?
+  class           Class            @relation(fields: [classId], references: [id], onDelete: Cascade)
+  members         TeamMember[]
+  assignmentTeams AssignmentTeam[]
+  submissions     Submission[]
 
-  @@unique([id, assignmentId])
+  @@unique([id, classId])
+  @@unique([classId, name])
   @@map("teams")
 }
 
-// assignment_id is repeated so the database can allow one team per student per assignment.
+// class_id is repeated so the database can allow one team per student per class.
 model TeamMember {
-  teamId       String @map("team_id") @db.Uuid
-  assignmentId String @map("assignment_id") @db.Uuid
-  userId       String @map("user_id") @db.Uuid
+  teamId  String @map("team_id") @db.Uuid
+  classId String @map("class_id") @db.Uuid
+  userId  String @map("user_id") @db.Uuid
 
-  team Team @relation(fields: [teamId, assignmentId], references: [id, assignmentId], onDelete: Cascade)
+  team Team @relation(fields: [teamId, classId], references: [id, classId], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id])
 
   @@id([teamId, userId])
-  @@unique([assignmentId, userId])
+  @@unique([classId, userId])
   @@map("team_members")
 }
 
 model Submission {
-  id          String   @id @default(uuid()) @db.Uuid
-  teamId      String   @unique @map("team_id") @db.Uuid
-  link        String
-  fileKey     String?  @map("file_key")
-  submittedAt DateTime @default(now()) @map("submitted_at") @db.Timestamptz
+  id           String   @id @default(uuid()) @db.Uuid
+  assignmentId String   @map("assignment_id") @db.Uuid
+  teamId       String   @map("team_id") @db.Uuid
+  link         String
+  fileKey      String?  @map("file_key")
+  submittedAt  DateTime @default(now()) @map("submitted_at") @db.Timestamptz
 
-  team    Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  reviews Review[]
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  team       Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  reviews    Review[]
 
+  @@unique([assignmentId, teamId])
   @@map("submissions")
 }
 
