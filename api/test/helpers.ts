@@ -33,11 +33,73 @@ export async function createTestApp() {
 }
 
 export async function clearDatabase(prisma: PrismaService): Promise<void> {
-  await prisma.$executeRawUnsafe('TRUNCATE users, session, rubrics, assignments CASCADE');
+  await prisma.$executeRawUnsafe('TRUNCATE users, session, rubrics, classes, assignments CASCADE');
 }
 
 export async function createUser(prisma: PrismaService, email: string, password: string, role: Role) {
   return prisma.user.create({
     data: { email, passwordHash: await argon2.hash(password), fullName: `Test ${role}`, role },
+  });
+}
+
+export const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** A rubric draft with one criterion and two levels. */
+export async function createRubric(prisma: PrismaService, createdById: string, title = 'Grilă de test') {
+  return prisma.rubric.create({
+    data: {
+      title,
+      createdById,
+      criteria: {
+        create: {
+          title: 'Calitatea codului',
+          weight: 1,
+          position: 1,
+          levels: { create: [{ score: 1, descriptor: 'Slab' }, { score: 2, descriptor: 'Bun' }] },
+        },
+      },
+    },
+    include: { criteria: { include: { levels: true } } },
+  });
+}
+
+let teamCounter = 0;
+
+/** A class with the given number of teams, each with a unique join code. */
+export async function createClass(prisma: PrismaService, createdById: string, teamCount = 1, name = 'Grupa 231') {
+  return prisma.class.create({
+    data: {
+      name,
+      createdById,
+      teams: {
+        create: Array.from({ length: teamCount }, (_, index) => {
+          teamCounter += 1;
+          return { name: `Echipa ${index + 1}`, joinCode: `TEST-${teamCounter}` };
+        }),
+      },
+    },
+    include: { teams: { orderBy: { name: 'asc' } } },
+  });
+}
+
+/** Sends a rubric to a class by creating the assignment directly in the database. */
+export async function createAssignment(
+  prisma: PrismaService,
+  createdById: string,
+  rubricId: string,
+  classId: string,
+  reviewDeadline = new Date(Date.now() + 14 * DAY_MS),
+) {
+  return prisma.assignment.create({
+    data: {
+      title: 'Tema de test',
+      k: 2,
+      submissionDeadline: new Date(reviewDeadline.getTime() - 7 * DAY_MS),
+      reviewDeadline,
+      disputeDeadline: new Date(reviewDeadline.getTime() + 7 * DAY_MS),
+      createdById,
+      rubricId,
+      classId,
+    },
   });
 }
