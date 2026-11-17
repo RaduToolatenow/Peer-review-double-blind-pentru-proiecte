@@ -43,8 +43,11 @@ export class SupabaseFileStore implements FileStore {
 
   private headers(extra: Record<string, string> = {}): Record<string, string> {
     // A new secret key (sb_secret_...) goes only in apikey; a legacy service_role JWT also as Bearer.
-    const auth = this.serviceKey.startsWith('sb_') ? {} : { Authorization: `Bearer ${this.serviceKey}` };
-    return { apikey: this.serviceKey, ...auth, ...extra };
+    const headers: Record<string, string> = { apikey: this.serviceKey, ...extra };
+    if (!this.serviceKey.startsWith('sb_')) {
+      headers.Authorization = `Bearer ${this.serviceKey}`;
+    }
+    return headers;
   }
 
   private objectUrl(key: string): string {
