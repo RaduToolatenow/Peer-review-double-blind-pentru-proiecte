@@ -12,7 +12,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   async login(@Body() body: LoginDto, @Req() request: Request): Promise<PublicUser> {
-    const user = await this.authService.validateCredentials(body.email, body.password);
+    const user = await this.authService.validateCredentials(body.email, body.password, request.ip ?? '');
     // A new session id at login stops an attacker from reusing an id set before login.
     await new Promise<void>((resolve, reject) =>
       request.session.regenerate((error) => (error ? reject(error) : resolve())),

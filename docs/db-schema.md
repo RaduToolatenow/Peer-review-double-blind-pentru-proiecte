@@ -122,9 +122,17 @@ erDiagram
         json sess
         timestamp expire
     }
+    login_failures {
+        uuid id PK
+        text email
+        text ip
+        timestamptz created_at
+    }
 ```
 
 Tabela `session` aparține bibliotecii `connect-pg-simple` și nu are relații cu celelalte tabele.
+
+Tabela `login_failures` ține autentificările eșuate din ultimele 15 minute, pentru limita de încercări (D-017). Nu are relație cu `users`, ca un email inexistent să fie numărat la fel. Rândurile mai vechi de 15 minute se șterg la fiecare eșec nou.
 
 ## Reguli impuse de baza de date
 
