@@ -182,6 +182,5 @@
 - **Rule:** Failed logins are stored in PostgreSQL (`login_failures`). 5 failures for the same email and IP in 15 minutes, or 50 for the same IP, block login with 429 until 15 minutes after the latest failure, even with the correct password. An unknown email runs argon2 verify on a fixed hash and counts as a failure, so neither the time nor the response reveals which emails exist. A successful login deletes the failures for that email and IP.
 - **Why:** The login had no limit. Counting per email and IP stops a stranger from locking a student out from another IP; the IP cap catches one address trying many emails. Storing in PostgreSQL keeps counters across restarts and the deploy on every push (D-009).
 - **Rejected:** Counting by email only (anyone could lock an account), by IP only (students share the university IP), counters in server memory, and `@nestjs/throttler`.
-- **Evidence:** not built yet.
+- **Evidence:** api/src/auth/auth.service.ts, api/src/auth/password.ts, api/prisma/migrations/20261119110137_login_failures/, api/test/auth.spec.ts
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-19
