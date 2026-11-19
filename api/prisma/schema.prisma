@@ -60,6 +60,20 @@ model Session {
   @@map("session")
 }
 
+// One failed login, kept 15 minutes for the attempt limit (D-017). No relation to users,
+// so unknown emails are counted the same way.
+model LoginFailure {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String
+  ip        String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([email, ip, createdAt])
+  @@index([ip, createdAt])
+  @@index([createdAt])
+  @@map("login_failures")
+}
+
 model Assignment {
   id                 String      @id @default(uuid()) @db.Uuid
   title              String

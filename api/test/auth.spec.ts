@@ -1,4 +1,5 @@
 import request from 'supertest';
+import * as password from '../src/auth/password';
 import { Role } from '../src/generated/prisma/enums';
 import { clearDatabase, createTestApp, createUser } from './helpers';
 
@@ -71,6 +72,92 @@ describe('authentication', () => {
     expect(inEmail.status).toBe(400);
     expect(inPassword.status).toBe(401);
     expect(await ctx.prisma.user.count()).toBe(2);
+  });
+
+  describe('attempt limit (D-017)', () => {
+    const TOO_MANY = /^Prea multe încercări nereușite\. Încearcă din nou peste \d+ minute\.$/;
+    const login = (email: string, password: string) =>
+      request(http()).post('/api/auth/login').send({ email, password });
+
+    async function failTimes(email: string, times: number) {
+      for (let i = 0; i < times; i += 1) {
+        await login(email, 'gresita').expect(401);
+      }
+    }
+
+    /** Inserts failures directly, as if they happened the given minutes ago. */
+    async function insertFailures(email: string, ip: string, count: number, minutesAgo = 0) {
+      const createdAt = new Date(Date.now() - minutesAgo * 60 * 1000);
+      await ctx.prisma.loginFailure.createMany({
+        data: Array.from({ length: count }, () => ({ email, ip, createdAt })),
+      });
+    }
+
+    /** The IP the server records for supertest requests. */
+    async function testIp() {
+      await login('ip-probe@test.example', 'gresita').expect(401);
+      const row = await ctx.prisma.loginFailure.findFirstOrThrow({ where: { email: 'ip-probe@test.example' } });
+      await ctx.prisma.loginFailure.deleteMany({ where: { email: 'ip-probe@test.example' } });
+      return row.ip;
+    }
+
+    it('answers 429 after 5 wrong passwords', async () => {
+      await failTimes(STUDENT, 5);
+
+      const res = await login(STUDENT, 'gresita');
+
+      expect(res.status).toBe(429);
+      expect(res.body.message).toMatch(TOO_MANY);
+    });
+
+    it('refuses even the correct password while blocked', async () => {
+      await failTimes(STUDENT, 5);
+
+      await login(STUDENT, PASSWORD).expect(429);
+    });
+
+    it('blocks an unknown email the same way, so it does not reveal which emails exist', async () => {
+      await failTimes('nimeni@test.example', 5);
+
+      const res = await login('nimeni@test.example', 'gresita');
+
+      expect(res.status).toBe(429);
+      expect(res.body.message).toMatch(TOO_MANY);
+    });
+
+    it('resets the count after a successful login', async () => {
+      await failTimes(STUDENT, 4);
+      await login(STUDENT, PASSWORD).expect(200);
+
+      await failTimes(STUDENT, 4);
+      await login(STUDENT, PASSWORD).expect(200);
+    });
+
+    it('ends the block 15 minutes after the latest failure', async () => {
+      await insertFailures(STUDENT, await testIp(), 5, 16);
+
+      await login(STUDENT, PASSWORD).expect(200);
+    });
+
+    it('blocks any email from an IP with 50 failures', async () => {
+      await insertFailures('altcineva@test.example', await testIp(), 50);
+
+      const res = await login(ADMIN, PASSWORD);
+
+      expect(res.status).toBe(429);
+      expect(res.body.message).toMatch(TOO_MANY);
+    });
+
+    it('runs the password check for an unknown email too, so the time is the same', async () => {
+      const verify = jest.spyOn(password, 'verifyPassword');
+      try {
+        await login('nimeni@test.example', PASSWORD).expect(401);
+
+        expect(verify).toHaveBeenCalledTimes(1);
+      } finally {
+        verify.mockRestore();
+      }
+    });
   });
 
   it('answers 401 on /me without a session', async () => {
