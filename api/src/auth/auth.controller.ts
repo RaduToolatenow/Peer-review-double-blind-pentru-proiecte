@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { PublicUser } from '../users/public-user';
 import { AuthService } from './auth.service';
 import { LoginDto } from './login.dto';
+import { logProxyChain } from './proxy-diagnostic';
 import { AuthenticatedRequest, SessionGuard } from './session.guard';
 
 @Controller('auth')
@@ -12,6 +13,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   async login(@Body() body: LoginDto, @Req() request: Request): Promise<PublicUser> {
+    logProxyChain(request); // TEMPORARY (D-018 step 1)
     const user = await this.authService.validateCredentials(body.email, body.password);
     // A new session id at login stops an attacker from reusing an id set before login.
     await new Promise<void>((resolve, reject) =>
