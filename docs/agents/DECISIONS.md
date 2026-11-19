@@ -23,6 +23,7 @@
 - D-015 · Professor and admin menu
 - D-016 · Submissions: link and cleaned PDF or DOCX file
 - D-017 · Login attempt limit and equal timing
+- D-018 · Visitor IP behind Cloudflare and Render
 
 ---
 
@@ -184,3 +185,14 @@
 - **Rejected:** Counting by email only (anyone could lock an account), by IP only (students share the university IP), counters in server memory, and `@nestjs/throttler`.
 - **Evidence:** api/prisma/migrations/20261119110137_login_failures/ (table kept). The code was reverted on 2026-11-19: behind Render, `request.ip` was a private proxy address (10.x), not the visitor's IP.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
+
+## D-018 · Visitor IP behind Cloudflare and Render
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** In production the visitor IP comes from the source the logged evidence supports, chosen in this order: an exact `trust proxy` hop count, when `X-Forwarded-For` always has the same number of entries with the real public IP at the same position from the right; otherwise `CF-Connecting-IP`, when it is always present, public and never takes a forged value; otherwise nothing is chosen and the user decides. `trust proxy = true` is never used. Logs never contain IP addresses. The chosen source and value are written here after the diagnostic and confirmed by the user.
+- **Why:** `trust proxy = 1` gave Render's private addresses (10.x), which broke D-017. Render keeps a client-sent `X-Forwarded-For` and appends to it, so its leftmost entry can be faked.
+- **Rejected:** `trust proxy = true`, which trusts the forgeable leftmost entry.
+- **Evidence:** api/src/configure-app.ts (`trust proxy` = 1 today); the Supabase query on 2026-11-19 showed only 10.x addresses.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
