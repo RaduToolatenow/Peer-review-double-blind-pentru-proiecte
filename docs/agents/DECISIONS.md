@@ -183,16 +183,14 @@
 - **Rule:** Failed logins are stored in PostgreSQL (`login_failures`). 5 failures for the same email and IP in 15 minutes, or 50 for the same IP, block login with 429 until 15 minutes after the latest failure, even with the correct password. An unknown email runs argon2 verify on a fixed hash and counts as a failure, so neither the time nor the response reveals which emails exist. A successful login deletes the failures for that email and IP.
 - **Why:** The login had no limit. Counting per email and IP stops a stranger from locking a student out from another IP; the IP cap catches one address trying many emails. Storing in PostgreSQL keeps counters across restarts and the deploy on every push (D-009).
 - **Rejected:** Counting by email only (anyone could lock an account), by IP only (students share the university IP), counters in server memory, and `@nestjs/throttler`.
-- **Evidence:** api/prisma/migrations/20261119110137_login_failures/ (table kept). The code was reverted on 2026-11-19: behind Render, `request.ip` was a private proxy address (10.x), not the visitor's IP.
+- **Evidence:** api/src/auth/auth.service.ts, api/src/auth/password.ts, api/prisma/migrations/20261119110137_login_failures/, api/test/auth.spec.ts. First built with the wrong IP and reverted on 2026-11-19; rebuilt on D-018.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-19
 
 ## D-018 · Visitor IP behind Cloudflare and Render
 - **Status:** approved
 - **Date:** 2026-11-19
-- **Rule:** In production the visitor IP comes from the source the logged evidence supports, chosen in this order: an exact `trust proxy` hop count, when `X-Forwarded-For` always has the same number of entries with the real public IP at the same position from the right; otherwise `CF-Connecting-IP`, when it is always present, public and never takes a forged value; otherwise nothing is chosen and the user decides. `trust proxy = true` is never used. Logs never contain IP addresses. The chosen source and value are written here after the diagnostic and confirmed by the user.
+- **Rule:** In production the visitor IP comes from the source the logged evidence supports, chosen in this order: an exact `trust proxy` hop count, when `X-Forwarded-For` always has the same number of entries with the real public IP at the same position from the right; otherwise `CF-Connecting-IP`, when it is always present, public and never takes a forged value; otherwise nothing is chosen and the user decides. `trust proxy = true` is never used. Logs never contain IP addresses. Chosen on 2026-11-19: `trust proxy` = 3 (rule 1).
 - **Why:** `trust proxy = 1` gave Render's private addresses (10.x), which broke D-017. Render keeps a client-sent `X-Forwarded-For` and appends to it, so its leftmost entry can be faked.
 - **Rejected:** `trust proxy = true`, which trusts the forgeable leftmost entry.
-- **Evidence:** api/src/configure-app.ts (`trust proxy` = 1 today); the Supabase query on 2026-11-19 showed only 10.x addresses.
+- **Evidence:** api/src/configure-app.ts. The diagnostic log of 2026-11-19 showed, on every request, `X-Forwarded-For` ending with public visitor, public Cloudflare, private Render; `CF-Connecting-IP` equal to the 3rd entry from the right; a forged `X-Forwarded-For` entry added on the left; a forged `True-Client-IP` overwritten; a forged `CF-Connecting-IP` refused by Cloudflare (403, error 1000).
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-19

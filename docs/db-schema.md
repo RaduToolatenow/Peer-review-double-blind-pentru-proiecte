@@ -132,7 +132,7 @@ erDiagram
 
 Tabela `session` aparține bibliotecii `connect-pg-simple` și nu are relații cu celelalte tabele.
 
-Tabela `login_failures` ține autentificările eșuate din ultimele 15 minute, pentru limita de încercări (D-017). Nu are relație cu `users`, ca un email inexistent să fie numărat la fel. Rândurile mai vechi de 15 minute se șterg la fiecare eșec nou. Codul care o folosește a fost retras pe 2026-11-19 (IP-ul citit în spatele Render era al proxy-ului); tabela rămâne goală până la corectură.
+Tabela `login_failures` ține autentificările eșuate din ultimele 15 minute, pentru limita de încercări (D-017). Nu are relație cu `users`, ca un email inexistent să fie numărat la fel. Rândurile mai vechi de 15 minute se șterg la fiecare eșec nou.
 
 ## Reguli impuse de baza de date
 

@@ -23,6 +23,9 @@ Cerere:
 | 200 | Autentificat; setează cookie-ul `sid` | `{ "id": "<uuid>", "email": "student@peer-review.test", "fullName": "Cont test student", "role": "STUDENT" }` |
 | 400 | Date invalide | `{ "statusCode": 400, "message": ["Introdu o adresă de email validă."], "error": "Bad Request" }` |
 | 401 | Email sau parolă greșite | `{ "statusCode": 401, "message": "Email sau parolă greșite.", "error": "Unauthorized" }` |
+| 429 | Prea multe încercări eșuate (D-017) | `{ "statusCode": 429, "message": "Prea multe încercări nereușite. Încearcă din nou peste 15 minute.", "error": "Too Many Requests" }` |
+
+Limita de încercări (D-017): 5 eșecuri pentru același email și același IP în 15 minute, sau 50 pentru același IP, blochează autentificarea până la 15 minute după ultimul eșec, chiar și cu parola corectă. Un email inexistent se numără la fel și durează cât o parolă greșită. O autentificare reușită șterge eșecurile pentru acel email și IP.
 
 ## `POST /api/auth/logout`
 

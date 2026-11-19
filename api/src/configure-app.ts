@@ -10,8 +10,11 @@ const SESSION_MAX_AGE_MS = 8 * 60 * 60 * 1000;
 export function configureApp(app: NestExpressApplication) {
   const isProduction = process.env.NODE_ENV === 'production';
   if (isProduction) {
-    // The host's proxy terminates HTTPS; without this, secure cookies are never sent.
-    app.set('trust proxy', 1);
+    // Requests pass Cloudflare and Render's proxies: X-Forwarded-For ends with
+    // "visitor, Cloudflare, Render", so trusting exactly 3 hops makes request.ip the
+    // visitor's IP, and an entry a client forges further left is never read (D-018).
+    // Trusting the proxy also lets secure cookies be sent behind its HTTPS.
+    app.set('trust proxy', 3);
   }
 
   app.setGlobalPrefix('api');

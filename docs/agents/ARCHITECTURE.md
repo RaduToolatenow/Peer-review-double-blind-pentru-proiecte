@@ -8,6 +8,7 @@
 ## Overview
 A React page talks to a NestJS API under `/api`. The API stores everything in PostgreSQL.
 In production NestJS also serves the React build, so the app has one origin (D-006).
+In production every request passes Cloudflare and then Render's proxy, so the API trusts exactly 3 proxy hops to read the visitor's IP (D-018).
 Only authentication exists so far. The full data model is already in the database.
 
 ```text
