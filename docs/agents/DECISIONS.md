@@ -185,6 +185,7 @@
 - **Rejected:** Counting by email only (anyone could lock an account), by IP only (students share the university IP), counters in server memory, and `@nestjs/throttler`.
 - **Evidence:** api/src/auth/auth.service.ts, api/src/auth/password.ts, api/prisma/migrations/20261119110137_login_failures/, api/test/auth.spec.ts. First built with the wrong IP and reverted on 2026-11-19; rebuilt on D-018.
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
 
 ## D-018 · Visitor IP behind Cloudflare and Render
 - **Status:** approved
@@ -194,3 +195,4 @@
 - **Rejected:** `trust proxy = true`, which trusts the forgeable leftmost entry.
 - **Evidence:** api/src/configure-app.ts. The diagnostic log of 2026-11-19 showed, on every request, `X-Forwarded-For` ending with public visitor, public Cloudflare, private Render; `CF-Connecting-IP` equal to the 3rd entry from the right; a forged `X-Forwarded-For` entry added on the left; a forged `True-Client-IP` overwritten; a forged `CF-Connecting-IP` refused by Cloudflare (403, error 1000).
 - **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
