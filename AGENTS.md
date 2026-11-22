@@ -81,7 +81,9 @@ without new evidence. A rejected proposal is added there with the reason.
 A platform where students review each other's projects, anonymous in both directions.
 A professor defines the rubric. The system allocates reviewers, calibrates them and
 aggregates grades. Users are students, professors and admins at the student's faculty.
-The full brief is in `docs/brief.md`. So far only login and roles are built.
+The full brief is in `docs/brief.md`. Built so far: login with an attempt limit, roles,
+classes and teams with join codes, rubric drafts sent to classes, and submissions with
+cleaned files. Allocation, reviews, aggregation and disputes are not built yet.
 
 ## 2. Stack and commands
 TypeScript with NestJS 11 (D-002, D-008), React and Vite (D-001), PostgreSQL 17 with Prisma 7 (D-004).

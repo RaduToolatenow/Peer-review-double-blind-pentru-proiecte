@@ -18,8 +18,8 @@
 ## S2: build
 
 - [ ] Înscriere prin linkul temei, doar cu email `@ulbsibiu.ro` verificat (D-010)
-- [ ] Limitarea încercărilor de autentificare
-- [ ] Timp de răspuns egal la login pentru email existent și inexistent
+- [x] Limitarea încercărilor de autentificare (D-017, D-018)
+- [x] Timp de răspuns egal la login pentru email existent și inexistent (D-017)
 - [x] Clase și echipe cu cod, schițe de grile (1–100 criterii), trimiterea către o clasă, grile active cu termene (D-011–D-015)
 - [ ] Termenele aplicate la predare, evaluare și contestații (cu jobul programat)
 - [ ] Job programat cu pg-boss pentru închiderea fazelor și notificări
