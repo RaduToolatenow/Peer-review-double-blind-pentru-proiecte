@@ -109,6 +109,18 @@ describe('sign-up and email confirmation (D-010, D-020)', () => {
     await http().post('/api/auth/register').send({ email: 'ultimul@ulbsibiu.ro', password: PASSWORD }).expect(429);
   });
 
+  it('answers 503 with a clear message when the email cannot be sent', async () => {
+    mailer.failing = true;
+    try {
+      const res = await http().post('/api/auth/register').send({ email: EMAIL, password: PASSWORD }).expect(503);
+      expect(res.body.message).toBe('Nu am putut trimite emailul acum. Încearcă din nou peste câteva minute.');
+      const forgot = await http().post('/api/auth/forgot-password').send({ email: EMAIL }).expect(503);
+      expect(forgot.body.message).toBe(res.body.message);
+    } finally {
+      mailer.failing = false;
+    }
+  });
+
   it('stores only a hash of the token', async () => {
     await http().post('/api/auth/register').send({ email: EMAIL, password: PASSWORD }).expect(202);
     const token = linkToken('confirmare')!;
