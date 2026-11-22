@@ -19,6 +19,9 @@ export function useTestDatabase(): void {
   // Files go to a temporary folder in tests, never to Supabase.
   process.env.FILE_STORE = 'local';
   process.env.FILE_STORE_DIR = TEST_FILE_DIR;
+  // Emails are kept in memory in tests (D-020), never sent.
+  process.env.MAIL_TRANSPORT = 'memory';
+  process.env.APP_URL = 'http://app.test';
 }
 
 export async function createTestApp() {
@@ -40,12 +43,12 @@ export async function createTestApp() {
 }
 
 export async function clearDatabase(prisma: PrismaService): Promise<void> {
-  await prisma.$executeRawUnsafe('TRUNCATE users, session, rubrics, classes, assignments, login_failures CASCADE');
+  await prisma.$executeRawUnsafe('TRUNCATE users, session, rubrics, classes, assignments, login_failures, email_requests CASCADE');
 }
 
 export async function createUser(prisma: PrismaService, email: string, password: string, role: Role) {
   return prisma.user.create({
-    data: { email, passwordHash: await argon2.hash(password), fullName: `Test ${role}`, role },
+    data: { email, passwordHash: await argon2.hash(password), fullName: `Test ${role}`, role, emailVerifiedAt: new Date() },
   });
 }
 

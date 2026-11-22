@@ -11,7 +11,7 @@ export default async function globalTeardown(): Promise<void> {
   config({ path: join(__dirname, '../../.env'), quiet: true });
   const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.TEST_DATABASE_URL! }) });
   try {
-    await prisma.$executeRawUnsafe('TRUNCATE users, session, rubrics, classes, assignments CASCADE');
+    await prisma.$executeRawUnsafe('TRUNCATE users, session, rubrics, classes, assignments, login_failures, email_requests CASCADE');
   } finally {
     await prisma.$disconnect();
   }

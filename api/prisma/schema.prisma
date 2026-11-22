@@ -25,6 +25,11 @@ enum RubricScope {
   SELECTED
 }
 
+enum EmailTokenPurpose {
+  VERIFY
+  RESET
+}
+
 enum DisputeStatus {
   OPEN
   UPHELD
@@ -32,20 +37,24 @@ enum DisputeStatus {
 }
 
 model User {
-  id           String   @id @default(uuid()) @db.Uuid
-  email        String   @unique
-  passwordHash String   @map("password_hash")
-  fullName     String   @map("full_name")
-  role         Role
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id              String    @id @default(uuid()) @db.Uuid
+  email           String    @unique
+  passwordHash    String    @map("password_hash")
+  fullName        String    @map("full_name")
+  role            Role
+  // D-020: null until the emailed link is opened; an unconfirmed account cannot log in.
+  emailVerifiedAt DateTime? @map("email_verified_at") @db.Timestamptz
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   assignments     Assignment[]
   rubrics         Rubric[]
   classes         Class[]
   teamMemberships TeamMember[]
   reviews         Review[]
-  disputesFiled   Dispute[]    @relation("DisputeAuthor")
-  disputesDecided Dispute[]    @relation("DisputeDecider")
+  emailTokens     EmailToken[]
+  reviewerOf      AssignmentReviewer[]
+  disputesFiled   Dispute[]            @relation("DisputeAuthor")
+  disputesDecided Dispute[]            @relation("DisputeDecider")
 
   @@map("users")
 }
@@ -62,6 +71,36 @@ model Session {
 
 // One failed login, kept 15 minutes for the attempt limit (D-017). No relation to users,
 // so unknown emails are counted the same way.
+// D-020: emailed links. Only the SHA-256 of the token is stored; a token works once.
+model EmailToken {
+  id           String            @id @default(uuid()) @db.Uuid
+  userId       String            @map("user_id") @db.Uuid
+  purpose      EmailTokenPurpose
+  tokenHash    String            @unique @map("token_hash")
+  // A sign-up through an assignment's link makes the account a reviewer once confirmed.
+  assignmentId String?           @map("assignment_id") @db.Uuid
+  expiresAt    DateTime          @map("expires_at") @db.Timestamptz
+  usedAt       DateTime?         @map("used_at") @db.Timestamptz
+  createdAt    DateTime          @default(now()) @map("created_at") @db.Timestamptz
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignment Assignment? @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+
+  @@map("email_tokens")
+}
+
+// D-020: one row per email sent, only to limit them per address and per IP.
+model EmailRequest {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String
+  ip        String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([email, createdAt])
+  @@index([ip, createdAt])
+  @@map("email_requests")
+}
+
 model LoginFailure {
   id        String   @id @default(uuid()) @db.Uuid
   email     String
@@ -86,17 +125,35 @@ model Assignment {
   rubricId           String      @map("rubric_id") @db.Uuid
   classId            String      @map("class_id") @db.Uuid
   rubricAppliesTo    RubricScope @default(ALL) @map("rubric_applies_to")
+  // D-010: the code in the assignment's sign-up link, /inscriere/<code>.
+  joinCode           String      @unique @default(dbgenerated("replace((gen_random_uuid())::text, '-'::text, ''::text)")) @map("join_code")
   createdById        String      @map("created_by_id") @db.Uuid
   createdAt          DateTime    @default(now()) @map("created_at") @db.Timestamptz
 
-  createdBy   User             @relation(fields: [createdById], references: [id])
-  rubric      Rubric           @relation(fields: [rubricId], references: [id], onDelete: Restrict)
-  class       Class            @relation(fields: [classId], references: [id], onDelete: Restrict)
+  createdBy   User                 @relation(fields: [createdById], references: [id])
+  rubric      Rubric               @relation(fields: [rubricId], references: [id], onDelete: Restrict)
+  class       Class                @relation(fields: [classId], references: [id], onDelete: Restrict)
   chosenTeams AssignmentTeam[]
   submissions Submission[]
+  reviewers   AssignmentReviewer[]
+  emailTokens EmailToken[]
 
   @@unique([id, classId])
   @@map("assignments")
+}
+
+// D-020: people who joined an assignment as reviewers through its link. Members of the
+// class's teams are reviewers too, without a row here.
+model AssignmentReviewer {
+  assignmentId String   @map("assignment_id") @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([assignmentId, userId])
+  @@map("assignment_reviewers")
 }
 
 // D-012: a professor's class; its teams are entered from paper.
