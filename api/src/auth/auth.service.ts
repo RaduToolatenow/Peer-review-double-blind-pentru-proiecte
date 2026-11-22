@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PublicUser } from '../users/public-user';
 import { hashForUnknownUser, verifyPassword } from './password';
@@ -29,6 +29,10 @@ export class AuthService {
     }
 
     await this.prisma.loginFailure.deleteMany({ where: { email, ip } });
+    // D-020: only a confirmed account logs in. Said only after the right password.
+    if (!user.emailVerifiedAt) {
+      throw new ForbiddenException('Confirmă-ți emailul înainte să intri. Linkul e în emailul de la înscriere.');
+    }
     return { id: user.id, email: user.email, fullName: user.fullName, role: user.role };
   }
 

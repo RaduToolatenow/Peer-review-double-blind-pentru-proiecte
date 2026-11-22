@@ -20,7 +20,7 @@ export async function seedAccounts(prisma: PrismaClient, passwords: SeedPassword
     const passwordHash = await hashPassword(password);
     await prisma.user.upsert({
       where: { email: account.email },
-      create: { ...account, passwordHash },
+      create: { ...account, passwordHash, emailVerifiedAt: new Date() },
       update: { ...account, passwordHash },
     });
   }

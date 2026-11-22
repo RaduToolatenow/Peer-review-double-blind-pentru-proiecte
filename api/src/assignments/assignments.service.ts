@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ReviewStatus, RubricScope } from '../generated/prisma/enums';
+import { appUrl } from '../mail/mailer';
 import { PrismaService } from '../prisma/prisma.service';
 import { RUBRIC_WITH_CRITERIA, rubricView } from '../rubrics/rubric-view';
 import { teamIsEvaluated } from './assignment-scope';
@@ -92,6 +93,7 @@ export class AssignmentsService {
       ),
       rubric: rubricView(assignment.rubric),
       archivableFrom: new Date(assignment.reviewDeadline.getTime() + ARCHIVE_DELAY_MS),
+      joinUrl: `${appUrl()}/inscriere/${assignment.joinCode}`,
       teams: assignment.class.teams.map((team) => ({
         id: team.id,
         name: team.name,

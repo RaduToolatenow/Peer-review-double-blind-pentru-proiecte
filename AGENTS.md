@@ -94,7 +94,7 @@ npm ci                        # install
 npm run db:migrate            # apply migrations
 npm run db:seed               # test accounts
 npm run typecheck             # type-check api and web
-npm test                      # 76 tests; needs PostgreSQL running
+npm test                      # 90 tests; needs PostgreSQL running
 npm run build                 # build web, then api
 npm start                     # http://localhost:3000
 npm run dev:api               # API in watch mode
@@ -129,6 +129,9 @@ deploys, so the user says go for every push.
   port 5432), `SESSION_SECRET`, `NODE_ENV=production`, `NODE_VERSION=24`, and for files
   (D-016) `FILE_STORE=supabase`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SUPABASE_BUCKET`.
   The app refuses to start in production without `FILE_STORE=supabase`.
+- Email (D-020): `MAIL_TRANSPORT=smtp`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`,
+  `MAIL_FROM` (an address confirmed in Brevo) and `APP_URL`; the app refuses to start in
+  production without `MAIL_TRANSPORT=smtp`.
 - Seed accounts are created from the user's PC (`npm run db:seed` with the variables set in
   the shell), never from the build.
 - Keep-alive: a cron-job.org job, on the user's account, opens `/api/health` every 10

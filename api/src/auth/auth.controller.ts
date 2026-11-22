@@ -1,13 +1,48 @@
 import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { PublicUser } from '../users/public-user';
+import { EmailDto, RegisterDto, ResetPasswordDto, TokenDto } from './account.dto';
+import { AccountService } from './account.service';
 import { AuthService } from './auth.service';
 import { LoginDto } from './login.dto';
 import { AuthenticatedRequest, SessionGuard } from './session.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly accounts: AccountService,
+  ) {}
+
+  @Post('register')
+  @HttpCode(202)
+  register(@Body() body: RegisterDto, @Req() request: Request) {
+    return this.accounts.register(body.email, body.password, body.joinCode, request.ip ?? '');
+  }
+
+  @Post('verify')
+  @HttpCode(200)
+  verify(@Body() body: TokenDto) {
+    return this.accounts.verify(body.token);
+  }
+
+  @Post('resend-verification')
+  @HttpCode(202)
+  resendVerification(@Body() body: EmailDto, @Req() request: Request) {
+    return this.accounts.resendVerification(body.email, request.ip ?? '');
+  }
+
+  @Post('forgot-password')
+  @HttpCode(202)
+  forgotPassword(@Body() body: EmailDto, @Req() request: Request) {
+    return this.accounts.forgotPassword(body.email, request.ip ?? '');
+  }
+
+  @Post('reset-password')
+  @HttpCode(200)
+  resetPassword(@Body() body: ResetPasswordDto) {
+    return this.accounts.resetPassword(body.token, body.password);
+  }
 
   @Post('login')
   @HttpCode(200)

@@ -19,6 +19,9 @@ _Avoid_: course, group
 **Team code** (noun) — the short code a professor hands to a team; a student enters it once to join (RO: codul echipei). D-012.
 _Avoid_: password, invite
 
+**Assignment link** (noun) — the sign-up link a professor shares, /inscriere/<code>; whoever confirms an account through it becomes a reviewer of that assignment (RO: linkul temei). D-010, D-020.
+_Avoid_: invite
+
 **Criterion** (noun) — one weighted dimension of a rubric (RO: criteriu).
 _Avoid_: question
 

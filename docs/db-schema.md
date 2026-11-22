@@ -146,6 +146,9 @@ Tabela `login_failures` ține autentificările eșuate din ultimele 15 minute, p
 | Codul unei echipe este unic | `teams.join_code` unic |
 | O echipă are o singură predare per temă | `submissions (assignment_id, team_id)` unic |
 | Fișierul unei predări este PDF sau DOCX | `CHECK file_type IN ('pdf', 'docx')` |
+| Un token din email este salvat doar ca hash și este unic | `email_tokens.token_hash` unic (SHA-256) |
+| Fiecare temă are un cod de înscriere unic, generat de baza de date | `assignments.join_code` unic, implicit `gen_random_uuid()` |
+| Un evaluator intră o singură dată într-o temă | cheie primară `assignment_reviewers (assignment_id, user_id)` |
 | O clasă cu teme trimise nu se șterge | cheie străină `ON DELETE RESTRICT` din `assignments` |
 | Un criteriu are un singur scor per evaluare | cheie primară `review_scores (review_id, criterion_id)` |
 | `k` este cel puțin 1 | `CHECK` în migrare |

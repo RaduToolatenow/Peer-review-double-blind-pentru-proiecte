@@ -101,6 +101,22 @@ Corpul pentru trimitere (o grilă trimisă trebuie să aibă cel puțin un crite
 
 Fiecare grilă activă are `phase` (`submission`, `review`, `disputes`, `closed`), `evaluatedTeamCount`, `reviewsSubmitted` și `reviewsExpected`. Fiecare echipă din detaliu are `evaluated`, `submitted` și `reviewsReceived`.
 
+## Cont, confirmare și parolă (D-010, D-020)
+
+Răspunsurile nu spun niciodată dacă o adresă are cont. Cel mult 3 emailuri pe oră pentru aceeași adresă și 20 de pe același IP (`429`).
+
+| Rută | Corp | Răspuns |
+|---|---|---|
+| `POST /api/auth/register` | `{ email @ulbsibiu.ro, password ≥ 10, joinCode? }` | `202` „Ți-am trimis un email…”; `400`; `404` cod de temă necunoscut; `429` |
+| `POST /api/auth/verify` | `{ token }` din linkul `/confirmare/<token>` (24 h, o singură dată) | `200 { message, assignmentTitle }`; `400` link invalid |
+| `POST /api/auth/resend-verification` | `{ email }` | `202`; `429` |
+| `POST /api/auth/forgot-password` | `{ email }` | `202`; `429` |
+| `POST /api/auth/reset-password` | `{ token, password ≥ 10 }` din `/parola-noua/<token>` (1 h, o singură dată) | `200`; închide toate sesiunile contului; `400` |
+| `GET /api/join/:code` | — (public) | `200 { assignmentTitle, className }`; `404` |
+| `POST /api/join/:code` | — (`STUDENT` logat) | `200 { assignmentTitle }`: devine evaluator la temă |
+
+`POST /api/auth/login` răspunde `403` pentru un cont neconfirmat, doar după parola corectă. Detaliul unei grile active are `joinUrl`.
+
 ## Clase și echipe (D-012)
 
 | Rută | Ce face | Coduri |

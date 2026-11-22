@@ -21,9 +21,8 @@
 - **Consumers:** `web/src/api.ts`
 - **Shape:** Routes, bodies and status codes as listed in API.md. The session is the httpOnly cookie `sid`.
 - **Rules:** Authentication and roles are checked on the server. A user response never contains the password hash. No response says who reviewed or contains a student's email (D-014). A professor only reaches their own rubrics, classes and assignments (D-015).
-- **Evidence:** api/src/auth/auth.controller.ts, api/src/users/users.controller.ts, api/src/rubrics/, api/src/classes/, api/src/assignments/, api/src/admin/, api/src/submissions/, api/test/*-api.spec.ts
+- **Evidence:** api/src/auth/auth.controller.ts, api/src/users/users.controller.ts, api/src/rubrics/, api/src/classes/, api/src/assignments/, api/src/admin/, api/src/submissions/, api/src/auth/account.service.ts, api/src/auth/join.controller.ts, api/test/*-api.spec.ts
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-22
 
 ## Consumed
 
