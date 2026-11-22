@@ -25,6 +25,7 @@
 - D-017 · Login attempt limit and equal timing
 - D-018 · Visitor IP behind Cloudflare and Render
 - D-019 · Visual design inspired by smartportal, without university branding
+- D-020 · Email, sign-up, confirmation and password reset
 
 ---
 
@@ -116,7 +117,7 @@
 - **Rejected:** Invitation-only accounts from the professor's list (D-003). Reviewers choosing which projects to open, which would break the allocation constraints in the brief.
 - **Evidence:** api/prisma/schema.prisma (`users.email` unique, `reviews` unique on submission and reviewer); sign-up and verification are not built yet.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-17
+- **Confirmed:** 2026-11-22
 
 ## D-011 · Rubrics are reusable and apply to all or chosen teams
 - **Status:** approved
@@ -186,7 +187,7 @@
 - **Rejected:** Counting by email only (anyone could lock an account), by IP only (students share the university IP), counters in server memory, and `@nestjs/throttler`.
 - **Evidence:** api/src/auth/auth.service.ts, api/src/auth/password.ts, api/prisma/migrations/20261119110137_login_failures/, api/test/auth.spec.ts. First built with the wrong IP and reverted on 2026-11-19; rebuilt on D-018.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-19
+- **Confirmed:** 2026-11-22
 
 ## D-018 · Visitor IP behind Cloudflare and Render
 - **Status:** approved
@@ -196,7 +197,7 @@
 - **Rejected:** `trust proxy = true`, which trusts the forgeable leftmost entry.
 - **Evidence:** api/src/configure-app.ts. The diagnostic log of 2026-11-19 showed, on every request, `X-Forwarded-For` ending with public visitor, public Cloudflare, private Render; `CF-Connecting-IP` equal to the 3rd entry from the right; a forged `X-Forwarded-For` entry added on the left; a forged `True-Client-IP` overwritten; a forged `CF-Connecting-IP` refused by Cloudflare (403, error 1000).
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-19
+- **Confirmed:** 2026-11-22
 
 ## D-019 · Visual design inspired by smartportal, without university branding
 - **Status:** approved
@@ -205,5 +206,15 @@
 - **Why:** The user found the first design unpleasant and chose this site as the reference. The app is not an official university product, so looking like one would mislead students. Serving the font locally sends no visitor data to a font host.
 - **Rejected:** A separate landing page before login; a component library (Tailwind, MUI); fonts from Google Fonts; logo options A (exchange arrows, reads as "refresh") and C (two sheets, too generic).
 - **Evidence:** docs/design/DESIGN.md, web/src/tokens.css, web/src/styles.css, web/public/logo.svg.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-22
+
+## D-020 · Email, sign-up, confirmation and password reset
+- **Status:** approved
+- **Date:** 2026-11-22
+- **Rule:** Email goes out over SMTP, through Brevo in production. Sign-up asks only for an `@ulbsibiu.ro` email and a password of at least 10 characters, no name. An account is confirmed through an emailed link valid 24 hours; a password is reset through an emailed link valid one hour. Both tokens are stored only as a hash and work once. Sign-up, resending the confirmation and password reset answer the same whatever the address, so they never reveal which addresses have accounts. At most 3 emails an hour per address and 20 per IP. An unconfirmed account cannot log in. A password reset closes the account's other sessions. The reviewers of an assignment are the members of its class's teams plus anyone who joined through the assignment's link.
+- **Why:** D-010 needs a verified university email. Brevo sends from a confirmed address without owning a domain, which Resend's free plan cannot. Hashed single-use tokens and equal answers protect accounts and the list of students.
+- **Rejected:** Resend (free plan sends only to the account owner without a verified domain); Gmail SMTP (sends from a personal account, which Google may throttle); a 6-digit code instead of a link; asking for a name.
+- **Evidence:** not built yet.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-22
