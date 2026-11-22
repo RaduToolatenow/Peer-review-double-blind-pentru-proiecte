@@ -86,3 +86,33 @@ designs:
     screenshots: []
     design_ref: mocks/DS-pr-style-tile.html
     status: implemented
+  - id: DS-pr-register
+    kind: screen
+    source: null
+    screenshots: []
+    design_ref: mocks/DS-pr-register.html
+    status: draft
+  - id: DS-pr-check-email
+    kind: screen
+    source: null
+    screenshots: []
+    design_ref: mocks/DS-pr-check-email.html
+    status: draft
+  - id: DS-pr-verify
+    kind: screen
+    source: null
+    screenshots: []
+    design_ref: mocks/DS-pr-verify.html
+    status: draft
+  - id: DS-pr-forgot
+    kind: screen
+    source: null
+    screenshots: []
+    design_ref: mocks/DS-pr-forgot.html
+    status: draft
+  - id: DS-pr-reset
+    kind: screen
+    source: null
+    screenshots: []
+    design_ref: mocks/DS-pr-reset.html
+    status: draft

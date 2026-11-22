@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-verify</title>
+    <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/inter/index.css" />
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+  </head>
+  <body>
+    <main class="center">
+      <div class="stack">
+        <span class="brand"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></span>
+        <div class="card">
+          <p><span class="badge success">Confirmat</span></p>
+          <h1>Contul este confirmat</h1>
+          <p>Ești evaluator la tema <strong>Proiect P1 — evaluare colegi</strong>. Acum te poți autentifica.</p>
+          <a class="button-link primary" href="#">Intră în cont</a>
+        </div>
+        <div class="card">
+          <p><span class="badge warning">Link expirat</span></p>
+          <h1>Linkul nu mai este valid</h1>
+          <p class="muted">A fost deja folosit sau au trecut mai mult de 24 de ore. Cere un email nou.</p>
+          <div class="field"><label for="re">Emailul de la universitate</label><input id="re" type="email" /></div>
+          <button class="primary" type="button">Trimite alt link</button>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

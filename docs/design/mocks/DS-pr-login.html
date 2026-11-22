@@ -11,7 +11,7 @@
   <body>
     <main class="login">
       <section class="hero">
-        <a class="brand" href="#"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></a>
+        <span class="brand"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></span>
         <h1>Evaluare între colegi,<br /><span class="gradient-text">anonimă în ambele sensuri.</span></h1>
         <p class="lead">Profesorul definește grila, aplicația împarte proiectele, iar fiecare notă vine cu feedback pe criterii.</p>
         <ul class="points">
@@ -23,10 +23,14 @@
       <form class="card" novalidate>
         <h1>Autentificare</h1>
         <p class="muted">Intră cu emailul de la universitate.</p>
-        <div class="field"><label for="email">Email</label><input id="email" type="email" placeholder="prenume.nume@ulbsibiu.ro" /></div>
-        <div class="field"><label for="password">Parolă</label><input id="password" type="password" /></div>
-        <p class="error" role="alert">! Email sau parolă greșite.</p>
+        <div class="field"><label for="email">Email</label><input id="email" type="email" value="ana.pop@ulbsibiu.ro" /></div>
+        <div class="field"><label for="password">Parolă</label><input id="password" type="password" value="parola-mea-1" /></div>
+        <div class="notice" role="alert">
+          <p><strong>Confirmă-ți emailul înainte să intri.</strong> Linkul e în emailul de la înscriere.</p>
+          <button class="secondary" type="button">Retrimite emailul de confirmare</button>
+        </div>
         <button class="primary" type="button">Intră în cont</button>
+        <p class="links"><a href="#">Am uitat parola</a> · <a href="#">Creează cont</a></p>
       </form>
     </main>
   </body>

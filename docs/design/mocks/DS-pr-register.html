@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-register</title>
+    <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/inter/index.css" />
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+  </head>
+  <body>
+    <main class="login">
+      <section class="hero">
+        <span class="brand"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></span>
+        <h1>Evaluare între colegi,<br /><span class="gradient-text">anonimă în ambele sensuri.</span></h1>
+        <p class="lead">Profesorul definește grila, aplicația împarte proiectele, iar fiecare notă vine cu feedback pe criterii.</p>
+        <ul class="points">
+          <li>Nu vezi al cui e proiectul, iar autorul nu vede cine l-a evaluat.</li>
+          <li>Numele autorului dispare automat din fișierele PDF și DOCX.</li>
+          <li>Termenele de predare și de evaluare sunt verificate de server.</li>
+        </ul>
+      </section>
+      <form class="card" novalidate>
+        <p><span class="badge accent">Tema: Proiect P1 — evaluare colegi</span></p>
+        <h1>Creează cont</h1>
+        <p class="muted">Cu linkul temei devii evaluator la ea, după ce îți confirmi emailul.</p>
+        <div class="field"><label for="email">Emailul de la universitate</label><input id="email" type="email" placeholder="prenume.nume@ulbsibiu.ro" /></div>
+        <div class="field"><label for="password">Parolă (cel puțin 10 caractere)</label><input id="password" type="password" /></div>
+        <p class="muted">Nu îți cerem numele: nimeni nu vede cine evaluează.</p>
+        <p class="error" role="alert">! Folosește adresa de email de la universitate (@ulbsibiu.ro).</p>
+        <button class="primary" type="button">Creează contul</button>
+        <p class="links">Ai deja cont? <a href="#">Intră în cont</a></p>
+      </form>
+    </main>
+  </body>
+</html>
