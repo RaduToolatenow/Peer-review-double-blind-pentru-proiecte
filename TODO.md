@@ -17,7 +17,7 @@
 
 ## S2: build
 
-- [ ] Înscriere prin linkul temei, doar cu email `@ulbsibiu.ro` verificat (D-010)
+- [x] Înscriere prin linkul temei, doar cu email `@ulbsibiu.ro` verificat, și „Am uitat parola” (D-010, D-020)
 - [x] Limitarea încercărilor de autentificare (D-017, D-018)
 - [x] Timp de răspuns egal la login pentru email existent și inexistent (D-017)
 - [x] Clase și echipe cu cod, schițe de grile (1–100 criterii), trimiterea către o clasă, grile active cu termene (D-011–D-015)

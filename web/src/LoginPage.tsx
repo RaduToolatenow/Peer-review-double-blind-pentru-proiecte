@@ -1,43 +1,54 @@
 import { FormEvent, useState } from 'react';
-import { login, User } from './api';
-import { Brand } from './Brand';
+import { Link, useSearchParams } from 'react-router';
+import { account, ApiError, login, User } from './api';
+import { HeroFrame } from './Hero';
 
+/** DS-pr-login. After login the page in `?next=` opens, such as an assignment link. */
 export function LoginPage({ onLogin }: { onLogin: (user: User) => void }) {
+  const [params] = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [unconfirmed, setUnconfirmed] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setError(null);
+    setUnconfirmed(null);
+    setNotice(null);
     setSubmitting(true);
     try {
-      onLogin(await login(email, password));
+      const user = await login(email, password);
+      const next = params.get('next');
+      // Only paths inside the app, never another site.
+      if (next?.startsWith('/') && !next.startsWith('//')) {
+        window.history.replaceState(null, '', next);
+      }
+      onLogin(user);
     } catch (failure) {
-      setError((failure as Error).message);
+      if (failure instanceof ApiError && failure.status === 403) {
+        setUnconfirmed(failure.message);
+      } else {
+        setError((failure as Error).message);
+      }
       setSubmitting(false);
     }
   }
 
+  async function resend() {
+    setError(null);
+    try {
+      setNotice((await account.resendVerification(email)).message);
+      setUnconfirmed(null);
+    } catch (failure) {
+      setError((failure as Error).message);
+    }
+  }
+
   return (
-    <main className="login">
-      <section className="hero">
-        <Brand />
-        <h1>
-          Evaluare între colegi,
-          <br />
-          <span className="gradient-text">anonimă în ambele sensuri.</span>
-        </h1>
-        <p className="lead">
-          Profesorul definește grila, aplicația împarte proiectele, iar fiecare notă vine cu feedback pe criterii.
-        </p>
-        <ul className="points">
-          <li>Nu vezi al cui e proiectul, iar autorul nu vede cine l-a evaluat.</li>
-          <li>Numele autorului dispare automat din fișierele PDF și DOCX.</li>
-          <li>Termenele de predare și de evaluare sunt verificate de server.</li>
-        </ul>
-      </section>
+    <HeroFrame>
       <form className="card" onSubmit={handleSubmit} noValidate>
         <h1>Autentificare</h1>
         <p className="muted">Intră cu emailul de la universitate.</p>
@@ -64,6 +75,21 @@ export function LoginPage({ onLogin }: { onLogin: (user: User) => void }) {
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
+        {unconfirmed && (
+          <div className="notice" role="alert">
+            <p>
+              <strong>{unconfirmed}</strong>
+            </p>
+            <button className="secondary" type="button" onClick={() => void resend()}>
+              Retrimite emailul de confirmare
+            </button>
+          </div>
+        )}
+        {notice && (
+          <p className="notice" role="status">
+            {notice}
+          </p>
+        )}
         {error && (
           <p className="error" role="alert">
             ! {error}
@@ -72,7 +98,10 @@ export function LoginPage({ onLogin }: { onLogin: (user: User) => void }) {
         <button className="primary" type="submit" disabled={submitting}>
           {submitting ? 'Se verifică…' : 'Intră în cont'}
         </button>
+        <p className="links">
+          <Link to="/am-uitat-parola">Am uitat parola</Link> · <Link to="/inscriere">Creează cont</Link>
+        </p>
       </form>
-    </main>
+    </HeroFrame>
   );
 }

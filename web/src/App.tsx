@@ -3,6 +3,14 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { fetchCurrentUser, User } from './api';
 import { Layout } from './Layout';
 import { LoginPage } from './LoginPage';
+import {
+  CheckEmailPage,
+  ForgotPasswordPage,
+  JoinAssignmentPage,
+  RegisterPage,
+  ResetPasswordPage,
+  VerifyPage,
+} from './pages/AccountPages';
 import { ActiveRubricDetailPage } from './pages/ActiveRubricDetailPage';
 import { ActiveRubricsPage } from './pages/ActiveRubricsPage';
 import { ClassDetailPage } from './pages/ClassDetailPage';
@@ -34,7 +42,20 @@ export function App() {
     );
   }
   if (!user) {
-    return <LoginPage onLogin={setUser} />;
+    // D-020: the account pages work without a session; anything else shows the login.
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="inscriere" element={<RegisterPage />} />
+          <Route path="inscriere/:code" element={<RegisterPage />} />
+          <Route path="verifica-emailul" element={<CheckEmailPage />} />
+          <Route path="confirmare/:token" element={<VerifyPage />} />
+          <Route path="am-uitat-parola" element={<ForgotPasswordPage />} />
+          <Route path="parola-noua/:token" element={<ResetPasswordPage />} />
+          <Route path="*" element={<LoginPage onLogin={setUser} />} />
+        </Routes>
+      </BrowserRouter>
+    );
   }
 
   const staff = user.role !== 'STUDENT';
@@ -66,6 +87,7 @@ export function App() {
             <>
               <Route index element={<MyAssignmentsPage />} />
               <Route path="echipa" element={<JoinTeamPage />} />
+              <Route path="inscriere/:code" element={<JoinAssignmentPage />} />
             </>
           )}
           <Route path="*" element={<Navigate to="/" replace />} />

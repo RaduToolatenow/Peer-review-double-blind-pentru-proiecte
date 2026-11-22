@@ -93,6 +93,29 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
         </dd>
       </dl>
 
+      <section className="section">
+        <h2>Linkul temei</h2>
+        <p className="muted">
+          Trimite-l colegilor care evaluează. Cine își face cont prin el, cu email @ulbsibiu.ro, devine evaluator la
+          această temă.
+        </p>
+        <div className="join-link">
+          <input aria-label="Linkul temei" readOnly value={a.joinUrl} onFocus={(event) => event.target.select()} />
+          <button
+            className="secondary"
+            type="button"
+            onClick={() =>
+              void navigator.clipboard
+                .writeText(a.joinUrl)
+                .then(() => setNotice('Linkul a fost copiat.'))
+                .catch(() => setError('Nu am putut copia linkul. Selectează-l și copiază-l manual.'))
+            }
+          >
+            Copiază linkul
+          </button>
+        </div>
+      </section>
+
       <form className="section" onSubmit={saveDeadlines}>
         <h2>Termene (ora României)</h2>
         <div className="row">

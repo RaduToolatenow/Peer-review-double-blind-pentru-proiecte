@@ -74,6 +74,7 @@ export interface AssignmentSummary extends Deadlines {
 export interface AssignmentDetail extends AssignmentSummary {
   rubric: Rubric;
   archivableFrom: string;
+  joinUrl: string;
   teams: {
     id: string;
     name: string;
@@ -156,10 +157,20 @@ async function call(path: string, init?: RequestInit): Promise<Response> {
 }
 
 /** Throws the server's Romanian message when there is one. */
-async function failure(response: Response): Promise<Error> {
+/** An error from the API, with its HTTP status so a page can react to it (403: unconfirmed). */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+  ) {
+    super(message);
+  }
+}
+
+async function failure(response: Response): Promise<ApiError> {
   const body = await response.json().catch(() => null);
   const message = Array.isArray(body?.message) ? body.message[0] : body?.message;
-  return new Error(typeof message === 'string' ? message : NETWORK_ERROR);
+  return new ApiError(typeof message === 'string' ? message : NETWORK_ERROR, response.status);
 }
 
 async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
@@ -217,6 +228,18 @@ export async function submitProject(assignmentId: string, link: string, descript
   }
   return response.json();
 }
+
+export const account = {
+  register: (email: string, password: string, joinCode?: string) =>
+    request<{ message: string }>('POST', '/auth/register', { email, password, joinCode }),
+  verify: (token: string) => request<{ message: string; assignmentTitle: string | null }>('POST', '/auth/verify', { token }),
+  resendVerification: (email: string) => request<{ message: string }>('POST', '/auth/resend-verification', { email }),
+  forgotPassword: (email: string) => request<{ message: string }>('POST', '/auth/forgot-password', { email }),
+  resetPassword: (token: string, password: string) =>
+    request<{ message: string }>('POST', '/auth/reset-password', { token, password }),
+  joinInfo: (code: string) => request<{ assignmentTitle: string; className: string }>('GET', `/join/${code}`),
+  join: (code: string) => request<{ assignmentTitle: string }>('POST', `/join/${code}`),
+};
 
 export const api = {
   myAssignments: () => request<MyAssignment[]>('GET', '/my/assignments'),
