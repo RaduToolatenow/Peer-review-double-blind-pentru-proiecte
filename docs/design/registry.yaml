@@ -16,7 +16,7 @@ designs:
     status: deprecated
   - id: DS-pr-menu
     kind: component
-    source: web/src/Layout.tsx
+    source: web/src/Layout.tsx, web/src/Brand.tsx
     screenshots: [screens/DS-pr-admin-professors.light.png, screens/DS-pr-admin-professors.dark.png]
     design_ref: mocks/DS-pr-menu.html
     status: implemented
@@ -85,4 +85,4 @@ designs:
     source: web/src/styles.css
     screenshots: []
     design_ref: mocks/DS-pr-style-tile.html
-    status: draft
+    status: implemented

@@ -4,7 +4,7 @@ import { api, MyAssignment, submitProject } from '../api';
 import { formatShort } from '../dates';
 import { ErrorText, Loaded } from '../Layout';
 import { useLoad } from '../useLoad';
-import { PHASE_LABELS } from './ActiveRubricsPage';
+import { PHASE_LABELS, PHASE_TONES } from './ActiveRubricsPage';
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
 
@@ -16,7 +16,9 @@ export function MyAssignmentsPage() {
     <>
       <div className="toolbar">
         <h1>Temele mele</h1>
-        <Link to="/echipa">Intră într-o echipă cu un cod</Link>
+        <Link className="button-link secondary" to="/echipa">
+          Intră într-o echipă cu un cod
+        </Link>
       </div>
       <Loaded state={state}>
         {(assignments) =>
@@ -64,8 +66,12 @@ function AssignmentCard({
         Predare până pe {formatShort(a.submissionDeadline)} · Evaluare până pe {formatShort(a.reviewDeadline)}
       </p>
       <p>
-        <span className="badge">{PHASE_LABELS[a.phase]}</span>{' '}
-        {a.submission ? `Predat pe ${formatShort(a.submission.updatedAt)}` : 'Nu ați predat încă.'}
+        <span className={`badge ${PHASE_TONES[a.phase]}`}>{PHASE_LABELS[a.phase]}</span>{' '}
+        {a.submission ? (
+          <span className="badge success">Predat pe {formatShort(a.submission.updatedAt)}</span>
+        ) : (
+          <span className="badge warning">Nu ați predat încă</span>
+        )}
       </p>
       {a.submission && (
         <dl className="facts">

@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { login, User } from './api';
+import { Brand } from './Brand';
 
 export function LoginPage({ onLogin }: { onLogin: (user: User) => void }) {
   const [email, setEmail] = useState('');
@@ -20,16 +21,33 @@ export function LoginPage({ onLogin }: { onLogin: (user: User) => void }) {
   }
 
   return (
-    <main className="center">
+    <main className="login">
+      <section className="hero">
+        <Brand />
+        <h1>
+          Evaluare între colegi,
+          <br />
+          <span className="gradient-text">anonimă în ambele sensuri.</span>
+        </h1>
+        <p className="lead">
+          Profesorul definește grila, aplicația împarte proiectele, iar fiecare notă vine cu feedback pe criterii.
+        </p>
+        <ul className="points">
+          <li>Nu vezi al cui e proiectul, iar autorul nu vede cine l-a evaluat.</li>
+          <li>Numele autorului dispare automat din fișierele PDF și DOCX.</li>
+          <li>Termenele de predare și de evaluare sunt verificate de server.</li>
+        </ul>
+      </section>
       <form className="card" onSubmit={handleSubmit} noValidate>
-        <p className="brand">Peer review</p>
         <h1>Autentificare</h1>
+        <p className="muted">Intră cu emailul de la universitate.</p>
         <div className="field">
           <label htmlFor="email">Email</label>
           <input
             id="email"
             type="email"
             autoComplete="username"
+            placeholder="prenume.nume@ulbsibiu.ro"
             required
             value={email}
             onChange={(event) => setEmail(event.target.value)}

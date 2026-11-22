@@ -4,7 +4,7 @@ import { api, AssignmentDetail, Deadlines } from '../api';
 import { formatShort, fromLocalInput, toLocalInput } from '../dates';
 import { ErrorText, Loaded } from '../Layout';
 import { useLoad } from '../useLoad';
-import { PHASE_LABELS } from './ActiveRubricsPage';
+import { PHASE_LABELS, PHASE_TONES } from './ActiveRubricsPage';
 
 const FIELDS: { key: keyof Deadlines; label: string }[] = [
   { key: 'submissionDeadline', label: 'Predare' },
@@ -69,7 +69,9 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
     <>
       <h1>{a.title}</h1>
       <p>
-        <span className="badge">{a.rubricArchived ? 'Arhivată' : PHASE_LABELS[a.phase]}</span>{' '}
+        <span className={`badge ${a.rubricArchived ? '' : PHASE_TONES[a.phase]}`}>
+          {a.rubricArchived ? 'Arhivată' : PHASE_LABELS[a.phase]}
+        </span>{' '}
         <span className="badge">Blocată: nu se mai modifică</span>
       </p>
       {error && <ErrorText message={error} />}

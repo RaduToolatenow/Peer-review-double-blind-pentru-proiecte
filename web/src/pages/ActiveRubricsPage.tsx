@@ -5,6 +5,14 @@ import { formatShort } from '../dates';
 import { Loaded } from '../Layout';
 import { useLoad } from '../useLoad';
 
+/** The dot colour of each phase chip; the text always says the phase too. */
+export const PHASE_TONES: Record<Phase, string> = {
+  submission: 'info',
+  review: 'accent',
+  disputes: 'warning',
+  closed: 'success',
+};
+
 export const PHASE_LABELS: Record<Phase, string> = {
   submission: 'Predare deschisă',
   review: 'Evaluare în curs',
@@ -51,8 +59,12 @@ export function ActiveRubricsPage() {
                     Contestații {formatShort(a.disputeDeadline)}
                   </p>
                   <p>
-                    <span className="badge">{a.rubricArchived ? 'Arhivată' : PHASE_LABELS[a.phase]}</span>{' '}
-                    {a.reviewsSubmitted} din {a.reviewsExpected} evaluări trimise
+                    <span className={`badge ${a.rubricArchived ? '' : PHASE_TONES[a.phase]}`}>
+                      {a.rubricArchived ? 'Arhivată' : PHASE_LABELS[a.phase]}
+                    </span>{' '}
+                    <span className="badge">
+                      {a.reviewsSubmitted} din {a.reviewsExpected} evaluări trimise
+                    </span>
                   </p>
                 </li>
               ))}

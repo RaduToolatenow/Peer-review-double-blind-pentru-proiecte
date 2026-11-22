@@ -102,43 +102,67 @@ them; a ticket with UI has a design subtask instead (team addon).
 
 ## Tokens
 
+Style (D-019): inspired by smartportal.ulbsibiu.ro, never its logo, name or branding. Dark is
+the default; light follows `prefers-color-scheme: light`. The page background is
+`--gradient-page` (three soft glows) over `--color-bg`. Every text, border and focus pair
+below passes contrast in both themes, checked over the brightest glow.
+
 ### Color
-| Token | Light | Dark | Use |
+| Token | Dark (default) | Light | Use |
 |---|---|---|---|
-| --color-bg | #f8fafc | #0f172a | page background |
-| --color-surface | #ffffff | #1e293b | cards and inputs |
-| --color-text | #111827 | #f1f5f9 | body text |
-| --color-muted | #4b5563 | #cbd5e1 | secondary text |
-| --color-border | #6b7280 | #94a3b8 | card and input borders |
-| --color-primary | #1d4ed8 | #93c5fd | primary button |
-| --color-on-primary | #ffffff | #0f172a | text on the primary button |
-| --color-error | #b91c1c | #fca5a5 | error text |
-| --color-focus | #1d4ed8 | #93c5fd | focus ring |
+| --color-bg | #0b0d1a | #f4f5fb | page background, under the glows |
+| --color-glow-1/2/3 | violet, blue, cyan glows | same, fainter | `--gradient-page` |
+| --color-surface | rgba(22,24,48,.78) | rgba(255,255,255,.86) | cards, fieldsets, tables |
+| --color-surface-2 | rgba(255,255,255,.045) | rgba(20,22,50,.04) | inputs, chips, menu track |
+| --color-border | rgba(255,255,255,.1) | rgba(20,22,50,.12) | card borders, separators (decorative) |
+| --color-border-strong | #7d82b3 | #6e7298 | input and secondary button borders (≥ 3:1) |
+| --color-text | #eef0ff | #141632 | body text |
+| --color-muted | #a8acd0 | #4a4e72 | secondary text |
+| --color-primary | #ffffff | #141632 | primary pill button, current menu item |
+| --color-on-primary | #0b0d1a | #ffffff | text on the primary button |
+| --color-link | #c4b8ff | #4b37c9 | links |
+| --color-accent-1 / -2 | #b9a8ff / #5ee3f0 | #6a4ff0 / #0d8fa6 | `--gradient-accent` (headline text, bullets) |
+| --color-info | #5ee3f0 | #065f70 | chip dot: submission open |
+| --color-success | #5be3a6 | #0c6141 | chip dot: done, submitted |
+| --color-warning | #f5c76b | #6f4800 | chip dot: disputes, not submitted |
+| --color-error | #ff9090 | #b42323 | error text |
+| --color-focus | #8fe9f5 | #4b37c9 | focus ring |
 
 ### Typography
-| Token | Family | Size / line height | Weight | Use |
-|---|---|---|---|---|
-| --font-size-body | system-ui stack | 1rem / 1.5 | 400 | body text |
-| --font-size-title | system-ui stack | 1.5rem / 1.5 | 600 | page heading |
+Inter Variable, served by the app (`@fontsource-variable/inter`), then the system stack.
+
+| Token | Size / line height | Weight | Use |
+|---|---|---|---|
+| --font-size-display | clamp(2rem, 4.5vw, 3.25rem) / 1.15 | 650 | login headline |
+| --font-size-title | 1.75rem / 1.15 | 650 | page heading |
+| --font-size-body | 1rem / 1.55 | 400, 500 labels | body text |
+| --font-size-small | 0.875rem | 500 | chips, table headers |
 
 ### Spacing
 | Token | Value |
 |---|---|
-| --space-1 | 0.25rem |
-| --space-2 | 0.5rem |
-| --space-3 | 1rem |
-| --space-4 | 1.5rem |
-| --space-5 | 2rem |
+| --space-1 … --space-6 | 0.25, 0.5, 1, 1.5, 2, 3 rem |
 
 ### Radius, shadow, motion
 | Token | Value | Use |
 |---|---|---|
-| --radius | 0.5rem | cards and controls |
+| --radius | 0.75rem | inputs |
+| --radius-lg | 1.25rem | cards, tables, fieldsets |
+| --radius-pill | 999px | buttons, chips, menu |
+| --shadow-card | soft, darker in dark | cards |
 | --control-height | 2.75rem | minimum input and button height |
+| --duration | 150ms, 0 with reduced motion | hover transitions only |
+
+### Components
+- **Status chip** (`.badge` + `info`, `accent`, `success`, `warning`): a coloured dot and the text; colour never carries the meaning alone.
+- **Menu** (`.nav`): pill track; the current page is a filled pill (`aria-current`).
+- **Brand**: closed-eye logo (`web/public/logo.svg`) with "Peer review".
 
 ### Breakpoints / window sizes
 | Name | Min | Max |
 |---|---|---|
+| phone | 20rem | 47.99rem (menu on its own row) |
+| desktop | 48rem | — (login in two columns from 56rem) |
 
 ## Hard-coded values found (to migrate)
 | path:line | Value | Should be |

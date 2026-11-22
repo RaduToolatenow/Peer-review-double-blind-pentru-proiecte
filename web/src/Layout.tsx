@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { NavLink, Outlet } from 'react-router';
 import { logout, User } from './api';
+import { Brand } from './Brand';
 
 /** DS-pr-menu: the professor and admin menu (D-015). NavLink marks the current page with aria-current. */
 export function Layout({ user, onLogout }: { user: User; onLogout: () => void }) {
@@ -23,19 +24,19 @@ export function Layout({ user, onLogout }: { user: User; onLogout: () => void })
   return (
     <div className="page">
       <header className="header">
-        <p className="brand">Peer review</p>
+        <Brand />
+        {staff && (
+          <nav className="nav" aria-label="Meniu">
+            <NavLink to="/grile-active">Grile active</NavLink>
+            <NavLink to="/schite">Schițe de grile</NavLink>
+            <NavLink to="/clase">Clase profesor</NavLink>
+            {user.role === 'ADMIN' && <NavLink to="/profesori">Profesori</NavLink>}
+          </nav>
+        )}
         <button className="secondary" type="button" onClick={handleLogout} disabled={leaving}>
           Deconectare
         </button>
       </header>
-      {staff && (
-        <nav className="nav" aria-label="Meniu">
-          <NavLink to="/grile-active">Grile active</NavLink>
-          <NavLink to="/schite">Schițe de grile</NavLink>
-          <NavLink to="/clase">Clase profesor</NavLink>
-          {user.role === 'ADMIN' && <NavLink to="/profesori">Profesori</NavLink>}
-        </nav>
-      )}
       <main>
         {error && <ErrorText message={error} />}
         <Outlet />
