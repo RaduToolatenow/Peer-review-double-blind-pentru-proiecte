@@ -1,5 +1,15 @@
 import { createHash, randomBytes } from 'node:crypto';
-import { BadRequestException, HttpException, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
+import { Email } from '../mail/mailer';
 import { EmailTokenPurpose, Role } from '../generated/prisma/enums';
 import { appUrl, Mailer, MAILER } from '../mail/mailer';
 import { accountExistsEmail, confirmEmail, resetPasswordEmail } from '../mail/messages';
@@ -26,6 +36,8 @@ const sha256 = (token: string) => createHash('sha256').update(token).digest('hex
  */
 @Injectable()
 export class AccountService {
+  private readonly logger = new Logger(AccountService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     @Inject(MAILER) private readonly mailer: Mailer,
@@ -45,7 +57,7 @@ export class AccountService {
     const existing = await this.prisma.user.findUnique({ where: { email } });
     if (existing?.emailVerifiedAt) {
       const token = await this.newToken(existing.id, EmailTokenPurpose.RESET, RESET_VALID_MS);
-      await this.mailer.send(accountExistsEmail(email, `${appUrl()}/parola-noua/${token}`));
+      await this.send(accountExistsEmail(email, `${appUrl()}/parola-noua/${token}`));
       return { message: SENT_CONFIRMATION };
     }
 
@@ -59,7 +71,7 @@ export class AccountService {
       data: { usedAt: new Date() },
     });
     const token = await this.newToken(user.id, EmailTokenPurpose.VERIFY, VERIFY_VALID_MS, assignment?.id);
-    await this.mailer.send(confirmEmail(email, `${appUrl()}/confirmare/${token}`));
+    await this.send(confirmEmail(email, `${appUrl()}/confirmare/${token}`));
     return { message: SENT_CONFIRMATION };
   }
 
@@ -95,7 +107,7 @@ export class AccountService {
         data: { usedAt: new Date() },
       });
       const token = await this.newToken(user.id, EmailTokenPurpose.VERIFY, VERIFY_VALID_MS, previous?.assignmentId);
-      await this.mailer.send(confirmEmail(email, `${appUrl()}/confirmare/${token}`));
+      await this.send(confirmEmail(email, `${appUrl()}/confirmare/${token}`));
     }
     return { message: SENT_CONFIRMATION };
   }
@@ -105,7 +117,7 @@ export class AccountService {
     const user = await this.prisma.user.findUnique({ where: { email } });
     if (user) {
       const token = await this.newToken(user.id, EmailTokenPurpose.RESET, RESET_VALID_MS);
-      await this.mailer.send(resetPasswordEmail(email, `${appUrl()}/parola-noua/${token}`));
+      await this.send(resetPasswordEmail(email, `${appUrl()}/parola-noua/${token}`));
     }
     return { message: SENT_RESET };
   }
@@ -157,6 +169,16 @@ export class AccountService {
       throw new BadRequestException(INVALID_LINK);
     }
     return stored;
+  }
+
+  /** Sends one email; a failure answers 503 instead of a raw 500, and the log never holds the link. */
+  private async send(email: Email): Promise<void> {
+    try {
+      await this.mailer.send(email);
+    } catch (error) {
+      this.logger.error(`Email "${email.subject}" not sent: ${(error as Error).message}`);
+      throw new ServiceUnavailableException('Nu am putut trimite emailul acum. Încearcă din nou peste câteva minute.');
+    }
   }
 
   /** At most 3 emails an hour per address and 20 per IP; counted whether or not an account exists. */

@@ -24,6 +24,10 @@ export class SmtpMailer implements Mailer {
       host: requireEnv('SMTP_HOST'),
       port: Number(process.env.SMTP_PORT ?? 587),
       auth: { user: requireEnv('SMTP_USER'), pass: requireEnv('SMTP_PASS') },
+      // Give up after seconds, not minutes, so the page can say what happened.
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
     });
   }
 
@@ -44,8 +48,13 @@ export class ConsoleMailer implements Mailer {
 /** Tests: keeps emails in memory so a test can read the link. */
 export class MemoryMailer implements Mailer {
   readonly sent: Email[] = [];
+  /** Set by a test to act like an SMTP server that cannot be reached. */
+  failing = false;
 
   async send(email: Email): Promise<void> {
+    if (this.failing) {
+      throw new Error('Memory mailer set to fail');
+    }
     this.sent.push(email);
   }
 }
