@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Peer review">
+  <!-- D-019: a closed eye, for anonymity in both directions. -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9a8ff" />
+      <stop offset="1" stop-color="#5ee3f0" />
+    </linearGradient>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#23264a" />
+      <stop offset="1" stop-color="#14162e" />
+    </linearGradient>
+  </defs>
+  <rect x="0.5" y="0.5" width="63" height="63" rx="16" fill="url(#tile)" stroke="#ffffff" stroke-opacity="0.14" />
+  <path d="M12 28c10 12 30 12 40 0" fill="none" stroke="url(#g)" stroke-width="5" stroke-linecap="round" />
+  <path d="M20 37l-4 6M32 40v7M44 37l4 6" fill="none" stroke="url(#g)" stroke-width="4.5" stroke-linecap="round" />
+</svg>

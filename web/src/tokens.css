@@ -1,42 +1,91 @@
+/* Design tokens (D-019, docs/design/DESIGN.md). Dark is the default; light follows the system. */
 :root {
-  --color-bg: #f8fafc;
-  --color-surface: #ffffff;
-  --color-text: #111827;
-  --color-muted: #4b5563;
-  --color-border: #6b7280;
-  --color-primary: #1d4ed8;
-  --color-on-primary: #ffffff;
-  --color-error: #b91c1c;
-  --color-focus: #1d4ed8;
+  color-scheme: dark;
 
-  --font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --color-bg: #0b0d1a;
+  --color-glow-1: rgba(124, 92, 255, 0.28);
+  --color-glow-2: rgba(56, 120, 255, 0.2);
+  --color-glow-3: rgba(94, 227, 240, 0.1);
+  --color-surface: rgba(22, 24, 48, 0.78);
+  --color-surface-2: rgba(255, 255, 255, 0.045);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-strong: #7d82b3;
+  --color-text: #eef0ff;
+  --color-muted: #a8acd0;
+  --color-primary: #ffffff;
+  --color-on-primary: #0b0d1a;
+  --color-link: #c4b8ff;
+  --color-accent-1: #b9a8ff;
+  --color-accent-2: #5ee3f0;
+  --color-info: #5ee3f0;
+  --color-success: #5be3a6;
+  --color-warning: #f5c76b;
+  --color-error: #ff9090;
+  --color-focus: #8fe9f5;
+  --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.35);
+
+  --gradient-accent: linear-gradient(90deg, var(--color-accent-1), var(--color-accent-2));
+  --gradient-page:
+    radial-gradient(60rem 40rem at 10% -10%, var(--color-glow-1), transparent 60%),
+    radial-gradient(50rem 35rem at 95% 10%, var(--color-glow-2), transparent 60%),
+    radial-gradient(40rem 30rem at 50% 110%, var(--color-glow-3), transparent 60%);
+
+  --font-family: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-size-small: 0.875rem;
   --font-size-body: 1rem;
-  --font-size-title: 1.5rem;
-  --line-height: 1.5;
-  --font-weight-bold: 600;
+  --font-size-title: 1.75rem;
+  --font-size-display: clamp(2rem, 4.5vw, 3.25rem);
+  --line-height: 1.55;
+  --line-height-tight: 1.15;
+  --font-weight-medium: 500;
+  --font-weight-bold: 650;
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 1rem;
   --space-4: 1.5rem;
   --space-5: 2rem;
+  --space-6: 3rem;
 
-  --radius: 0.5rem;
+  --radius: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-pill: 999px;
   --control-height: 2.75rem;
-  --card-width: 26rem;
-  --page-width: 48rem;
+  --card-width: 28rem;
+  --page-width: 64rem;
+  --duration: 150ms;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root {
-    --color-bg: #0f172a;
-    --color-surface: #1e293b;
-    --color-text: #f1f5f9;
-    --color-muted: #cbd5e1;
-    --color-border: #94a3b8;
-    --color-primary: #93c5fd;
-    --color-on-primary: #0f172a;
-    --color-error: #fca5a5;
-    --color-focus: #93c5fd;
+    color-scheme: light;
+
+    --color-bg: #f4f5fb;
+    --color-glow-1: rgba(124, 92, 255, 0.14);
+    --color-glow-2: rgba(56, 120, 255, 0.1);
+    --color-glow-3: rgba(94, 227, 240, 0.12);
+    --color-surface: rgba(255, 255, 255, 0.86);
+    --color-surface-2: rgba(20, 22, 50, 0.04);
+    --color-border: rgba(20, 22, 50, 0.12);
+    --color-border-strong: #6e7298;
+    --color-text: #141632;
+    --color-muted: #4a4e72;
+    --color-primary: #141632;
+    --color-on-primary: #ffffff;
+    --color-link: #4b37c9;
+    --color-accent-1: #6a4ff0;
+    --color-accent-2: #0d8fa6;
+    --color-info: #065f70;
+    --color-success: #0c6141;
+    --color-warning: #6f4800;
+    --color-error: #b42323;
+    --color-focus: #4b37c9;
+    --shadow-card: 0 10px 30px rgba(20, 22, 50, 0.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration: 0ms;
   }
 }

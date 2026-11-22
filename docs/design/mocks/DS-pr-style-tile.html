@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-style-tile</title>
+    <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/inter/index.css" />
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <a class="brand" href="#"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></a>
+        <nav class="nav" aria-label="Meniu"><a href="#">Grile active</a><a href="#" aria-current="page">Schițe de grile</a><a href="#">Clase profesor</a></nav>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <main>
+        <h1>Style tile · <span class="gradient-text">Peer review</span></h1>
+        <p class="lead">Toate componentele, pe tokenurile din tokens.css (D-019).</p>
+        <section class="section">
+          <h2>Butoane</h2>
+          <div class="actions">
+            <button class="primary inline" type="button">Buton principal</button>
+            <button class="secondary" type="button">Buton secundar</button>
+            <button class="primary inline" type="button" disabled>Dezactivat</button>
+            <a href="#">Link în text</a>
+          </div>
+        </section>
+        <section class="section">
+          <h2>Etichete de stare (punct + text)</h2>
+          <div class="actions">
+            <span class="badge">Neutru</span><span class="badge info">Predare deschisă</span><span class="badge accent">Evaluare în curs</span>
+            <span class="badge warning">Contestații deschise</span><span class="badge success">Încheiată</span>
+          </div>
+        </section>
+        <section class="section">
+          <h2>Card cu detalii</h2>
+          <div class="item">
+            <h2>Titlu de card</h2>
+            <p class="muted">Text secundar, mai estompat.</p>
+            <dl class="facts"><dt>Clasa</dt><dd>Web Avansat, grupa 231</dd><dt>Cod</dt><dd class="code">K7P-4QX</dd></dl>
+          </div>
+        </section>
+        <section class="section">
+          <h2>Formular</h2>
+          <fieldset>
+            <legend>Grup de câmpuri</legend>
+            <div class="row">
+              <div class="field"><label for="a">Câmp text</label><input id="a" placeholder="placeholder" /></div>
+              <div class="field"><label for="b">Număr</label><input id="b" type="number" value="3" /></div>
+            </div>
+            <div class="field"><label for="c">Listă</label><select id="c"><option>Web Avansat, grupa 231</option></select></div>
+            <label class="check"><input type="radio" name="r" checked /> Opțiune aleasă</label>
+            <label class="check"><input type="checkbox" checked /> Bifă</label>
+            <p class="error" role="alert">! Mesaj de eroare cu explicația și ce e de făcut.</p>
+          </fieldset>
+        </section>
+        <section class="section">
+          <h2>Tabel</h2>
+          <div class="table-wrap"><table class="data">
+            <thead><tr><th>Echipa</th><th>Predare</th><th>Evaluări primite</th></tr></thead>
+            <tbody><tr><td>Echipa 1</td><td><a href="#">Link</a> · <a href="#">Descarcă fișierul</a></td><td>3 din 3</td></tr>
+            <tr><td>Echipa 2</td><td>nepredat</td><td>—</td></tr></tbody></table></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

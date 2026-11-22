@@ -4,20 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DS-pr-active-rubrics</title>
+    <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/inter/index.css" />
     <link rel="stylesheet" href="../../../web/src/tokens.css" />
     <link rel="stylesheet" href="../../../web/src/styles.css" />
   </head>
   <body>
     <div class="page">
       <header class="header">
-        <p class="brand">Peer review</p>
+        <a class="brand" href="#"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></a>
+        <nav class="nav" aria-label="Meniu"><a href="#" aria-current="page">Grile active</a><a href="#">Schițe de grile</a><a href="#">Clase profesor</a></nav>
         <button class="secondary" type="button">Deconectare</button>
       </header>
-      <nav class="nav" aria-label="Meniu">
-        <a href="#" aria-current="page">Grile active</a>
-        <a href="#">Schițe de grile</a>
-        <a href="#">Clase profesor</a>
-      </nav>
       <main>
         <div class="toolbar">
           <h1>Grile active</h1>
@@ -26,22 +23,22 @@
         <ul class="list">
           <li class="item">
             <h2><a href="#">Proiect P1 — evaluare colegi</a></h2>
-            <p>Clasa: Web Avansat, grupa 231 · k = 3</p>
-            <p class="muted">Predare 1 dec. 23:59 · Evaluare 8 dec. 23:59 · Contestații 15 dec. 23:59</p>
-            <p><span class="badge">Evaluare în curs</span> 14 din 24 de evaluări trimise</p>
+            <p class="muted">Web Avansat, grupa 231 · k = 3</p>
+            <p class="muted">Predare 1 dec., 23:59 · Evaluare 8 dec., 23:59 · Contestații 15 dec., 23:59</p>
+            <p><span class="badge accent">Evaluare în curs</span> <span class="badge">14 din 24 evaluări trimise</span></p>
           </li>
           <li class="item">
             <h2><a href="#">Un titlu foarte lung de grilă care trebuie să se rupă pe mai multe rânduri fără să iasă din chenar sau să producă derulare orizontală</a></h2>
-            <p>Clasa: Web Avansat, grupa 232 · k = 2 · doar 3 echipe alese</p>
-            <p class="muted">Predare 3 dec. 23:59 · Evaluare 10 dec. 23:59 · Contestații 17 dec. 23:59</p>
-            <p><span class="badge">Predare deschisă</span> 0 evaluări trimise</p>
+            <p class="muted">Web Avansat, grupa 232 · k = 2 · doar 3 echipe alese</p>
+            <p class="muted">Predare 3 dec., 23:59 · Evaluare 10 dec., 23:59 · Contestații 17 dec., 23:59</p>
+            <p><span class="badge info">Predare deschisă</span> <span class="badge">0 evaluări trimise</span></p>
+          </li>
+          <li class="item">
+            <h2><a href="#">Proiect P0 — încălzire</a></h2>
+            <p class="muted">Web Avansat, grupa 231 · k = 2</p>
+            <p><span class="badge success">Încheiată</span> <span class="badge">16 din 16 evaluări trimise</span></p>
           </li>
         </ul>
-        <section class="section" aria-label="Stare goală">
-          <h2>Stare goală</h2>
-          <p class="muted">Nu ai trimis încă nicio grilă. Pregătește una în Schițe de grile și trimite-o unei clase.</p>
-          <a href="#">Mergi la Schițe de grile</a>
-        </section>
       </main>
     </div>
   </body>

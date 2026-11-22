@@ -2,16 +2,28 @@
 <html lang="ro">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DS-pr-login</title>
+    <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/inter/index.css" />
     <link rel="stylesheet" href="../../../web/src/tokens.css" />
     <link rel="stylesheet" href="../../../web/src/styles.css" />
   </head>
   <body>
-    <main class="center">
-      <form class="card">
-        <p class="brand">Peer review</p>
+    <main class="login">
+      <section class="hero">
+        <a class="brand" href="#"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></a>
+        <h1>Evaluare între colegi,<br /><span class="gradient-text">anonimă în ambele sensuri.</span></h1>
+        <p class="lead">Profesorul definește grila, aplicația împarte proiectele, iar fiecare notă vine cu feedback pe criterii.</p>
+        <ul class="points">
+          <li>Nu vezi al cui e proiectul, iar autorul nu vede cine l-a evaluat.</li>
+          <li>Numele autorului dispare automat din fișierele PDF și DOCX.</li>
+          <li>Termenele de predare și de evaluare sunt verificate de server.</li>
+        </ul>
+      </section>
+      <form class="card" novalidate>
         <h1>Autentificare</h1>
-        <div class="field"><label for="email">Email</label><input id="email" type="email" /></div>
+        <p class="muted">Intră cu emailul de la universitate.</p>
+        <div class="field"><label for="email">Email</label><input id="email" type="email" placeholder="prenume.nume@ulbsibiu.ro" /></div>
         <div class="field"><label for="password">Parolă</label><input id="password" type="password" /></div>
         <p class="error" role="alert">! Email sau parolă greșite.</p>
         <button class="primary" type="button">Intră în cont</button>
