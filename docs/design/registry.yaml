@@ -77,7 +77,7 @@ designs:
   - id: DS-pr-my-assignments
     kind: screen
     source: web/src/pages/MyAssignmentsPage.tsx
-    screenshots: [screens/DS-pr-my-assignments.light.png, screens/DS-pr-my-assignments.dark.png, screens/DS-pr-my-assignments.reviewer-only.light.png, screens/DS-pr-my-assignments.reviewer-only.dark.png]
+    screenshots: [screens/DS-pr-my-assignments.light.png, screens/DS-pr-my-assignments.dark.png, screens/DS-pr-my-assignments.reviewer-only.light.png, screens/DS-pr-my-assignments.reviewer-only.dark.png, screens/DS-pr-my-assignments.reviews.light.png, screens/DS-pr-my-assignments.reviews.dark.png]
     design_ref: mocks/DS-pr-my-assignments.html
     status: implemented
   - id: DS-pr-style-tile
@@ -118,7 +118,7 @@ designs:
     status: implemented
   - id: DS-pr-review
     kind: screen
-    source: null   # web/src/pages/ReviewPage.tsx once the mock is confirmed (D-023)
-    screenshots: []
+    source: web/src/pages/ReviewPage.tsx
+    screenshots: [screens/DS-pr-review.light.png, screens/DS-pr-review.dark.png, screens/DS-pr-review.sent.light.png, screens/DS-pr-review.sent.dark.png]
     design_ref: mocks/DS-pr-review.html
-    status: draft
+    status: implemented

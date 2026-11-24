@@ -103,12 +103,36 @@ export interface MyAssignment extends Deadlines {
   title: string;
   description: string | null;
   className: string;
-  /** null for a reviewer who joined only through the assignment link (D-022). */
+  /** null for a reviewer only: joined through the assignment link, or in a team not evaluated (D-022, Q-011). */
   teamName: string | null;
   phase: Phase;
   submission: Submission | null;
   withdrawn: boolean;
   canWithdraw: boolean;
+  /** My reviews for this assignment, numbered; never the team (D-023). */
+  reviews: { id: string; number: number; status: ReviewStatus }[];
+}
+
+export type ReviewStatus = 'ALLOCATED' | 'SUBMITTED';
+
+export interface ScoreInput {
+  criterionId: string;
+  levelId: string;
+  feedback: string;
+}
+
+/** One review as its reviewer sees it: the submission and the rubric, never the team (D-023). */
+export interface MyReview {
+  id: string;
+  number: number;
+  assignmentTitle: string;
+  reviewDeadline: string;
+  status: ReviewStatus;
+  submittedAt: string | null;
+  canSend: boolean;
+  submission: Submission;
+  criteria: StoredCriterion[];
+  scores: ScoreInput[];
 }
 
 export interface ClassSummary {
@@ -247,6 +271,8 @@ export const account = {
 export const api = {
   myAssignments: () => request<MyAssignment[]>('GET', '/my/assignments'),
   withdraw: (assignmentId: string) => request<{ withdrawn: true }>('POST', `/my/assignments/${assignmentId}/withdraw`),
+  review: (id: string) => request<MyReview>('GET', `/my/reviews/${id}`),
+  sendReview: (id: string, scores: ScoreInput[]) => request<MyReview>('POST', `/my/reviews/${id}`, { scores }),
   drafts: () => request<RubricSummary[]>('GET', '/rubrics'),
   rubric: (id: string) => request<Rubric>('GET', `/rubrics/${id}`),
   createRubric: (title: string, criteria: CriterionInput[]) => request<Rubric>('POST', '/rubrics', { title, criteria }),

@@ -27,7 +27,7 @@
 - [x] Curățarea metadatelor din PDF și DOCX; servire prin proxy, fără numele original
 - [x] Alocarea evaluatorilor cu toate constrângerile (D-021, D-022)
 - [x] Sosiri târzii și retrageri, cu realocare minimală (D-022)
-- [ ] Evaluare double-blind cu feedback obligatoriu per criteriu
+- [x] Evaluare double-blind cu feedback obligatoriu per criteriu (D-023)
 - [ ] Calibrare și fiabilitatea evaluatorului
 - [ ] Agregarea notelor ca funcție pură
 - [ ] Contestații cu istoric

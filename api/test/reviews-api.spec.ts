@@ -142,6 +142,10 @@ describe('double-blind reviews (D-023)', () => {
     short.scores[1].feedback = `   ${'a'.repeat(19)}   `;
     expect((await me.agent.post(url).send(short).expect(400)).body.message).toBe(message);
 
+    const noLevel = answer(criteria);
+    noLevel.scores[1].levelId = '';
+    expect((await me.agent.post(url).send(noLevel).expect(400)).body.message).toBe(message);
+
     const wrongLevel = answer(criteria);
     wrongLevel.scores[0].levelId = criteria[1].levels[0].id;
     expect((await me.agent.post(url).send(wrongLevel).expect(400)).body.message).toBe(message);

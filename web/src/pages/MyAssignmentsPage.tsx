@@ -9,8 +9,8 @@ import { PHASE_LABELS, PHASE_TONES } from './ActiveRubricsPage';
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
 
 /**
- * DS-pr-my-assignments: a student's assignments, their team's submission (D-016) and the
- * withdrawal from reviewing (D-022).
+ * DS-pr-my-assignments: a student's assignments, their team's submission (D-016), their
+ * reviews (D-023) and the withdrawal from reviewing (D-022).
  */
 export function MyAssignmentsPage() {
   const state = useLoad(() => api.myAssignments(), []);
@@ -105,9 +105,38 @@ function AssignmentCard({
               : 'Termenul de predare a trecut fără o predare a echipei tale.'}
           </p>
         ))}
+      {a.reviews.length > 0 && <Reviews assignment={a} />}
       {a.withdrawn && <p className="muted">Nu mai primești proiecte de evaluat la această temă.</p>}
       {a.canWithdraw && <Withdrawal assignment={a} onWithdrawn={onWithdrawn} />}
     </>
+  );
+}
+
+/** The reviews allocated to me, numbered, never naming a team (D-023). */
+function Reviews({ assignment: a }: { assignment: MyAssignment }) {
+  return (
+    <section className="section" aria-label="Evaluările tale">
+      <h2>Evaluările tale</h2>
+      <dl className="facts">
+        {a.reviews.map((review) => (
+          <div key={review.id} className="contents">
+            <dt>
+              <Link to={`/evaluari/${review.id}`}>Proiectul {review.number}</Link>
+            </dt>
+            <dd>
+              {review.status === 'SUBMITTED' ? (
+                <span className="badge success">Trimisă</span>
+              ) : (
+                <span className="badge warning">Netrimisă</span>
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <p className="muted">
+        Trimite-le până pe {formatShort(a.reviewDeadline)}. O evaluare trimisă nu se mai poate schimba.
+      </p>
+    </section>
   );
 }
 

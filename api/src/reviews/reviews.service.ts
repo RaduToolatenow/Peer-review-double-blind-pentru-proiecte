@@ -4,7 +4,7 @@ import { ReviewStatus } from '../generated/prisma/enums';
 import { isInvalidReview, isSentReview } from '../prisma/db-errors';
 import { PrismaService } from '../prisma/prisma.service';
 import { submissionView } from '../submissions/submissions.service';
-import { INVALID_REVIEW, ReviewDto } from './review.dto';
+import { checkScores, INVALID_REVIEW, ReviewDto } from './review.dto';
 
 const NOT_FOUND = 'Nu am găsit evaluarea.';
 const ALREADY_SENT = 'Ai trimis deja această evaluare; nu se mai poate schimba.';
@@ -75,6 +75,7 @@ export class ReviewsService {
 
   /** Sends the whole review at once; afterwards it never changes (D-023). */
   async send(userId: string, reviewId: string, dto: ReviewDto) {
+    const scores = checkScores(dto.scores);
     const found = await this.prisma.review.findUnique({
       where: { id: reviewId },
       select: { reviewerId: true, submission: { select: { assignmentId: true } } },
@@ -96,7 +97,7 @@ export class ReviewsService {
         if (new Date() >= assignment.reviewDeadline) {
           throw new ConflictException('Termenul de evaluare a trecut.');
         }
-        await tx.reviewScore.createMany({ data: dto.scores.map((s) => ({ reviewId, ...s })) });
+        await tx.reviewScore.createMany({ data: scores.map((s) => ({ reviewId, ...s })) });
         await tx.review.update({
           where: { id: reviewId },
           data: { status: ReviewStatus.SUBMITTED, submittedAt: new Date() },
