@@ -9,6 +9,7 @@ import {
   NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
+import { AllocationService } from '../allocation/allocation.service';
 import { Email } from '../mail/mailer';
 import { EmailTokenPurpose, Role } from '../generated/prisma/enums';
 import { appUrl, Mailer, MAILER } from '../mail/mailer';
@@ -41,6 +42,7 @@ export class AccountService {
   constructor(
     private readonly prisma: PrismaService,
     @Inject(MAILER) private readonly mailer: Mailer,
+    private readonly allocation: AllocationService,
   ) {}
 
   async register(email: string, password: string, joinCode: string | undefined, ip: string) {
@@ -86,6 +88,8 @@ export class AccountService {
         create: { assignmentId: stored.assignmentId, userId: stored.userId },
         update: {},
       });
+      // After allocation, the new reviewer takes reviews from the busiest (D-022).
+      await this.allocation.lateJoin(stored.userId, stored.assignmentId);
       assignmentTitle =
         (await this.prisma.assignment.findUnique({ where: { id: stored.assignmentId }, select: { title: true } }))
           ?.title ?? null;

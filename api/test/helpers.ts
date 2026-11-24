@@ -21,6 +21,8 @@ export function useTestDatabase(): void {
   process.env.FILE_STORE_DIR = TEST_FILE_DIR;
   // Emails are kept in memory in tests (D-020), never sent.
   process.env.MAIL_TRANSPORT = 'memory';
+  // pg-boss never starts in tests (D-021); they call the allocation service directly.
+  process.env.JOBS = 'off';
   process.env.APP_URL = 'http://app.test';
 }
 

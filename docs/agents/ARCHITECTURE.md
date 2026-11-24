@@ -25,6 +25,8 @@ Browser ──> React (web/)
 | App setup | `api/src/main.ts`, `api/src/configure-app.ts` | prefix, validation, sessions, static files | PostgreSQL session table |
 | Auth | `api/src/auth/` | login, logout, current user, session and role guard | PrismaService |
 | Users | `api/src/users/` | admin user list, public user shape, test accounts | PrismaService |
+| Allocation | `api/src/allocation/` | pure allocation rules (`allocate.ts`), the service that writes them in a locked transaction, the withdraw route (D-022) | PrismaService |
+| Jobs | `api/src/jobs/` | starts pg-boss and runs `allocate-due` every minute (D-021) | AllocationService, PostgreSQL `pgboss` schema |
 | Database access | `api/src/prisma/` | shared Prisma client | PostgreSQL |
 | Schema | `api/prisma/` | schema, migrations, seed | PostgreSQL |
 
@@ -40,6 +42,7 @@ Login:
 |---|---|---|---|
 | Domain data | PostgreSQL tables, see `docs/db-schema.md` | Prisma migrations | 11 tables |
 | Sessions | PostgreSQL `session` table | connect-pg-simple | 8-hour cookie |
+| Job queue | PostgreSQL `pgboss` schema | pg-boss | created by pg-boss on first start |
 
 ## Configuration
 | Name | Where set | Used by | Notes |
@@ -51,6 +54,7 @@ Login:
 | `PORT` | `.env` | API | default 3000 |
 | `SEED_ADMIN_PASSWORD`, `SEED_PROFESSOR_PASSWORD`, `SEED_STUDENT_PASSWORD` | `.env` | seed | |
 | `NODE_ENV` | host | API | `production` enables secure cookies |
+| `JOBS` | `.env`, tests | Jobs | `off` stops pg-boss from starting; tests set it |
 <!-- names only, never values -->
 
 ## Build, deploy, runtime
@@ -60,4 +64,4 @@ CI is in `.github/workflows/ci.yml`. The deploy target is open (Q-006).
 ## Boundaries
 - Authentication and roles are enforced on the server by `SessionGuard` (D-005, D-010).
 - `PUBLIC_USER_SELECT` limits which user fields leave the server.
-- The anonymity boundary between authors and reviewers has no routes yet.
+- Allocation keeps who reviews what inside the server: no route returns another reviewer's id or email (D-014, D-022).

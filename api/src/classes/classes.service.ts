@@ -1,4 +1,5 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { AllocationService } from '../allocation/allocation.service';
 import { isForeignKeyViolation, isUniqueViolation } from '../prisma/db-errors';
 import { PrismaService } from '../prisma/prisma.service';
 import { ClassDto, TeamDto, UpdateTeamDto } from './class.dto';
@@ -31,7 +32,10 @@ const TEAM_COUNT = { _count: { select: { members: true } } } as const;
 /** A professor's classes and their teams, entered from paper (D-012). */
 @Injectable()
 export class ClassesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly allocation: AllocationService,
+  ) {}
 
   async list(userId: string) {
     const classes = await this.prisma.class.findMany({
@@ -146,12 +150,15 @@ export class ClassesService {
     if (!team) {
       throw new NotFoundException(UNKNOWN_CODE);
     }
+    await this.allocation.checkCanJoinTeam(userId, team.id);
     try {
       await this.prisma.teamMember.create({ data: { teamId: team.id, classId: team.classId, userId } });
     } catch (error) {
       if (isUniqueViolation(error)) throw new ConflictException('Ești deja într-o echipă din această clasă.');
       throw error;
     }
+    // Allocated assignments of the class take the new member in as a reviewer (D-022).
+    await this.allocation.afterTeamJoin(userId, team.classId);
     return { className: team.class.name, teamName: team.name };
   }
 

@@ -82,8 +82,9 @@ A platform where students review each other's projects, anonymous in both direct
 A professor defines the rubric. The system allocates reviewers, calibrates them and
 aggregates grades. Users are students, professors and admins at the student's faculty.
 The full brief is in `docs/brief.md`. Built so far: login with an attempt limit, roles,
-classes and teams with join codes, rubric drafts sent to classes, and submissions with
-cleaned files. Allocation, reviews, aggregation and disputes are not built yet.
+classes and teams with join codes, rubric drafts sent to classes, submissions with
+cleaned files, and reviewer allocation with withdrawals and late arrivals, run by a pg-boss
+job every minute. Reviews, aggregation and disputes are not built yet.
 
 ## 2. Stack and commands
 TypeScript with NestJS 11 (D-002, D-008), React and Vite (D-001), PostgreSQL 17 with Prisma 7 (D-004).
@@ -94,7 +95,7 @@ npm ci                        # install
 npm run db:migrate            # apply migrations
 npm run db:seed               # test accounts
 npm run typecheck             # type-check api and web
-npm test                      # 91 tests; needs PostgreSQL running
+npm test                      # 115 tests; needs PostgreSQL running
 npm run build                 # build web, then api
 npm start                     # http://localhost:3000
 npm run dev:api               # API in watch mode

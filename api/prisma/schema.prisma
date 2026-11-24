@@ -53,6 +53,7 @@ model User {
   reviews         Review[]
   emailTokens     EmailToken[]
   reviewerOf      AssignmentReviewer[]
+  withdrawals     AssignmentWithdrawal[]
   disputesFiled   Dispute[]            @relation("DisputeAuthor")
   disputesDecided Dispute[]            @relation("DisputeDecider")
 
@@ -129,6 +130,8 @@ model Assignment {
   joinCode           String      @unique @default(dbgenerated("replace((gen_random_uuid())::text, '-'::text, ''::text)")) @map("join_code")
   createdById        String      @map("created_by_id") @db.Uuid
   createdAt          DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  // D-022: set once, when the job allocates reviewers after the submission deadline.
+  allocatedAt        DateTime?   @map("allocated_at") @db.Timestamptz
 
   createdBy   User                 @relation(fields: [createdById], references: [id])
   rubric      Rubric               @relation(fields: [rubricId], references: [id], onDelete: Restrict)
@@ -136,6 +139,7 @@ model Assignment {
   chosenTeams AssignmentTeam[]
   submissions Submission[]
   reviewers   AssignmentReviewer[]
+  withdrawals AssignmentWithdrawal[]
   emailTokens EmailToken[]
 
   @@unique([id, classId])
@@ -154,6 +158,19 @@ model AssignmentReviewer {
 
   @@id([assignmentId, userId])
   @@map("assignment_reviewers")
+}
+
+// D-022: a student who withdrew from an assignment; final. They are given no more reviews.
+model AssignmentWithdrawal {
+  assignmentId String   @map("assignment_id") @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([assignmentId, userId])
+  @@map("assignment_withdrawals")
 }
 
 // D-012: a professor's class; its teams are entered from paper.

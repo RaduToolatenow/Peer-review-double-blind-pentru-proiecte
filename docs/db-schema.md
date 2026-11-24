@@ -25,6 +25,8 @@ erDiagram
     criterion_levels ||--o{ review_scores : "ales în"
     reviews ||--o{ disputes : "contestată prin"
     users ||--o{ disputes : "depune sau decide"
+    assignments ||--o{ assignment_withdrawals : "are"
+    users ||--o{ assignment_withdrawals : "se retrage prin"
 
     users {
         uuid id PK
@@ -44,6 +46,7 @@ erDiagram
         uuid class_id FK
         enum rubric_applies_to
         uuid created_by_id FK
+        timestamptz allocated_at
     }
     classes {
         uuid id PK
@@ -150,6 +153,8 @@ Tabela `login_failures` ține autentificările eșuate din ultimele 15 minute, p
 | Fiecare temă are un cod de înscriere unic, generat de baza de date | `assignments.join_code` unic, implicit `gen_random_uuid()` |
 | Un evaluator intră o singură dată într-o temă | cheie primară `assignment_reviewers (assignment_id, user_id)` |
 | O clasă cu teme trimise nu se șterge | cheie străină `ON DELETE RESTRICT` din `assignments` |
+| Nimeni nu evaluează predarea propriei echipe (D-022) | trigger `reviews_guard_own_team` |
+| Un student se retrage o singură dată dintr-o temă (D-022) | cheie primară `assignment_withdrawals (assignment_id, user_id)` |
 | Un criteriu are un singur scor per evaluare | cheie primară `review_scores (review_id, criterion_id)` |
 | `k` este cel puțin 1 | `CHECK` în migrare |
 | Termenele sunt în ordine: predare, evaluare, contestații | `CHECK` în migrare |
@@ -172,3 +177,11 @@ Regula este în [api/src/assignments/assignment-scope.ts](../api/src/assignments
 3. O echipă lăsată pe dinafară nu intră în alocare. Membrii ei pot evalua în continuare.
 
 Pentru altă grilă la alte echipe, profesorul trimite încă o grilă aceleiași clase, cu alte echipe alese.
+
+## Alocarea (D-022)
+
+Regulile sunt funcții pure în [api/src/allocation/allocate.ts](../api/src/allocation/allocate.ts); [allocation.service.ts](../api/src/allocation/allocation.service.ts) le aplică într-o tranzacție care blochează rândul temei (`SELECT ... FOR UPDATE`).
+
+1. Un job pg-boss (D-021) rulează în fiecare minut și alocă temele cu termenul de predare trecut și `allocated_at` gol, apoi setează `allocated_at`.
+2. Evaluatorii sunt membrii echipelor clasei și cei din `assignment_reviewers`, fără cei din `assignment_withdrawals`.
+3. O evaluare `ALLOCATED` (încă netrimisă) se poate muta; una `SUBMITTED` rămâne.

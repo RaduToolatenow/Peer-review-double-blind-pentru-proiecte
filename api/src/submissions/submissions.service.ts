@@ -48,15 +48,24 @@ export class SubmissionsService {
     @Inject(FILE_STORE) private readonly files: FileStore,
   ) {}
 
-  /** The assignments a student's teams are evaluated in, with their team's submission. */
+  /**
+   * The assignments a student's teams are evaluated in, with their team's submission, and those
+   * they joined through the link as a reviewer only (`teamName` null, D-022).
+   */
   async myAssignments(userId: string) {
-    const memberships = await this.prisma.teamMember.findMany({
-      where: { userId },
-      select: { classId: true, teamId: true, team: { select: { name: true } } },
-    });
+    const [memberships, linked, withdrawals] = await Promise.all([
+      this.prisma.teamMember.findMany({
+        where: { userId },
+        select: { classId: true, teamId: true, team: { select: { name: true } } },
+      }),
+      this.prisma.assignmentReviewer.findMany({ where: { userId }, select: { assignmentId: true } }),
+      this.prisma.assignmentWithdrawal.findMany({ where: { userId }, select: { assignmentId: true } }),
+    ]);
     const teamByClass = new Map(memberships.map((m) => [m.classId, m]));
+    const linkedIds = new Set(linked.map((l) => l.assignmentId));
+    const withdrawnIds = new Set(withdrawals.map((w) => w.assignmentId));
     const assignments = await this.prisma.assignment.findMany({
-      where: { classId: { in: [...teamByClass.keys()] } },
+      where: { OR: [{ classId: { in: [...teamByClass.keys()] } }, { id: { in: [...linkedIds] } }] },
       include: {
         class: { select: { name: true } },
         chosenTeams: { select: { teamId: true } },
@@ -65,22 +74,30 @@ export class SubmissionsService {
       orderBy: { submissionDeadline: 'asc' },
     });
     const now = new Date();
-    return assignments
-      .filter((a) =>
-        teamIsEvaluated({ rubricAppliesTo: a.rubricAppliesTo, chosenTeamIds: a.chosenTeams.map((t) => t.teamId) }, teamByClass.get(a.classId)!.teamId),
-      )
-      .map((a) => ({
-        id: a.id,
-        title: a.title,
-        description: a.description,
-        className: a.class.name,
-        teamName: teamByClass.get(a.classId)!.team.name,
-        submissionDeadline: a.submissionDeadline,
-        reviewDeadline: a.reviewDeadline,
-        disputeDeadline: a.disputeDeadline,
-        phase: phaseAt(a, now),
-        submission: a.submissions[0] ? submissionView(a.submissions[0]) : null,
-      }));
+    return assignments.flatMap((a) => {
+      const membership = teamByClass.get(a.classId);
+      const evaluated =
+        membership !== undefined &&
+        teamIsEvaluated({ rubricAppliesTo: a.rubricAppliesTo, chosenTeamIds: a.chosenTeams.map((t) => t.teamId) }, membership.teamId);
+      if (!evaluated && !linkedIds.has(a.id)) return [];
+      const withdrawn = withdrawnIds.has(a.id);
+      return [
+        {
+          id: a.id,
+          title: a.title,
+          description: a.description,
+          className: a.class.name,
+          teamName: evaluated ? membership.team.name : null,
+          submissionDeadline: a.submissionDeadline,
+          reviewDeadline: a.reviewDeadline,
+          disputeDeadline: a.disputeDeadline,
+          phase: phaseAt(a, now),
+          submission: evaluated && a.submissions[0] ? submissionView(a.submissions[0]) : null,
+          withdrawn,
+          canWithdraw: !withdrawn && now < a.reviewDeadline,
+        },
+      ];
+    });
   }
 
   async submit(userId: string, assignmentId: string, dto: SubmissionDto, file: UploadedFileData | undefined) {

@@ -138,8 +138,9 @@ Răspunsurile nu spun niciodată dacă o adresă are cont. Cel mult 3 emailuri p
 
 | Rută | Cine | Ce face | Coduri |
 |---|---|---|---|
-| `GET /api/my/assignments` | `STUDENT` | Temele la care e evaluată echipa mea, cu `teamName`, termene, `phase` și `submission` (sau `null`) | 200 |
+| `GET /api/my/assignments` | `STUDENT` | Temele la care e evaluată echipa mea și cele în care am intrat prin linkul temei, cu `teamName` (`null` pentru evaluatorii doar prin link), termene, `phase`, `submission` (sau `null`), `withdrawn` și `canWithdraw` | 200 |
 | `PUT /api/my/assignments/:id/submission` | `STUDENT` | `multipart/form-data`: `link` (http/https), `description` (opțional), `file` (PDF sau DOCX, cel mult 10 MB). Prima predare sau înlocuirea ei, doar până la termenul de predare | 200, 400, 403 echipa nu e evaluată, 404, 409 termen trecut, 413 fișier prea mare |
+| `POST /api/my/assignments/:id/withdraw` | `STUDENT`, evaluator al temei | Retragere definitivă din evaluare (D-022): evaluările netrimise trec la alți colegi. A doua oară nu schimbă nimic. Răspunde `{ withdrawn: true }` | 200, 404, 409 termenul de evaluare a trecut |
 | `GET /api/submissions/:id/file` | profesorul temei, membrii echipei | Fișierul curățat de metadate, ca atașament `predare-<cod>.pdf` sau `.docx` | 200, 404 |
 
 Predarea are forma `{ id, link, description, fileType, fileUrl, submittedAt, updatedAt }` și nu spune cine a predat. Detaliul unei grile active conține la fiecare echipă `link`, `description` și `fileUrl`.

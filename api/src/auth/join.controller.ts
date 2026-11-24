@@ -1,4 +1,5 @@
 import { Controller, Get, HttpCode, NotFoundException, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { AllocationService } from '../allocation/allocation.service';
 import { Role } from '../generated/prisma/enums';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthenticatedRequest, Roles, SessionGuard } from './session.guard';
@@ -8,7 +9,10 @@ const UNKNOWN = 'Linkul temei nu mai este valid. Cere-i profesorului linkul core
 /** An assignment's sign-up link, /inscriere/<code> (D-010, D-020). */
 @Controller('join')
 export class JoinController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly allocation: AllocationService,
+  ) {}
 
   /** Public: the sign-up page shows which assignment the link is for. */
   @Get(':code')
@@ -17,7 +21,10 @@ export class JoinController {
     return { assignmentTitle: assignment.title, className: assignment.class.name };
   }
 
-  /** A signed-in student becomes a reviewer of the assignment; doing it twice changes nothing. */
+  /**
+   * A signed-in student becomes a reviewer of the assignment; doing it twice changes nothing.
+   * After allocation they take reviews from the busiest reviewers (D-022).
+   */
   @Post(':code')
   @HttpCode(200)
   @UseGuards(SessionGuard)
@@ -29,6 +36,7 @@ export class JoinController {
       create: { assignmentId: assignment.id, userId: request.user.id },
       update: {},
     });
+    await this.allocation.lateJoin(request.user.id, assignment.id);
     return { assignmentTitle: assignment.title };
   }
 
