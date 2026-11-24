@@ -116,3 +116,9 @@ designs:
     screenshots: [screens/DS-pr-reset.light.png, screens/DS-pr-reset.dark.png]
     design_ref: mocks/DS-pr-reset.html
     status: implemented
+  - id: DS-pr-review
+    kind: screen
+    source: null   # web/src/pages/ReviewPage.tsx once the mock is confirmed (D-023)
+    screenshots: []
+    design_ref: mocks/DS-pr-review.html
+    status: draft

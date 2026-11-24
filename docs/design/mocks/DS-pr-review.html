@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-review</title>
+    <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/inter/index.css" />
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <a class="brand" href="#"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></a>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+
+      <!-- D-023: the form, before sending. The reviewer sees the submission and the rubric, never the team. -->
+      <main>
+        <p><a class="button-link secondary" href="#">← Temele mele</a></p>
+        <h1>Evaluarea proiectului 2</h1>
+        <p class="muted">Proiect P0 — încălzire · Evaluare până pe 8 dec., 23:59</p>
+        <p><span class="badge warning">Netrimisă</span></p>
+
+        <section class="item" aria-label="Proiectul de evaluat">
+          <h2>Proiectul</h2>
+          <dl class="facts">
+            <dt>Link</dt><dd><a href="#">https://proiect-anonim.onrender.com</a></dd>
+            <dt>Fișier</dt><dd><a href="#">Descarcă fișierul predat (PDF)</a></dd>
+            <dt>Descriere</dt><dd>Aplicație de rezervări pentru sala de sport.</dd>
+          </dl>
+          <p class="muted">Nu știi al cui e proiectul, iar autorii nu vor ști cine l-a evaluat.</p>
+        </section>
+
+        <form>
+          <ol class="list">
+            <li class="item">
+              <h2>1. Calitatea codului</h2>
+              <p class="muted">Pondere 2</p>
+              <fieldset>
+                <legend>Nivelul</legend>
+                <label class="check"><input type="radio" name="c1" /> Nota 1 · Cod greu de urmărit, fără structură</label>
+                <label class="check"><input type="radio" name="c1" checked /> Nota 2 · Structură clară, câteva duplicări</label>
+                <label class="check"><input type="radio" name="c1" /> Nota 3 · Cod curat, ușor de extins</label>
+              </fieldset>
+              <div class="field">
+                <label for="f1">Feedback (cel puțin 20 de caractere)</label>
+                <textarea id="f1">Componentele sunt bine separate, dar validarea formularului se repetă în trei locuri.</textarea>
+              </div>
+              <p class="muted">86 de caractere</p>
+            </li>
+            <li class="item">
+              <!-- A criterion not answered yet; the counter shows what is missing. -->
+              <h2>2. Documentația, cu un titlu de criteriu mai lung ca să se vadă cum se rupe pe rânduri</h2>
+              <p class="muted">Pondere 1</p>
+              <fieldset>
+                <legend>Nivelul</legend>
+                <label class="check"><input type="radio" name="c2" /> Nota 1 · Lipsește</label>
+                <label class="check"><input type="radio" name="c2" /> Nota 2 · README cu pașii de pornire</label>
+              </fieldset>
+              <div class="field">
+                <label for="f2">Feedback (cel puțin 20 de caractere)</label>
+                <textarea id="f2">README-ul e scurt.</textarea>
+              </div>
+              <p class="muted">18 caractere · mai scrie cel puțin 2</p>
+            </li>
+          </ol>
+          <!-- Shown after a refused send, from the server's message. -->
+          <p class="error" role="alert">Alege un nivel și scrie cel puțin 20 de caractere la fiecare criteriu.</p>
+          <p class="muted">După trimitere, evaluarea nu se mai poate schimba.</p>
+          <button class="primary inline" type="button">Trimite evaluarea</button>
+        </form>
+      </main>
+
+      <hr />
+
+      <!-- D-023: after sending, the same page is read-only. -->
+      <main>
+        <p><a class="button-link secondary" href="#">← Temele mele</a></p>
+        <h1>Evaluarea proiectului 1</h1>
+        <p class="muted">Proiect P0 — încălzire · Evaluare până pe 8 dec., 23:59</p>
+        <p><span class="badge success">Trimisă pe 3 dec., 18:40</span></p>
+        <section class="item" aria-label="Proiectul evaluat">
+          <h2>Proiectul</h2>
+          <dl class="facts">
+            <dt>Link</dt><dd><a href="#">https://alt-proiect.onrender.com</a></dd>
+            <dt>Fișier</dt><dd><a href="#">Descarcă fișierul predat (DOCX)</a></dd>
+          </dl>
+        </section>
+        <ol class="list">
+          <li class="item">
+            <h2>1. Calitatea codului</h2>
+            <dl class="facts">
+              <dt>Nivel</dt><dd>Nota 3 · Cod curat, ușor de extins</dd>
+              <dt>Feedback</dt><dd>Testele acoperă cazurile importante; numele funcțiilor spun ce fac.</dd>
+            </dl>
+          </li>
+          <li class="item">
+            <h2>2. Documentația</h2>
+            <dl class="facts">
+              <dt>Nivel</dt><dd>Nota 2 · README cu pașii de pornire</dd>
+              <dt>Feedback</dt><dd>Pașii de pornire merg; lipsește o captură de ecran.</dd>
+            </dl>
+          </li>
+        </ol>
+      </main>
+    </div>
+  </body>
+</html>

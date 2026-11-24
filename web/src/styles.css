@@ -393,6 +393,11 @@ legend {
   min-height: var(--control-height);
 }
 
+/* A label that wraps on a phone must not squeeze its box. */
+.check input {
+  flex: none;
+}
+
 .indent {
   margin-left: var(--space-4);
 }
