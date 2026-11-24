@@ -29,6 +29,7 @@
 - D-021 · pg-boss loaded on demand, one job every minute
 - D-022 · Reviewer allocation, withdrawals and late arrivals
 - D-023 · A review is sent once, complete and final
+- D-024 · Notifications by email and in the app, from the every-minute job
 
 ---
 
@@ -155,12 +156,12 @@
 ## D-014 · Nobody can see who reviewed
 - **Status:** approved
 - **Date:** 2026-11-17
-- **Rule:** No page or route shows who submitted a review, to anyone, the professor and admin included; only how many reviewed. Reviewers appear as numbered anonymous reviewers. The system keeps the link between account and review internally, for allocation, duplicate checks and reliability. A student's email is used only for login and the `@ulbsibiu.ro` check, and is never shown; the admin sees emails of professors and admins only, and a count of student accounts.
+- **Rule:** No page or route shows who submitted a review, to anyone, the professor and admin included; only how many reviewed. Reviewers appear as numbered anonymous reviewers. The system keeps the link between account and review internally, for allocation, duplicate checks and reliability. A student's email is used only for login, the `@ulbsibiu.ro` check and the app's own emails (account confirmation and password reset, D-020, and notifications, D-024), and is never shown; the admin sees emails of professors and admins only, and a count of student accounts.
 - **Why:** The user wants the email to be only a check that the person is from the university, and answers to stay anonymous.
 - **Rejected:** Double-blind only between students, with the professor seeing reviewers.
 - **Evidence:** api/src/users/users.controller.ts still lists every email; changed in S2 step 1.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-17
+- **Confirmed:** 2026-11-24
 
 ## D-015 · Professor and admin menu
 - **Status:** approved
@@ -249,5 +250,15 @@
 - **Why:** The brief requires double-blind reviews with text feedback for every criterion. The user chose final-on-send, the 20-character minimum and the author view on the results page.
 - **Rejected:** Drafts saved on the server. Changing a sent review until the deadline. Authors seeing reviews as they arrive.
 - **Evidence:** not built yet; the reviews plan of 2026-11-24.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-24
+
+## D-024 · Notifications by email and in the app, from the every-minute job
+- **Status:** approved
+- **Date:** 2026-11-24
+- **Rule:** The every-minute job (D-021) records and emails notifications to confirmed students: reviews allocated (once, when the student first has reviews on an allocated assignment before its review deadline), a review reminder in the 24 hours before the review deadline (to reviewers with unsent reviews who have not withdrawn), and a submission reminder in the 24 hours before the submission deadline (to members of evaluated teams without a submission). There is one row per student, assignment and event, unique in the database. An email is retried each minute until it is sent, at most 50 per run. The same rows show in the app on a "Notificări" page, with an unread count in the header; opening the page marks them read. Texts are built when shown, from the event and the assignment, and never name a team or another student.
+- **Why:** The brief requires a job that closes phases and sends notifications. The user chose these three events, the 24-hour reminders, and email plus in-app.
+- **Rejected:** One delayed job per deadline. Emailing from inside allocation. A notification when reviews move to someone already notified. Email only.
+- **Evidence:** not built yet; the notifications plan of 2026-11-24.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-24
