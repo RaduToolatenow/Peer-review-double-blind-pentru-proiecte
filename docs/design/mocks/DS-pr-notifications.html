@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-notifications</title>
+    <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/inter/index.css" />
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <a class="brand" href="#"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></a>
+        <nav class="nav" aria-label="Meniu">
+          <a href="#">Temele mele</a>
+          <a href="#" aria-current="page">Notificări (2)</a>
+        </nav>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <!-- D-024: newest first. Opening the page marks every notification read; the badge shows which were new. -->
+      <main>
+        <h1>Notificări</h1>
+        <ol class="list">
+          <li class="item">
+            <h2>Mai ai evaluări de trimis</h2>
+            <p>Termenul de evaluare la „Proiect P0 — încălzire” e pe 8 dec., 23:59. Mai ai 1 evaluare netrimisă.</p>
+            <p><span class="badge accent">Nouă</span> <span class="muted">7 dec., 23:59</span></p>
+            <p><a href="#">Vezi tema</a></p>
+          </li>
+          <li class="item">
+            <h2>Ai proiecte de evaluat</h2>
+            <p>La „Proiect P2 — o temă cu un titlu mai lung ca să se vadă cum se rupe pe rânduri” ai primit 2 proiecte de evaluat, până pe 8 dec., 23:59.</p>
+            <p><span class="badge accent">Nouă</span> <span class="muted">1 dec., 00:01</span></p>
+            <p><a href="#">Vezi tema</a></p>
+          </li>
+          <li class="item">
+            <h2>Predarea se închide mâine</h2>
+            <p>Echipa ta nu a predat încă la „Proiect P0 — încălzire”. Termenul de predare e pe 30 nov., 23:59.</p>
+            <p class="muted">29 nov., 23:59</p>
+            <p><a href="#">Vezi tema</a></p>
+          </li>
+        </ol>
+      </main>
+
+      <hr />
+
+      <!-- The empty state. -->
+      <main>
+        <h1>Notificări</h1>
+        <p class="muted">Nu ai notificări. Aici apar proiectele primite de evaluat și amintirile dinaintea termenelor; le primești și pe email.</p>
+      </main>
+    </div>
+  </body>
+</html>

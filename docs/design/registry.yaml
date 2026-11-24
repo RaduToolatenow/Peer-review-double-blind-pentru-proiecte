@@ -122,3 +122,9 @@ designs:
     screenshots: [screens/DS-pr-review.light.png, screens/DS-pr-review.dark.png, screens/DS-pr-review.sent.light.png, screens/DS-pr-review.sent.dark.png]
     design_ref: mocks/DS-pr-review.html
     status: implemented
+  - id: DS-pr-notifications
+    kind: screen
+    source: null   # web/src/pages/NotificationsPage.tsx once the mock is confirmed (D-024)
+    screenshots: []
+    design_ref: mocks/DS-pr-notifications.html
+    status: draft
