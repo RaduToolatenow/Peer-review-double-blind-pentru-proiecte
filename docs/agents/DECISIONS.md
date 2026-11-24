@@ -28,6 +28,7 @@
 - D-020 · Email, sign-up, confirmation and password reset
 - D-021 · pg-boss loaded on demand, one job every minute
 - D-022 · Reviewer allocation, withdrawals and late arrivals
+- D-023 · A review is sent once, complete and final
 
 ---
 
@@ -238,5 +239,15 @@
 - **Why:** The brief requires automatic allocation with k reviews per submission, at most k+1 per reviewer, no review of your own team, balanced loads, and handling of late arrivals and withdrawals without redoing everything. The user chose the job trigger, student withdrawal, taking from the busiest and relaxing the k+1 limit.
 - **Rejected:** A professor's allocation button. The professor removing a team as the withdrawal. Late arrivals getting nothing. Allocating nothing when reviewers are short.
 - **Evidence:** not built yet; the allocation plan of 2026-11-24.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-24
+
+## D-023 · A review is sent once, complete and final
+- **Status:** approved
+- **Date:** 2026-11-24
+- **Rule:** A reviewer sends a review once, with a level and at least 20 characters of feedback (after trimming) for every criterion of the assignment's rubric; after that it cannot change. The database enforces the feedback length, that the level belongs to the criterion and the criterion to the rubric, that a review is `SUBMITTED` only with every criterion scored, and that a sent review never changes. Only its reviewer sends it, between allocation and the review deadline. The reviewer sees the submission's link, description and cleaned file and the rubric, never the team. The author's team sees received reviews only on the results page, after the review deadline.
+- **Why:** The brief requires double-blind reviews with text feedback for every criterion. The user chose final-on-send, the 20-character minimum and the author view on the results page.
+- **Rejected:** Drafts saved on the server. Changing a sent review until the deadline. Authors seeing reviews as they arrive.
+- **Evidence:** not built yet; the reviews plan of 2026-11-24.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-24
