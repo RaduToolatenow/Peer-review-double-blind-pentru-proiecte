@@ -115,6 +115,17 @@ export interface MyAssignment extends Deadlines {
 
 export type ReviewStatus = 'ALLOCATED' | 'SUBMITTED';
 
+/** A notification as the server tells it; never a team or a colleague (D-024). */
+export interface AppNotification {
+  id: string;
+  kind: 'REVIEWS_ALLOCATED' | 'REVIEW_REMINDER' | 'SUBMISSION_REMINDER';
+  assignmentId: string;
+  title: string;
+  text: string;
+  createdAt: string;
+  read: boolean;
+}
+
 export interface ScoreInput {
   criterionId: string;
   levelId: string;
@@ -273,6 +284,8 @@ export const api = {
   withdraw: (assignmentId: string) => request<{ withdrawn: true }>('POST', `/my/assignments/${assignmentId}/withdraw`),
   review: (id: string) => request<MyReview>('GET', `/my/reviews/${id}`),
   sendReview: (id: string, scores: ScoreInput[]) => request<MyReview>('POST', `/my/reviews/${id}`, { scores }),
+  notifications: () => request<{ unread: number; notifications: AppNotification[] }>('GET', '/my/notifications'),
+  markNotificationsRead: () => request<void>('POST', '/my/notifications/read'),
   drafts: () => request<RubricSummary[]>('GET', '/rubrics'),
   rubric: (id: string) => request<Rubric>('GET', `/rubrics/${id}`),
   createRubric: (title: string, criteria: CriterionInput[]) => request<Rubric>('POST', '/rubrics', { title, criteria }),

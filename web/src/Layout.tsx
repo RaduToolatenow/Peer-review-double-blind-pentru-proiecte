@@ -1,9 +1,12 @@
-import { ReactNode, useState } from 'react';
-import { NavLink, Outlet } from 'react-router';
-import { logout, User } from './api';
+import { ReactNode, useEffect, useState } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router';
+import { api, logout, User } from './api';
 import { Brand } from './Brand';
 
-/** DS-pr-menu: the professor and admin menu (D-015). NavLink marks the current page with aria-current. */
+/**
+ * DS-pr-menu: the professor and admin menu (D-015), and the student's, with the unread
+ * notifications (D-024). NavLink marks the current page with aria-current.
+ */
 export function Layout({ user, onLogout }: { user: User; onLogout: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [leaving, setLeaving] = useState(false);
@@ -21,6 +24,7 @@ export function Layout({ user, onLogout }: { user: User; onLogout: () => void })
   }
 
   const staff = user.role !== 'STUDENT';
+  const unread = useUnread(!staff);
   return (
     <div className="page">
       <header className="header">
@@ -33,6 +37,14 @@ export function Layout({ user, onLogout }: { user: User; onLogout: () => void })
             {user.role === 'ADMIN' && <NavLink to="/profesori">Profesori</NavLink>}
           </nav>
         )}
+        {!staff && (
+          <nav className="nav" aria-label="Meniu">
+            <NavLink to="/" end>
+              Temele mele
+            </NavLink>
+            <NavLink to="/notificari">{unread > 0 ? `Notificări (${unread})` : 'Notificări'}</NavLink>
+          </nav>
+        )}
         <button className="secondary" type="button" onClick={handleLogout} disabled={leaving}>
           Deconectare
         </button>
@@ -43,6 +55,24 @@ export function Layout({ user, onLogout }: { user: User; onLogout: () => void })
       </main>
     </div>
   );
+}
+
+/** A student's unread notifications, counted again on every page change. A failure shows no count. */
+function useUnread(enabled: boolean): number {
+  const { pathname } = useLocation();
+  const [unread, setUnread] = useState(0);
+  useEffect(() => {
+    if (!enabled) return;
+    let current = true;
+    api
+      .notifications()
+      .then((data) => current && setUnread(data.unread))
+      .catch(() => current && setUnread(0));
+    return () => {
+      current = false;
+    };
+  }, [enabled, pathname]);
+  return unread;
 }
 
 export function ErrorText({ message }: { message: string }) {

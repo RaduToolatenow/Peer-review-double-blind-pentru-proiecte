@@ -21,8 +21,8 @@
 - [x] Limitarea încercărilor de autentificare (D-017, D-018)
 - [x] Timp de răspuns egal la login pentru email existent și inexistent (D-017)
 - [x] Clase și echipe cu cod, schițe de grile (1–100 criterii), trimiterea către o clasă, grile active cu termene (D-011–D-015)
-- [ ] Termenele aplicate la predare, evaluare și contestații (cu jobul programat)
-- [ ] Job programat cu pg-boss pentru închiderea fazelor și notificări
+- [ ] Termenele aplicate la predare, evaluare și contestații (cu jobul programat): predarea și evaluarea gata; contestațiile odată cu ele
+- [x] Job programat cu pg-boss pentru închiderea fazelor și notificări (D-021, D-024)
 - [x] Predări cu link și fișier, în Supabase Storage (D-016)
 - [x] Curățarea metadatelor din PDF și DOCX; servire prin proxy, fără numele original
 - [x] Alocarea evaluatorilor cu toate constrângerile (D-021, D-022)

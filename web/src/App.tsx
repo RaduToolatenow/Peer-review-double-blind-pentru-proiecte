@@ -17,6 +17,7 @@ import { ClassDetailPage } from './pages/ClassDetailPage';
 import { ClassesPage } from './pages/ClassesPage';
 import { JoinTeamPage } from './pages/JoinTeamPage';
 import { MyAssignmentsPage } from './pages/MyAssignmentsPage';
+import { NotificationsPage } from './pages/NotificationsPage';
 import { ProfessorRubricsPage, ProfessorsPage } from './pages/ProfessorsPage';
 import { ReviewPage } from './pages/ReviewPage';
 import { RubricDraftsPage } from './pages/RubricDraftsPage';
@@ -89,6 +90,7 @@ export function App() {
               <Route index element={<MyAssignmentsPage />} />
               <Route path="echipa" element={<JoinTeamPage />} />
               <Route path="evaluari/:id" element={<ReviewPage />} />
+              <Route path="notificari" element={<NotificationsPage />} />
               <Route path="inscriere/:code" element={<JoinAssignmentPage />} />
             </>
           )}
