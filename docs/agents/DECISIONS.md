@@ -26,6 +26,8 @@
 - D-018 · Visitor IP behind Cloudflare and Render
 - D-019 · Visual design inspired by smartportal, without university branding
 - D-020 · Email, sign-up, confirmation and password reset
+- D-021 · pg-boss loaded on demand, one job every minute
+- D-022 · Reviewer allocation, withdrawals and late arrivals
 
 ---
 
@@ -218,3 +220,23 @@
 - **Evidence:** not built yet.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-22
+
+## D-021 · pg-boss loaded on demand, one job every minute
+- **Status:** approved
+- **Date:** 2026-11-24
+- **Rule:** pg-boss is pinned to an exact version and loaded with `import()` only when jobs start, never in tests (`JOBS=off`). Its pool has at most 2 connections. One job, `allocate-due`, runs every minute and handles every assignment whose phase is due, instead of one job per assignment at its deadline. If the current ESM-only pg-boss cannot be loaded from the CommonJS API (D-008), the version is 10.4.2, the last CommonJS release.
+- **Why:** D-001 chose pg-boss for scheduled jobs. A job every minute needs no rescheduling when a professor changes a deadline, and it catches runs missed during a restart or deploy. Two connections keep the Supabase session pooler free (D-009).
+- **Rejected:** One delayed job per assignment at its deadline. Moving the API to ES modules for pg-boss.
+- **Evidence:** not built yet; the allocation plan of 2026-11-24.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-24
+
+## D-022 · Reviewer allocation, withdrawals and late arrivals
+- **Status:** approved
+- **Date:** 2026-11-24
+- **Rule:** When the submission deadline passes, the system allocates once. The reviewers are the members of the class's teams plus those who joined through the assignment's link, minus those who withdrew. Only submissions of evaluated teams are allocated. Every submission gets k different reviewers, never from its own team, which a database trigger also enforces. Loads are balanced and at most k+1, a limit relaxed only when a submission would otherwise get fewer than k. A submission with fewer than k eligible reviewers gets all of them. The order is random. A student may withdraw from an assignment until the review deadline, and the withdrawal is final. Their unstarted (`ALLOCATED`) reviews move one by one to the eligible reviewer with the lowest load. Their submitted reviews and their team's submission stay. Someone who joins after allocation takes unstarted reviews from the busiest reviewers, up to the average load. Nothing else moves. Joining the team whose submission you are allocated moves that review to someone else; if you already submitted it, the join is refused with 409. Reviewers who joined only through the link see the assignment in their list.
+- **Why:** The brief requires automatic allocation with k reviews per submission, at most k+1 per reviewer, no review of your own team, balanced loads, and handling of late arrivals and withdrawals without redoing everything. The user chose the job trigger, student withdrawal, taking from the busiest and relaxing the k+1 limit.
+- **Rejected:** A professor's allocation button. The professor removing a team as the withdrawal. Late arrivals getting nothing. Allocating nothing when reviewers are short.
+- **Evidence:** not built yet; the allocation plan of 2026-11-24.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-24

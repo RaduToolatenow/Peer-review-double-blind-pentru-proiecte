@@ -18,6 +18,7 @@
 - Q-007 · How do users authenticate: password accounts, invitations or something else? · _answered_
 - Q-008 · Are pilot submissions individual, or do teams exist? · _answered_
 - Q-009 · What is the maximum number of criteria in a rubric, and what does a rubric apply to? · _answered_
+- Q-010 · What is a "round", and should a reviewer avoid a team they already reviewed?
 
 ---
 
@@ -77,3 +78,9 @@
 - **User answers (2026-11-17):** At most 100 criteria per rubric. The user wants all three uses: a rubric for every team of an assignment, the same rubric reused across assignments, and a rubric applied only to chosen teams within an assignment. The requirements are the user's own, not from the teacher interview.
 - **Answer:** Teams not chosen are not evaluated, unless the professor gives them another rubric.
 - **Recorded as:** D-011
+
+## Q-010 · What is a "round", and should a reviewer avoid a team they already reviewed?
+- **Status:** open
+- **Blocks:** the brief's rule "never the same pair twice if the assignment has several rounds"; the model has no rounds yet.
+- **Who answers:** the student
+- **Known:** Within one assignment a reviewer reviews a submission at most once (`reviews` unique on submission and reviewer).
