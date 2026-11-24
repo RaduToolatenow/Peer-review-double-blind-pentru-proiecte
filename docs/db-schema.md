@@ -20,6 +20,8 @@ erDiagram
     teams ||--o{ submissions : "predă"
     submissions ||--o{ reviews : "primește"
     users ||--o{ reviews : "evaluează"
+    users ||--o{ notifications : "primește"
+    assignments ||--o{ notifications : "despre"
     reviews ||--o{ review_scores : "conține"
     rubric_criteria ||--o{ review_scores : "notat prin"
     criterion_levels ||--o{ review_scores : "ales în"
@@ -112,6 +114,14 @@ erDiagram
         uuid level_id FK
         text feedback
     }
+    notifications {
+        uuid id PK
+        uuid user_id FK
+        uuid assignment_id FK
+        enum kind
+        timestamptz read_at
+        timestamptz emailed_at
+    }
     disputes {
         uuid id PK
         uuid review_id FK
@@ -155,6 +165,7 @@ Tabela `login_failures` ține autentificările eșuate din ultimele 15 minute, p
 | O clasă cu teme trimise nu se șterge | cheie străină `ON DELETE RESTRICT` din `assignments` |
 | Nimeni nu evaluează predarea propriei echipe (D-022) | trigger `reviews_guard_own_team` |
 | Un student se retrage o singură dată dintr-o temă (D-022) | cheie primară `assignment_withdrawals (assignment_id, user_id)` |
+| O singură notificare per student, temă și eveniment (D-024) | `notifications (user_id, assignment_id, kind)` unic |
 | Un criteriu are un singur scor per evaluare | cheie primară `review_scores (review_id, criterion_id)` |
 | Feedback de cel puțin 20 de caractere, fără spațiile de la capete (D-023) | `CHECK review_scores_feedback_length` |
 | Nivelul ales aparține criteriului notat (D-023) | cheie străină `review_scores (level_id, criterion_id)` → `criterion_levels (id, criterion_id)` |
@@ -189,3 +200,15 @@ Regulile sunt funcții pure în [api/src/allocation/allocate.ts](../api/src/allo
 1. Un job pg-boss (D-021) rulează în fiecare minut și alocă temele cu termenul de predare trecut și `allocated_at` gol, apoi setează `allocated_at`.
 2. Evaluatorii sunt membrii echipelor clasei și cei din `assignment_reviewers`, fără cei din `assignment_withdrawals`.
 3. O evaluare `ALLOCATED` (încă netrimisă) se poate muta; una `SUBMITTED` rămâne.
+
+## Notificările (D-024)
+
+Același job pg-boss, după alocare, înregistrează notificările datorate și apoi trimite pe email cel mult 50 pe rulare, pe cele cu `emailed_at` gol. Un email eșuat rămâne cu `emailed_at` gol și se reîncearcă la rularea următoare. Textul se construiește la afișare, din temă și din evaluările studentului, deci nu e stocat.
+
+| `kind` | Când | Cui |
+|---|---|---|
+| `REVIEWS_ALLOCATED` | după alocare, cât timp termenul de evaluare nu a trecut | fiecărui evaluator, o dată |
+| `REVIEW_REMINDER` | în ultimele 24 de ore dinaintea termenului de evaluare | evaluatorilor cu evaluări netrimise, care nu s-au retras |
+| `SUBMISSION_REMINDER` | în ultimele 24 de ore dinaintea termenului de predare | membrilor echipelor evaluate fără predare |
+
+Doar conturile confirmate primesc notificări.

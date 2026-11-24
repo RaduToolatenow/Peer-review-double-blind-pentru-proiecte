@@ -30,6 +30,13 @@ enum EmailTokenPurpose {
   RESET
 }
 
+// D-024: the events the every-minute job notifies students about.
+enum NotificationKind {
+  REVIEWS_ALLOCATED
+  REVIEW_REMINDER
+  SUBMISSION_REMINDER
+}
+
 enum DisputeStatus {
   OPEN
   UPHELD
@@ -54,8 +61,9 @@ model User {
   emailTokens     EmailToken[]
   reviewerOf      AssignmentReviewer[]
   withdrawals     AssignmentWithdrawal[]
-  disputesFiled   Dispute[]            @relation("DisputeAuthor")
-  disputesDecided Dispute[]            @relation("DisputeDecider")
+  disputesFiled   Dispute[]              @relation("DisputeAuthor")
+  disputesDecided Dispute[]              @relation("DisputeDecider")
+  notifications   Notification[]
 
   @@map("users")
 }
@@ -133,14 +141,15 @@ model Assignment {
   // D-022: set once, when the job allocates reviewers after the submission deadline.
   allocatedAt        DateTime?   @map("allocated_at") @db.Timestamptz
 
-  createdBy   User                 @relation(fields: [createdById], references: [id])
-  rubric      Rubric               @relation(fields: [rubricId], references: [id], onDelete: Restrict)
-  class       Class                @relation(fields: [classId], references: [id], onDelete: Restrict)
-  chosenTeams AssignmentTeam[]
-  submissions Submission[]
-  reviewers   AssignmentReviewer[]
-  withdrawals AssignmentWithdrawal[]
-  emailTokens EmailToken[]
+  createdBy     User                   @relation(fields: [createdById], references: [id])
+  rubric        Rubric                 @relation(fields: [rubricId], references: [id], onDelete: Restrict)
+  class         Class                  @relation(fields: [classId], references: [id], onDelete: Restrict)
+  chosenTeams   AssignmentTeam[]
+  submissions   Submission[]
+  reviewers     AssignmentReviewer[]
+  withdrawals   AssignmentWithdrawal[]
+  emailTokens   EmailToken[]
+  notifications Notification[]
 
   @@unique([id, classId])
   @@map("assignments")
@@ -351,4 +360,21 @@ model Dispute {
   decidedBy User?  @relation("DisputeDecider", fields: [decidedById], references: [id])
 
   @@map("disputes")
+}
+
+// D-024: one row per student, assignment and event; shown in the app and emailed until emailed_at is set.
+model Notification {
+  id           String           @id @default(uuid()) @db.Uuid
+  userId       String           @map("user_id") @db.Uuid
+  assignmentId String           @map("assignment_id") @db.Uuid
+  kind         NotificationKind
+  createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  readAt       DateTime?        @map("read_at") @db.Timestamptz
+  emailedAt    DateTime?        @map("emailed_at") @db.Timestamptz
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, assignmentId, kind])
+  @@map("notifications")
 }

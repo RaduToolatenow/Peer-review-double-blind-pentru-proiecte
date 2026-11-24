@@ -103,8 +103,9 @@ describe('notifications (D-024)', () => {
     expect(await rowsOf('REVIEW_REMINDER')).toHaveLength(0);
 
     const [done, left, ...waiting] = students;
-    await sendAll(done.id);
+    // Withdraw first: a withdrawal moves unsent reviews, which could give `done` a new one.
     await left.agent.post(`/api/my/assignments/${assignment.id}/withdraw`).expect(200);
+    await sendAll(done.id);
     await runJob();
 
     const reminded = (await rowsOf('REVIEW_REMINDER')).map((r) => r.userId).sort();

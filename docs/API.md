@@ -154,6 +154,15 @@ Predarea are forma `{ id, link, description, fileType, fileUrl, submittedAt, upd
 
 Evaluarea nu spune niciodată echipa sau autorul predării; `submission` are forma de mai sus. O evaluare mutată la alt coleg (D-022) răspunde 404 fostului evaluator.
 
+## Notificări (D-024)
+
+| Rută | Cine | Ce face | Coduri |
+|---|---|---|---|
+| `GET /api/my/notifications` | `STUDENT` | `{ unread, notifications: [{ id, kind, assignmentId, title, text, createdAt, read }] }`, cele mai noi primele | 200 |
+| `POST /api/my/notifications/read` | `STUDENT` | Le marchează pe toate citite | 204 |
+
+`kind` e `REVIEWS_ALLOCATED`, `REVIEW_REMINDER` sau `SUBMISSION_REMINDER`. Textul nu numește niciodată o echipă sau un coleg (D-014).
+
 ## Admin (D-015)
 
 Necesită rolul `ADMIN`. Doar citire.
