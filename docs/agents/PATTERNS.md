@@ -9,6 +9,7 @@
 - PATTERN-001 · Protect a route with SessionGuard and Roles · approved
 - PATTERN-002 · Rules in the database, 409 from the API · approved
 - PATTERN-003 · Page data with useLoad and Loaded · approved
+- PATTERN-004 · Lock the assignment row before changing its allocation · candidate
 
 ---
 
@@ -38,3 +39,11 @@
 - **Why:** Every page covers the loading and error states the same way.
 - **Source:** code · confidence high
 - **Confirmed:** 2026-11-17
+
+## PATTERN-004 · Lock the assignment row before changing its allocation
+- **Status:** candidate
+- **Use when:** A route or job reads an assignment's reviews and writes new ones from what it read, such as allocation, withdrawal or a late join.
+- **How:** Inside `this.prisma.$transaction(async (tx) => ...)`, first run `SELECT 1 FROM "assignments" WHERE "id" = $1 FOR UPDATE`, then read the state and write. Keep the rules themselves in pure functions that take a random number generator.
+- **Example:** api/src/allocation/allocation.service.ts (`lock`, `loadState`, `apply`), api/src/allocation/allocate.ts
+- **Why:** Two changes to one assignment at the same time would read the same loads and break the k and k+1 rules; the lock makes them run one after the other.
+- **Source:** code · confidence medium

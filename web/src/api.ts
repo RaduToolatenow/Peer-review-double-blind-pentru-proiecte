@@ -103,9 +103,12 @@ export interface MyAssignment extends Deadlines {
   title: string;
   description: string | null;
   className: string;
-  teamName: string;
+  /** null for a reviewer who joined only through the assignment link (D-022). */
+  teamName: string | null;
   phase: Phase;
   submission: Submission | null;
+  withdrawn: boolean;
+  canWithdraw: boolean;
 }
 
 export interface ClassSummary {
@@ -243,6 +246,7 @@ export const account = {
 
 export const api = {
   myAssignments: () => request<MyAssignment[]>('GET', '/my/assignments'),
+  withdraw: (assignmentId: string) => request<{ withdrawn: true }>('POST', `/my/assignments/${assignmentId}/withdraw`),
   drafts: () => request<RubricSummary[]>('GET', '/rubrics'),
   rubric: (id: string) => request<Rubric>('GET', `/rubrics/${id}`),
   createRubric: (title: string, criteria: CriterionInput[]) => request<Rubric>('POST', '/rubrics', { title, criteria }),

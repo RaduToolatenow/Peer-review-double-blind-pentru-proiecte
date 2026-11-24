@@ -8,7 +8,10 @@ import { PHASE_LABELS, PHASE_TONES } from './ActiveRubricsPage';
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
 
-/** DS-pr-my-assignments: a student's assignments and their team's submission (D-016). */
+/**
+ * DS-pr-my-assignments: a student's assignments, their team's submission (D-016) and the
+ * withdrawal from reviewing (D-022).
+ */
 export function MyAssignmentsPage() {
   const state = useLoad(() => api.myAssignments(), []);
 
@@ -36,6 +39,7 @@ export function MyAssignmentsPage() {
                     onSubmitted={(updated) =>
                       state.setData(assignments.map((a) => (a.id === updated.id ? updated : a)))
                     }
+                    onWithdrawn={() => void state.reload()}
                   />
                 </li>
               ))}
@@ -50,16 +54,18 @@ export function MyAssignmentsPage() {
 function AssignmentCard({
   assignment: a,
   onSubmitted,
+  onWithdrawn,
 }: {
   assignment: MyAssignment;
   onSubmitted: (assignment: MyAssignment) => void;
+  onWithdrawn: () => void;
 }) {
   const open = new Date(a.submissionDeadline).getTime() > Date.now();
   return (
     <>
       <h2>{a.title}</h2>
       <p>
-        Clasa: {a.className} · Echipa ta: {a.teamName}
+        Clasa: {a.className} · {a.teamName === null ? 'Evaluator prin linkul temei' : `Echipa ta: ${a.teamName}`}
       </p>
       {a.description && <p>{a.description}</p>}
       <p className="muted">
@@ -67,11 +73,13 @@ function AssignmentCard({
       </p>
       <p>
         <span className={`badge ${PHASE_TONES[a.phase]}`}>{PHASE_LABELS[a.phase]}</span>{' '}
-        {a.submission ? (
-          <span className="badge success">Predat pe {formatShort(a.submission.updatedAt)}</span>
-        ) : (
-          <span className="badge warning">Nu ați predat încă</span>
-        )}
+        {a.teamName !== null &&
+          (a.submission ? (
+            <span className="badge success">Predat pe {formatShort(a.submission.updatedAt)}</span>
+          ) : (
+            <span className="badge warning">Nu ați predat încă</span>
+          ))}{' '}
+        {a.withdrawn && <span className="badge warning">Te-ai retras din evaluare</span>}
       </p>
       {a.submission && (
         <dl className="facts">
@@ -87,16 +95,52 @@ function AssignmentCard({
           </dd>
         </dl>
       )}
-      {open ? (
-        <SubmissionForm assignment={a} onSubmitted={onSubmitted} />
-      ) : (
-        <p className="muted">
-          {a.submission
-            ? 'Termenul de predare a trecut; predarea nu se mai poate schimba.'
-            : 'Termenul de predare a trecut fără o predare a echipei tale.'}
-        </p>
-      )}
+      {a.teamName !== null &&
+        (open ? (
+          <SubmissionForm assignment={a} onSubmitted={onSubmitted} />
+        ) : (
+          <p className="muted">
+            {a.submission
+              ? 'Termenul de predare a trecut; predarea nu se mai poate schimba.'
+              : 'Termenul de predare a trecut fără o predare a echipei tale.'}
+          </p>
+        ))}
+      {a.withdrawn && <p className="muted">Nu mai primești proiecte de evaluat la această temă.</p>}
+      {a.canWithdraw && <Withdrawal assignment={a} onWithdrawn={onWithdrawn} />}
     </>
+  );
+}
+
+/** Withdrawing for good, until the review deadline; unsubmitted reviews go to colleagues (D-022). */
+function Withdrawal({ assignment: a, onWithdrawn }: { assignment: MyAssignment; onWithdrawn: () => void }) {
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function withdraw() {
+    if (!window.confirm(`Te retragi din evaluarea temei „${a.title}”? Nu poți reveni.`)) return;
+    setError(null);
+    setBusy(true);
+    try {
+      await api.withdraw(a.id);
+      onWithdrawn();
+    } catch (failure) {
+      setError((failure as Error).message);
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="section" aria-label="Retragerea din evaluare">
+      <h2>Retragerea din evaluare</h2>
+      <p className="muted">
+        Dacă nu mai poți evalua, te poți retrage până la termenul de evaluare. Evaluările pe care nu le-ai trimis trec la
+        alți colegi{a.teamName !== null && ', iar predarea echipei tale rămâne'}. Retragerea nu se poate anula.
+      </p>
+      {error && <ErrorText message={error} />}
+      <button className="secondary" type="button" disabled={busy} onClick={() => void withdraw()}>
+        {busy ? 'Se trimite…' : 'Mă retrag din evaluare'}
+      </button>
+    </section>
   );
 }
 

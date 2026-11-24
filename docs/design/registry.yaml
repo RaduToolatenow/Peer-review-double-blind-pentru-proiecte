@@ -79,7 +79,7 @@ designs:
     source: web/src/pages/MyAssignmentsPage.tsx
     screenshots: [screens/DS-pr-my-assignments.light.png, screens/DS-pr-my-assignments.dark.png]
     design_ref: mocks/DS-pr-my-assignments.html
-    status: draft   # D-022 withdrawal states; built after confirmation
+    status: implemented
   - id: DS-pr-style-tile
     kind: foundation
     source: web/src/styles.css

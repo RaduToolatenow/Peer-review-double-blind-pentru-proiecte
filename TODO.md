@@ -25,8 +25,8 @@
 - [ ] Job programat cu pg-boss pentru închiderea fazelor și notificări
 - [x] Predări cu link și fișier, în Supabase Storage (D-016)
 - [x] Curățarea metadatelor din PDF și DOCX; servire prin proxy, fără numele original
-- [ ] Alocarea evaluatorilor cu toate constrângerile
-- [ ] Sosiri târzii și retrageri, cu realocare minimală
+- [x] Alocarea evaluatorilor cu toate constrângerile (D-021, D-022)
+- [x] Sosiri târzii și retrageri, cu realocare minimală (D-022)
 - [ ] Evaluare double-blind cu feedback obligatoriu per criteriu
 - [ ] Calibrare și fiabilitatea evaluatorului
 - [ ] Agregarea notelor ca funcție pură

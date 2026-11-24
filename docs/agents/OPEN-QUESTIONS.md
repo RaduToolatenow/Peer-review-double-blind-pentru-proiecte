@@ -19,6 +19,7 @@
 - Q-008 · Are pilot submissions individual, or do teams exist? · _answered_
 - Q-009 · What is the maximum number of criteria in a rubric, and what does a rubric apply to? · _answered_
 - Q-010 · What is a "round", and should a reviewer avoid a team they already reviewed?
+- Q-011 · Should members of a team the rubric does not apply to see the assignment in their list?
 
 ---
 
@@ -84,3 +85,9 @@
 - **Blocks:** the brief's rule "never the same pair twice if the assignment has several rounds"; the model has no rounds yet.
 - **Who answers:** the student
 - **Known:** Within one assignment a reviewer reviews a submission at most once (`reviews` unique on submission and reviewer).
+
+## Q-011 · Should members of a team the rubric does not apply to see the assignment in their list?
+- **Status:** open
+- **Blocks:** withdrawing, and later reviewing, from the student's list for those members.
+- **Who answers:** the student
+- **Known:** D-011 says their submission is not evaluated but they may still review, and D-022 counts them as reviewers. `GET /api/my/assignments` lists an assignment only when the student's team is evaluated or the student joined through the link, so these members are allocated reviews but cannot see the assignment.
