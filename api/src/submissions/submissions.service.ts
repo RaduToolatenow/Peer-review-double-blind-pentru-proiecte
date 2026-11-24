@@ -49,8 +49,9 @@ export class SubmissionsService {
   ) {}
 
   /**
-   * The assignments a student's teams are evaluated in, with their team's submission, and those
-   * they joined through the link as a reviewer only (`teamName` null, D-022).
+   * The assignments of a student's classes, with their team's submission when the team is
+   * evaluated, and those they joined through the link. A student whose team is not evaluated, or
+   * who joined through the link, sees the assignment as a reviewer only (`teamName` null, D-022, Q-011).
    */
   async myAssignments(userId: string) {
     const [memberships, linked, withdrawals] = await Promise.all([
@@ -74,29 +75,26 @@ export class SubmissionsService {
       orderBy: { submissionDeadline: 'asc' },
     });
     const now = new Date();
-    return assignments.flatMap((a) => {
+    return assignments.map((a) => {
       const membership = teamByClass.get(a.classId);
       const evaluated =
         membership !== undefined &&
         teamIsEvaluated({ rubricAppliesTo: a.rubricAppliesTo, chosenTeamIds: a.chosenTeams.map((t) => t.teamId) }, membership.teamId);
-      if (!evaluated && !linkedIds.has(a.id)) return [];
       const withdrawn = withdrawnIds.has(a.id);
-      return [
-        {
-          id: a.id,
-          title: a.title,
-          description: a.description,
-          className: a.class.name,
-          teamName: evaluated ? membership.team.name : null,
-          submissionDeadline: a.submissionDeadline,
-          reviewDeadline: a.reviewDeadline,
-          disputeDeadline: a.disputeDeadline,
-          phase: phaseAt(a, now),
-          submission: evaluated && a.submissions[0] ? submissionView(a.submissions[0]) : null,
-          withdrawn,
-          canWithdraw: !withdrawn && now < a.reviewDeadline,
-        },
-      ];
+      return {
+        id: a.id,
+        title: a.title,
+        description: a.description,
+        className: a.class.name,
+        teamName: evaluated ? membership.team.name : null,
+        submissionDeadline: a.submissionDeadline,
+        reviewDeadline: a.reviewDeadline,
+        disputeDeadline: a.disputeDeadline,
+        phase: phaseAt(a, now),
+        submission: evaluated && a.submissions[0] ? submissionView(a.submissions[0]) : null,
+        withdrawn,
+        canWithdraw: !withdrawn && now < a.reviewDeadline,
+      };
     });
   }
 

@@ -77,7 +77,7 @@ designs:
   - id: DS-pr-my-assignments
     kind: screen
     source: web/src/pages/MyAssignmentsPage.tsx
-    screenshots: [screens/DS-pr-my-assignments.light.png, screens/DS-pr-my-assignments.dark.png]
+    screenshots: [screens/DS-pr-my-assignments.light.png, screens/DS-pr-my-assignments.dark.png, screens/DS-pr-my-assignments.reviewer-only.light.png, screens/DS-pr-my-assignments.reviewer-only.dark.png]
     design_ref: mocks/DS-pr-my-assignments.html
     status: implemented
   - id: DS-pr-style-tile

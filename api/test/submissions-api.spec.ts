@@ -139,7 +139,10 @@ describe('submissions API (D-016)', () => {
     });
     const left = await submit(student, assignment.id, await pdf()).expect(403);
     expect(left.body.message).toBe('Echipa ta nu este evaluată la această temă.');
-    expect((await student.get('/api/my/assignments').expect(200)).body).toEqual([]);
+    // Q-011: a member of a team left out still reviews, so they see the assignment as a reviewer only.
+    const list = (await student.get('/api/my/assignments').expect(200)).body;
+    expect(list).toHaveLength(1);
+    expect(list[0]).toMatchObject({ id: assignment.id, teamName: null, submission: null, canWithdraw: true });
   });
 
   it('lets the professor and the team download, and nobody else', async () => {

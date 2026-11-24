@@ -65,7 +65,7 @@ function AssignmentCard({
     <>
       <h2>{a.title}</h2>
       <p>
-        Clasa: {a.className} · {a.teamName === null ? 'Evaluator prin linkul temei' : `Echipa ta: ${a.teamName}`}
+        Clasa: {a.className} · {a.teamName === null ? 'Doar evaluator la această temă' : `Echipa ta: ${a.teamName}`}
       </p>
       {a.description && <p>{a.description}</p>}
       <p className="muted">
