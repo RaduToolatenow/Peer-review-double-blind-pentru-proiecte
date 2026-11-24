@@ -109,18 +109,23 @@ Gata:
 
 - schema bazei de date, cu migrări și constrângeri;
 - Docker Compose pentru PostgreSQL;
-- autentificare, deconectare și roluri verificate pe server;
-- paginile de autentificare și de start;
+- autentificare cu limită de încercări, deconectare și roluri verificate pe server;
+- înscriere prin linkul temei, doar cu email `@ulbsibiu.ro` confirmat, și „Am uitat parola”;
 - teste automate și CI;
 - deploy pe Render, cu baza de date pe Supabase;
 - pentru profesor și admin: schițe de grile, trimiterea unei grile către o clasă, grile active cu termene, clase și echipe cu cod de intrare;
 - pentru admin: grilele fiecărui profesor, doar citire;
-- pentru student: intrarea în echipă cu codul primit și predarea proiectului (link și fișier PDF sau DOCX curățat de autor) până la termenul de predare.
+- pentru student: intrarea în echipă cu codul primit și predarea proiectului (link și fișier PDF sau DOCX curățat de autor) până la termenul de predare;
+- alocarea automată a evaluatorilor după termenul de predare, cu retrageri și sosiri târzii, printr-un job pg-boss care rulează în fiecare minut;
+- evaluarea double-blind: evaluatorul vede proiectul și grila, niciodată echipa, și trimite o singură dată un nivel și cel puțin 20 de caractere de feedback la fiecare criteriu;
+- notificări pe email și în aplicație: proiecte primite de evaluat și amintiri cu 24 de ore înaintea termenelor de predare și de evaluare.
 
 Nu e gata:
 
-- înscrierea prin link cu email `@ulbsibiu.ro` verificat;
-- alocarea, evaluările, agregarea și contestațiile;
-- pilotul cu colegii.
+- calibrarea, fiabilitatea evaluatorului și nota de evaluator;
+- agregarea notelor și pagina de rezultate;
+- contestațiile și termenul lor;
+- exportul CSV;
+- pilotul cu colegii, interviul cu cadrul didactic, `AI_LOG.md` și `SUBMISSION.md`.
 
 Lista de task-uri este în [TODO.md](TODO.md), iar întrebările deschise în [docs/agents/OPEN-QUESTIONS.md](docs/agents/OPEN-QUESTIONS.md).

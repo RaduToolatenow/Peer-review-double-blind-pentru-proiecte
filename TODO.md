@@ -12,7 +12,7 @@
 - [x] README și listă de task-uri
 - [ ] Discuția cu cadrul didactic și `INTERVIEW.md` început
 - [x] Deploy pe un URL public cu HTTPS (D-009)
-- [ ] Repo public și push
+- [ ] Repo public și push (push-ul e făcut; repo-ul e încă privat)
 - [ ] Clarificat cu profesorul materialul pilotului (Q-002)
 
 ## S2: build
@@ -39,6 +39,6 @@
 
 - [ ] Pilot real: minim 8 predări, fiecare cu minim 2 evaluări; `PILOT.md`
 - [ ] Minim 3 modificări din feedback-ul colegilor, în `docs/agents/DECISIONS.md`
-- [ ] Minim 8 decizii, minim 10 intrări în `AI_LOG.md`, `SUBMISSION.md`
-- [ ] Minim 25 de commit-uri pe minim 8 zile diferite
+- [ ] Minim 8 decizii, minim 10 intrări în `AI_LOG.md`, `SUBMISSION.md` (24 de decizii; `AI_LOG.md` și `SUBMISSION.md` nu există încă)
+- [ ] Minim 25 de commit-uri pe minim 8 zile diferite (pe 24 nov.: 72 de commit-uri, pe 6 zile)
 - [ ] Video demo de 3–5 minute
