@@ -18,8 +18,8 @@
 - Q-007 · How do users authenticate: password accounts, invitations or something else? · _answered_
 - Q-008 · Are pilot submissions individual, or do teams exist? · _answered_
 - Q-009 · What is the maximum number of criteria in a rubric, and what does a rubric apply to? · _answered_
-- Q-010 · What is a "round", and should a reviewer avoid a team they already reviewed?
-- Q-011 · Should members of a team the rubric does not apply to see the assignment in their list?
+- Q-010 · What is a "round", and should a reviewer avoid a team they already reviewed? · _answered_
+- Q-011 · Should members of a team the rubric does not apply to see the assignment in their list? · _answered_
 
 ---
 
@@ -81,13 +81,17 @@
 - **Recorded as:** D-011
 
 ## Q-010 · What is a "round", and should a reviewer avoid a team they already reviewed?
-- **Status:** open
+- **Status:** answered 2026-11-24
 - **Blocks:** the brief's rule "never the same pair twice if the assignment has several rounds"; the model has no rounds yet.
 - **Who answers:** the student
 - **Known:** Within one assignment a reviewer reviews a submission at most once (`reviews` unique on submission and reviewer).
+- **User answers (2026-11-24):** There are no rounds; one assignment is one round, and the rule above already covers it.
+- **Answer:** No rounds. The brief's "same pair twice" rule is met by the unique review per submission and reviewer.
 
 ## Q-011 · Should members of a team the rubric does not apply to see the assignment in their list?
-- **Status:** open
+- **Status:** answered 2026-11-24
 - **Blocks:** withdrawing, and later reviewing, from the student's list for those members.
 - **Who answers:** the student
 - **Known:** D-011 says their submission is not evaluated but they may still review, and D-022 counts them as reviewers. `GET /api/my/assignments` lists an assignment only when the student's team is evaluated or the student joined through the link, so these members are allocated reviews but cannot see the assignment.
+- **User answers (2026-11-24):** Yes, as reviewers only.
+- **Answer:** `GET /api/my/assignments` also lists an assignment where the student is a member of a team in the class that the rubric does not apply to; the student sees no submission section, only their reviews, and can withdraw.
