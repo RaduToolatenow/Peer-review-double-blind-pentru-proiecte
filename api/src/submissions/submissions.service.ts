@@ -54,13 +54,19 @@ export class SubmissionsService {
    * who joined through the link, sees the assignment as a reviewer only (`teamName` null, D-022, Q-011).
    */
   async myAssignments(userId: string) {
-    const [memberships, linked, withdrawals] = await Promise.all([
+    const [memberships, linked, withdrawals, reviews] = await Promise.all([
       this.prisma.teamMember.findMany({
         where: { userId },
         select: { classId: true, teamId: true, team: { select: { name: true } } },
       }),
       this.prisma.assignmentReviewer.findMany({ where: { userId }, select: { assignmentId: true } }),
       this.prisma.assignmentWithdrawal.findMany({ where: { userId }, select: { assignmentId: true } }),
+      // D-023: numbered in a stable order that says nothing about the team.
+      this.prisma.review.findMany({
+        where: { reviewerId: userId },
+        orderBy: { id: 'asc' },
+        select: { id: true, status: true, submission: { select: { assignmentId: true } } },
+      }),
     ]);
     const teamByClass = new Map(memberships.map((m) => [m.classId, m]));
     const linkedIds = new Set(linked.map((l) => l.assignmentId));
@@ -94,6 +100,9 @@ export class SubmissionsService {
         submission: evaluated && a.submissions[0] ? submissionView(a.submissions[0]) : null,
         withdrawn,
         canWithdraw: !withdrawn && now < a.reviewDeadline,
+        reviews: reviews
+          .filter((r) => r.submission.assignmentId === a.id)
+          .map((r, index) => ({ id: r.id, number: index + 1, status: r.status })),
       };
     });
   }
@@ -148,13 +157,19 @@ export class SubmissionsService {
     return (await this.myAssignments(userId)).find((a) => a.id === assignmentId)!;
   }
 
-  /** The cleaned file, for the assignment's professor or a member of the team; 404 for anyone else. */
+  /** The cleaned file, for the assignment's professor, a member of the team or one of its reviewers (D-023); 404 for anyone else. */
   async download(userId: string, submissionId: string) {
     const submission = await this.prisma.submission.findUnique({
       where: { id: submissionId },
-      include: { assignment: { select: { createdById: true } }, team: { select: { members: { where: { userId } } } } },
+      include: {
+        assignment: { select: { createdById: true } },
+        team: { select: { members: { where: { userId } } } },
+        reviews: { where: { reviewerId: userId }, select: { id: true } },
+      },
     });
-    const allowed = submission && (submission.assignment.createdById === userId || submission.team.members.length > 0);
+    const allowed =
+      submission &&
+      (submission.assignment.createdById === userId || submission.team.members.length > 0 || submission.reviews.length > 0);
     const data = allowed ? await this.files.get(submission.fileKey) : null;
     if (!submission || !data) {
       throw new NotFoundException('Nu am găsit fișierul.');

@@ -31,7 +31,7 @@ describe('rubric constraints (D-011, D-013)', () => {
     });
     const criterion = rubric.criteria[0];
     await ctx.prisma.reviewScore.create({
-      data: { reviewId: review.id, criterionId: criterion.id, levelId: criterion.levels[0].id, feedback: 'Bine' },
+      data: { reviewId: review.id, criterionId: criterion.id, levelId: criterion.levels[0].id, feedback: 'Bine structurat și ușor de citit.' },
     });
   }
 

@@ -119,7 +119,8 @@ export class AllocationService {
   }
 }
 
-async function lock(tx: Tx, assignmentId: string) {
+/** PATTERN-004: locks the assignment row for the rest of the transaction. */
+export async function lock(tx: Tx, assignmentId: string) {
   await tx.$queryRaw`SELECT 1 FROM "assignments" WHERE "id" = ${assignmentId}::uuid FOR UPDATE`;
   return tx.assignment.findUniqueOrThrow({
     where: { id: assignmentId },

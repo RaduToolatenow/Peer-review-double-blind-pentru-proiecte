@@ -8,12 +8,13 @@ import { HealthController } from './health/health.controller';
 import { JobsModule } from './jobs/jobs.module';
 import { MailModule } from './mail/mailer';
 import { PrismaModule } from './prisma/prisma.module';
+import { ReviewsModule } from './reviews/reviews.module';
 import { RubricsModule } from './rubrics/rubrics.module';
 import { SubmissionsModule } from './submissions/submissions.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [PrismaModule, MailModule, AuthModule, UsersModule, AssignmentsModule, RubricsModule, ClassesModule, SubmissionsModule, AllocationModule, JobsModule],
+  imports: [PrismaModule, MailModule, AuthModule, UsersModule, AssignmentsModule, RubricsModule, ClassesModule, SubmissionsModule, AllocationModule, ReviewsModule, JobsModule],
   controllers: [HealthController, AdminController],
 })
 export class AppModule {}

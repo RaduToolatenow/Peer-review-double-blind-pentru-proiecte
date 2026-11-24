@@ -156,6 +156,10 @@ Tabela `login_failures` ține autentificările eșuate din ultimele 15 minute, p
 | Nimeni nu evaluează predarea propriei echipe (D-022) | trigger `reviews_guard_own_team` |
 | Un student se retrage o singură dată dintr-o temă (D-022) | cheie primară `assignment_withdrawals (assignment_id, user_id)` |
 | Un criteriu are un singur scor per evaluare | cheie primară `review_scores (review_id, criterion_id)` |
+| Feedback de cel puțin 20 de caractere, fără spațiile de la capete (D-023) | `CHECK review_scores_feedback_length` |
+| Nivelul ales aparține criteriului notat (D-023) | cheie străină `review_scores (level_id, criterion_id)` → `criterion_levels (id, criterion_id)` |
+| Criteriul notat e din grila temei, iar o evaluare trimisă nu primește scoruri noi (D-023) | trigger `review_scores_guard` |
+| O evaluare devine `SUBMITTED` doar cu toate criteriile notate și apoi nu se mai schimbă (D-023) | trigger `reviews_guard_update` |
 | `k` este cel puțin 1 | `CHECK` în migrare |
 | Termenele sunt în ordine: predare, evaluare, contestații | `CHECK` în migrare |
 | Ponderea unui criteriu este pozitivă | `CHECK` în migrare |

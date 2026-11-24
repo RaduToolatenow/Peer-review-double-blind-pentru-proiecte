@@ -243,6 +243,8 @@ model CriterionLevel {
   scores    ReviewScore[]
 
   @@unique([criterionId, score])
+  // D-023: lets a score's level be checked against its criterion.
+  @@unique([id, criterionId])
   @@map("criterion_levels")
 }
 
@@ -317,6 +319,7 @@ model Review {
   @@map("reviews")
 }
 
+// D-023: written once, when the review is sent; feedback of at least 20 characters, checked in the migration SQL.
 model ReviewScore {
   reviewId    String @map("review_id") @db.Uuid
   criterionId String @map("criterion_id") @db.Uuid
@@ -325,7 +328,8 @@ model ReviewScore {
 
   review    Review          @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   criterion RubricCriterion @relation(fields: [criterionId], references: [id])
-  level     CriterionLevel  @relation(fields: [levelId], references: [id])
+  // D-023: the level must belong to the scored criterion.
+  level     CriterionLevel  @relation(fields: [levelId, criterionId], references: [id, criterionId])
 
   @@id([reviewId, criterionId])
   @@map("review_scores")

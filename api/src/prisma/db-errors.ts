@@ -39,3 +39,20 @@ export function archiveAllowedFrom(error: unknown): Date | null {
   const [, local, hours, minutes = '00'] = match;
   return new Date(`${local.replace(' ', 'T')}${hours}:${minutes}`);
 }
+
+/** D-023: a review with a missing criterion, short feedback, or a level or criterion that does not fit. */
+export function isInvalidReview(error: unknown): boolean {
+  const message = messageOf(error);
+  return (
+    message.includes('review_scores_feedback_length') ||
+    message.includes('criterion is not in the review rubric') ||
+    message.includes('review is incomplete') ||
+    isForeignKeyViolation(error) ||
+    isUniqueViolation(error)
+  );
+}
+
+/** D-023: a sent review never changes. */
+export function isSentReview(error: unknown): boolean {
+  return messageOf(error).includes('review is already sent');
+}

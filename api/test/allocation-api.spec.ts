@@ -54,6 +54,23 @@ describe('allocation, withdrawal and late arrival (D-022)', () => {
 
   const reviewsOf = (reviewerId: string) => ctx.prisma.review.findMany({ where: { reviewerId } });
 
+  /** Sends a review the way the database allows it (D-023): every criterion scored first. */
+  async function markSent(reviewId: string) {
+    const review = await ctx.prisma.review.findUniqueOrThrow({
+      where: { id: reviewId },
+      include: { submission: { include: { assignment: { include: { rubric: { include: { criteria: { include: { levels: true } } } } } } } } },
+    });
+    await ctx.prisma.reviewScore.createMany({
+      data: review.submission.assignment.rubric.criteria.map((c) => ({
+        reviewId,
+        criterionId: c.id,
+        levelId: c.levels[0].id,
+        feedback: 'Un feedback suficient de lung.',
+      })),
+    });
+    await ctx.prisma.review.update({ where: { id: reviewId }, data: { status: ReviewStatus.SUBMITTED, submittedAt: new Date() } });
+  }
+
   it('allocates an assignment past its submission deadline exactly once', async () => {
     const { assignment, students } = await setup();
 
@@ -101,10 +118,7 @@ describe('allocation, withdrawal and late arrival (D-022)', () => {
     await allocation.allocateDue();
     const [me] = students;
     const mine = await reviewsOf(me.id);
-    await ctx.prisma.review.update({
-      where: { id: mine[0].id },
-      data: { status: ReviewStatus.SUBMITTED, submittedAt: new Date() },
-    });
+    await markSent(mine[0].id);
 
     await me.agent.post(`/api/my/assignments/${assignment.id}/withdraw`).expect(200);
 
@@ -190,7 +204,7 @@ describe('allocation, withdrawal and late arrival (D-022)', () => {
     expect(second).toBeDefined();
 
     // A submitted review of the second team blocks joining it.
-    await ctx.prisma.review.update({ where: { id: second.id }, data: { status: ReviewStatus.SUBMITTED, submittedAt: new Date() } });
+    await markSent(second.id);
     const secondTeam = klass.teams.find((t) => t.id === second.submission.teamId)!;
     const refused = await agent.post('/api/teams/join').send({ code: secondTeam.joinCode }).expect(409);
     expect(refused.body.message).toBe('Ai evaluat deja proiectul acestei echipe, deci nu te poți alătura ei.');
