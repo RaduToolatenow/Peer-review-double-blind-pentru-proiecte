@@ -78,4 +78,13 @@ describe('database constraints', () => {
       /review is already sent/,
     );
   });
+
+  it('keeps one notification per student, assignment and event (D-024)', async () => {
+    const { review } = await reviewSetup();
+    const submission = await ctx.prisma.submission.findUniqueOrThrow({ where: { id: review.submissionId } });
+    const row = { userId: review.reviewerId, assignmentId: submission.assignmentId, kind: 'REVIEWS_ALLOCATED' as const };
+    await ctx.prisma.notification.create({ data: row });
+
+    await expect(ctx.prisma.notification.create({ data: row })).rejects.toMatchObject({ code: 'P2002' });
+  });
 });
