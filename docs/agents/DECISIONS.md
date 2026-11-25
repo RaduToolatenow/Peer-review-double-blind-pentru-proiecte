@@ -32,6 +32,7 @@
 - D-024 · Notifications by email and in the app, from the every-minute job
 - D-025 · Calibration, reliability and grade aggregation
 - D-026 · Results page that explains the grade
+- D-027 · Disputes per criterion, decided by the professor
 
 ---
 
@@ -258,12 +259,12 @@
 ## D-024 · Notifications by email and in the app, from the every-minute job
 - **Status:** approved
 - **Date:** 2026-11-24
-- **Rule:** The every-minute job (D-021) records and emails notifications to confirmed students: reviews allocated (once, when the student first has reviews on an allocated assignment before its review deadline), a review reminder in the 24 hours before the review deadline (to reviewers with unsent reviews who have not withdrawn), and a submission reminder in the 24 hours before the submission deadline (to members of evaluated teams without a submission). There is one row per student, assignment and event, unique in the database. An email is retried each minute until it is sent, at most 50 per run. The same rows show in the app on a "Notificări" page, with an unread count in the header; opening the page marks them read. Texts are built when shown, from the event and the assignment, and never name a team or another student.
+- **Rule:** The every-minute job (D-021) records and emails notifications to confirmed students: reviews allocated (once, when the student first has reviews on an allocated assignment before its review deadline), a review reminder in the 24 hours before the review deadline (to reviewers with unsent reviews who have not withdrawn), a submission reminder in the 24 hours before the submission deadline (to members of evaluated teams without a submission), and a dispute decided (to every member of the disputing team, once per dispute, D-027). There is one row per student, assignment and event, unique in the database; for a dispute decided, one row per student and dispute. An email is retried each minute until it is sent, at most 50 per run. The same rows show in the app on a "Notificări" page, with an unread count in the header; opening the page marks them read. Texts are built when shown, from the event and the assignment, and never name a team or another student.
 - **Why:** The brief requires a job that closes phases and sends notifications. The user chose these three events, the 24-hour reminders, and email plus in-app.
 - **Rejected:** One delayed job per deadline. Emailing from inside allocation. A notification when reviews move to someone already notified. Email only.
 - **Evidence:** not built yet; the notifications plan of 2026-11-24.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-24
+- **Confirmed:** 2026-11-25
 
 ## D-025 · Calibration, reliability and grade aggregation
 - **Status:** approved
@@ -282,5 +283,15 @@
 - **Why:** The brief requires a results page that explains how the grade came out, with the algorithm and weights shown, not hidden. The user chose the full breakdown, the hidden calibration, the professor's view and the menu item.
 - **Rejected:** Labelling the professor's calibration; showing only a formula text without the weights; authors only; a link in the student's assignments instead of a menu item; storing results.
 - **Evidence:** not built yet; the results plan of 2026-11-25.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-027 · Disputes per criterion, decided by the professor
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Between the review deadline and the dispute deadline, enforced on the server, any member of the reviewed team, including one who withdrew as a reviewer, disputes one criterion of a received review from the results page, once per review and criterion, with an argument of at least 20 characters after trimming. The assignment's professor decides at any time: upheld with a new level of that criterion, or rejected, always with a decision of at least 20 characters; a decided dispute never changes. The database enforces the uniqueness, the lengths, the level's criterion, the filer's team and the final decision. An upheld level replaces the reviewer's level in reliability and in the grade (D-025); the review itself and its original level stay. The results page shows each dispute's argument, decision, new level and dates, which is the history. Nobody is told when a dispute is filed; the professor sees open disputes from the active rubric page. Reviewers are never told and never identified, the professor's calibration included (D-014); the professor never sees which member filed.
+- **Why:** The brief requires disputes with an argument, decided by the professor, with history. The user chose per-criterion disputes, a new level set by the professor, once per item, and notifying the team of decisions.
+- **Rejected:** Excluding the whole review, or ignoring the reviewer's level, when upheld; disputing a whole review; unlimited disputes on one item; notifying the reviewer; a separate history table.
+- **Evidence:** not built yet; the disputes plan of 2026-11-25.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
