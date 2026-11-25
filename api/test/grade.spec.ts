@@ -1,4 +1,13 @@
-import { aggregate, explain, GradeCriterion, reliabilities, ReviewerReliability, SentReview } from '../src/grades/grade';
+import {
+  aggregate,
+  explain,
+  GradeCriterion,
+  OwnReview,
+  reliabilities,
+  ReviewerReliability,
+  reviewerGrades,
+  SentReview,
+} from '../src/grades/grade';
 
 /** D-025: reliability and grades as pure functions. */
 
@@ -136,5 +145,79 @@ describe('explain (D-026)', () => {
       [null, null],
       [null, null],
     ]);
+  });
+});
+
+describe('reviewerGrades (D-028)', () => {
+  /** A peer review as the reviewer grade sees it: original levels, upheld levels and the rating. */
+  function own(
+    id: string,
+    submissionId: string,
+    reviewerId: string,
+    levels: Record<string, number> | null,
+    extra: Partial<OwnReview> = {},
+  ): OwnReview {
+    return { id, submissionId, reviewerId, sent: levels !== null, levels: levels ?? {}, upheld: {}, rating: null, ...extra };
+  }
+
+  it('gives 10 to a reviewer who matches the reference and a low grade to one who gives every top level', () => {
+    const sent = [
+      review('s1', 'prof', { c: 2 }, true),
+      review('s1', 'a', { c: 2 }),
+      review('s1', 'tens', { c: 5 }),
+    ];
+    const result = reviewerGrades(ONE, sent, [
+      own('r1', 's1', 'a', { c: 2 }),
+      own('r2', 's1', 'tens', { c: 5 }),
+    ]);
+    expect(result.get('a')!.grade).toBe(10);
+    // Deviation 3 of 4: accuracy 0.25, grade 1 + 9 × 0.25 = 3.25.
+    expect(result.get('tens')!.grade).toBe(3.25);
+    expect(result.get('tens')!.reviews[0]).toMatchObject({ id: 'r2', accuracy: 0.25, rating: null, grade: 3.25, counted: true });
+    expect(result.has('prof')).toBe(false);
+  });
+
+  it("mixes accuracy and the professor's rating 70/30", () => {
+    const sent = [review('s1', 'prof', { c: 2 }, true), review('s1', 'a', { c: 2 })];
+    const result = reviewerGrades(ONE, sent, [own('r1', 's1', 'a', { c: 2 }, { rating: 1 })]);
+    // 1 + 9 × (0.7 × 1 + 0.3 × 0) = 7.3
+    expect(result.get('a')!.grade).toBe(7.3);
+    const rated5 = reviewerGrades(ONE, sent, [own('r1', 's1', 'a', { c: 2 }, { rating: 5 })]);
+    expect(rated5.get('a')!.grade).toBe(10);
+  });
+
+  it('counts an unsent review as 1 and gives no grade without any review', () => {
+    const sent = [review('s1', 'prof', { c: 2 }, true), review('s1', 'a', { c: 2 })];
+    const result = reviewerGrades(ONE, sent, [own('r1', 's1', 'a', { c: 2 }), own('r2', 's2', 'a', null), own('r3', 's3', 'b', null)]);
+    // (10 + 1) / 2
+    expect(result.get('a')!.grade).toBe(5.5);
+    expect(result.get('a')!.reviews[1]).toMatchObject({ id: 'r2', sent: false, accuracy: null, grade: 1, counted: true });
+    expect(result.get('b')!.grade).toBe(1);
+    expect(reviewerGrades(ONE, [], []).size).toBe(0);
+  });
+
+  it("measures the reviewer's original level against an upheld dispute's new level", () => {
+    // The reviewer gave 5; the professor upheld a dispute with 2. The grade uses 2 (D-027),
+    // and the reviewer grade measures the original 5 against it.
+    const sent = [review('s1', 'a', { c: 2 })];
+    const result = reviewerGrades(ONE, sent, [own('r1', 's1', 'a', { c: 5 }, { upheld: { c: 2 } })]);
+    expect(result.get('a')!.reviews[0].accuracy).toBe(0.25);
+    expect(result.get('a')!.grade).toBe(3.25);
+  });
+
+  it("uses the other peers' median, and leaves out a review with no reference and no rating", () => {
+    const sent = [review('s1', 'a', { c: 4 }), review('s1', 'b', { c: 4 }), review('s1', 'c', { c: 2 }), review('s2', 'd', { c: 1 })];
+    const result = reviewerGrades(ONE, sent, [
+      own('r1', 's1', 'c', { c: 2 }),
+      own('r2', 's2', 'd', { c: 1 }),
+      own('r3', 's2', 'e', null),
+    ]);
+    // c: others 4 and 4, deviation 2/4, accuracy 0.5, grade 5.5.
+    expect(result.get('c')!.grade).toBe(5.5);
+    expect(result.get('d')!.reviews[0]).toMatchObject({ accuracy: null, grade: null, counted: false });
+    expect(result.get('d')!.grade).toBeNull();
+    // A rating alone still grades the review: 1 + 9 × 0.75.
+    const rated = reviewerGrades(ONE, sent, [own('r2', 's2', 'd', { c: 1 }, { rating: 4 })]);
+    expect(rated.get('d')!.grade).toBe(7.75);
   });
 });

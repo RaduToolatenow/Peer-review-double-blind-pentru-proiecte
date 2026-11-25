@@ -214,7 +214,9 @@ describe('calibration and grades (D-025)', () => {
     );
     expect(res.body.reviewers.map((r: { number: number }) => r.number)).toEqual([1, 2, 3]);
     const flagged = res.body.reviewers.filter((r: { flagged: boolean }) => r.flagged);
-    expect(flagged).toEqual([{ number: expect.any(Number), reliability: 0.2, flagged: true, measured: true, reviewsSent: 2 }]);
+    expect(flagged).toEqual([
+      { number: expect.any(Number), reliability: 0.2, flagged: true, measured: true, reviewsSent: 2, reviewerGrade: expect.any(Number) },
+    ]);
     expect(res.body.reviewers.filter((r: { reliability: number }) => r.reliability === 1)).toHaveLength(2);
 
     const text = JSON.stringify(res.body);

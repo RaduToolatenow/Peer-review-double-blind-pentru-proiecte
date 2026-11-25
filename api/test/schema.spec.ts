@@ -87,4 +87,28 @@ describe('database constraints', () => {
 
     await expect(ctx.prisma.notification.create({ data: row })).rejects.toMatchObject({ code: 'P2002' });
   });
+
+  it("rates only a sent peer review, 1–5, by the assignment's professor (D-028)", async () => {
+    const { review, score } = await reviewSetup();
+    const submission = await ctx.prisma.submission.findUniqueOrThrow({ where: { id: review.submissionId }, include: { assignment: true } });
+    const professorId = submission.assignment.createdById;
+    const rate = (data: { rating?: number; ratedById?: string; reviewId?: string }) =>
+      ctx.prisma.reviewRating.create({ data: { reviewId: review.id, rating: 3, ratedById: professorId, ...data } });
+
+    await expect(rate({})).rejects.toThrow(/review rating needs a sent peer review/);
+    await ctx.prisma.reviewScore.create({ data: score });
+    await ctx.prisma.review.update({ where: { id: review.id }, data: { status: ReviewStatus.SUBMITTED, submittedAt: new Date() } });
+
+    await expect(rate({ rating: 0 })).rejects.toThrow(/review_ratings_rating_range/);
+    await expect(rate({ rating: 6 })).rejects.toThrow(/review_ratings_rating_range/);
+    await expect(rate({ ratedById: review.reviewerId })).rejects.toThrow(/review is rated only by the assignment's professor/);
+    await rate({});
+    await ctx.prisma.reviewRating.update({ where: { reviewId: review.id }, data: { rating: 5 } });
+
+    // The professor's own calibration review is never rated.
+    const calibration = await ctx.prisma.review.create({ data: { submissionId: review.submissionId, reviewerId: professorId, isCalibration: true } });
+    await ctx.prisma.reviewScore.create({ data: { ...score, reviewId: calibration.id } });
+    await ctx.prisma.review.update({ where: { id: calibration.id }, data: { status: ReviewStatus.SUBMITTED, submittedAt: new Date() } });
+    await expect(rate({ reviewId: calibration.id })).rejects.toThrow(/review rating needs a sent peer review/);
+  });
 });
