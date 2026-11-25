@@ -171,6 +171,7 @@ Tabela `login_failures` ține autentificările eșuate din ultimele 15 minute, p
 | Nivelul ales aparține criteriului notat (D-023) | cheie străină `review_scores (level_id, criterion_id)` → `criterion_levels (id, criterion_id)` |
 | Criteriul notat e din grila temei, iar o evaluare trimisă nu primește scoruri noi (D-023) | trigger `review_scores_guard` |
 | O evaluare devine `SUBMITTED` doar cu toate criteriile notate și apoi nu se mai schimbă (D-023) | trigger `reviews_guard_update` |
+| Doar profesorul care a creat tema scrie evaluări de calibrare, și doar pe acestea (D-025) | trigger `reviews_guard_calibration` |
 | `k` este cel puțin 1 | `CHECK` în migrare |
 | Termenele sunt în ordine: predare, evaluare, contestații | `CHECK` în migrare |
 | Ponderea unui criteriu este pozitivă | `CHECK` în migrare |

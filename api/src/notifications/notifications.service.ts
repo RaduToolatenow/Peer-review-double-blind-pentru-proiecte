@@ -37,6 +37,8 @@ export class NotificationsService {
     // Reviews allocated: every reviewer with a review on an allocated assignment still in review.
     const allocated = await this.prisma.review.findMany({
       where: {
+        // D-025: the professor's calibration reviews are not allocated to them.
+        isCalibration: false,
         reviewer: confirmed,
         submission: { assignment: { allocatedAt: { not: null }, reviewDeadline: { gt: now } } },
       },

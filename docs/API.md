@@ -154,6 +154,16 @@ Predarea are forma `{ id, link, description, fileType, fileUrl, submittedAt, upd
 
 Evaluarea nu spune niciodată echipa sau autorul predării; `submission` are forma de mai sus. O evaluare mutată la alt coleg (D-022) răspunde 404 fostului evaluator.
 
+## Calibrare și note (D-025)
+
+| Rută | Cine | Ce face | Coduri |
+|---|---|---|---|
+| `GET /api/assignments/:id/submissions/:submissionId/calibration` | `PROFESSOR`, `ADMIN`, autorul temei | `{ assignmentId, assignmentTitle, teamName, reviewDeadline, status, submittedAt, canSend, submission, criteria, scores }`, ca o evaluare, plus numele echipei | 200, 404 |
+| `POST /api/assignments/:id/submissions/:submissionId/calibration` | `PROFESSOR`, `ADMIN`, autorul temei | Evaluarea de calibrare, cu același corp ca `POST /api/my/reviews/:id`, trimisă o singură dată, între alocare și termenul de evaluare. Răspunde ca `GET` | 200, 400 incompletă, 404, 409 înainte de alocare, termen trecut sau trimisă deja |
+| `GET /api/assignments/:id/grades` | `PROFESSOR`, `ADMIN`, autorul temei | `{ allocated, provisional, submissions: [{ teamId, teamName, grade, reviewsCounted, calibrated }], reviewers: [{ number, reliability, flagged, measured, reviewsSent }] }`. Înainte de alocare listele sunt goale; `provisional` până la termenul de evaluare; `grade` pe 1–10 cu 2 zecimale sau `null` fără evaluări | 200, 404 |
+
+Evaluatorii apar doar ca numere, în ordinea id-urilor lor aleatoare (D-014). Evaluarea de calibrare nu intră în alocare, în numărul de evaluări primite și nici în notificări.
+
 ## Notificări (D-024)
 
 | Rută | Cine | Ce face | Coduri |

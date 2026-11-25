@@ -48,7 +48,7 @@ export class AssignmentsService {
     });
     const submissions = await this.prisma.submission.findMany({
       where: { assignmentId: { in: assignments.map((a) => a.id) } },
-      select: { assignmentId: true, _count: { select: { reviews: { where: { status: ReviewStatus.SUBMITTED } } } } },
+      select: { assignmentId: true, _count: { select: { reviews: { where: { status: ReviewStatus.SUBMITTED, isCalibration: false } } } } },
     });
     const counts = new Map<string, number>();
     for (const submission of submissions) {
@@ -72,7 +72,7 @@ export class AssignmentsService {
           },
         },
         submissions: {
-          include: { _count: { select: { reviews: { where: { status: ReviewStatus.SUBMITTED } } } } },
+          include: { _count: { select: { reviews: { where: { status: ReviewStatus.SUBMITTED, isCalibration: false } } } } },
         },
       },
     });
