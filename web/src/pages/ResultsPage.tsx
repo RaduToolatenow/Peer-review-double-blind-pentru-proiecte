@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { api, DisputeHistory, DisputeStatus, Results } from '../api';
+import { api, DisputeHistory, DisputeStatus, Results, TeamResults } from '../api';
 import { formatShort } from '../dates';
 import { ErrorText, Loaded } from '../Layout';
 import { counter } from '../ReviewForm';
@@ -96,6 +96,21 @@ export function MyResultPage() {
 export function TeamResultsPage() {
   const { id = '', teamId = '' } = useParams();
   const state = useLoad(() => api.teamResults(id, teamId), [id, teamId]);
+  const [notice, setNotice] = useState('');
+  const [error, setError] = useState('');
+
+  async function rate(number: number, rating: number) {
+    setNotice('');
+    setError('');
+    try {
+      await api.rateReview(id, teamId, number, rating);
+      setNotice(`Nota pentru feedback-ul Evaluatorului ${number} a fost salvată.`);
+      state.reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
+  }
+
   return (
     <Loaded state={state}>
       {(results) => (
@@ -105,10 +120,47 @@ export function TeamResultsPage() {
               ← {results.title}
             </Link>
           </p>
-          <ResultsView results={results} />
+          <ResultsView results={results} rating={{ results, onRate: rate, notice, error }} />
         </>
       )}
     </Loaded>
+  );
+}
+
+/** D-028: the professor's rating of each review's feedback, with the outcome of the last save. */
+interface Rating {
+  results: TeamResults;
+  onRate: (number: number, rating: number) => Promise<void>;
+  notice: string;
+  error: string;
+}
+
+/** A 1–5 select that saves on change while ratings are open, otherwise the rating as text. */
+function RatingCell({ reviewer, rating }: { reviewer: TeamResults['reviewers'][number]; rating: Rating }) {
+  if (!reviewer.rateable) {
+    return <td className="muted">calibrarea ta</td>;
+  }
+  if (!rating.results.canRate) {
+    return <td>{reviewer.rating === null ? 'neevaluată' : `${reviewer.rating} din 5`}</td>;
+  }
+  return (
+    <td>
+      <select
+        aria-label={`Calitatea feedback-ului, Evaluatorul ${reviewer.number}`}
+        value={reviewer.rating ?? ''}
+        onChange={(event) => void rating.onRate(reviewer.number, Number(event.target.value))}
+      >
+        {/* A rating can be changed, not removed (D-028). */}
+        <option value="" disabled={reviewer.rating !== null}>
+          neevaluată
+        </option>
+        {[1, 2, 3, 4, 5].map((value) => (
+          <option key={value} value={value}>
+            {value}
+          </option>
+        ))}
+      </select>
+    </td>
   );
 }
 
@@ -116,7 +168,7 @@ export function TeamResultsPage() {
  * Every step of the grade (D-026). Reviewers appear only as numbers (D-014). With `onDispute`
  * (a team member), each level row can be disputed once in the dispute window (D-027).
  */
-function ResultsView({ results: r, onDispute }: { results: Results; onDispute?: FileDispute }) {
+function ResultsView({ results: r, onDispute, rating }: { results: Results; onDispute?: FileDispute; rating?: Rating }) {
   const totalWeight = r.criteria.reduce((sum, c) => sum + c.weight, 0);
   const [disputing, setDisputing] = useState<{ criterion: number; reviewer: number } | null>(null);
   const canDispute = onDispute !== undefined && r.canDispute;
@@ -165,13 +217,15 @@ function ResultsView({ results: r, onDispute }: { results: Results; onDispute?: 
                   <tr>
                     <th>Evaluator</th>
                     <th>Pondere</th>
+                    {rating && <th>Calitatea feedback-ului</th>}
                   </tr>
                 </thead>
                 <tbody>
-                  {r.reviewers.map((reviewer) => (
+                  {r.reviewers.map((reviewer, index) => (
                     <tr key={reviewer.number}>
                       <td>Evaluatorul {reviewer.number}</td>
                       <td>{decimal(reviewer.weight)}</td>
+                      {rating && <RatingCell reviewer={rating.results.reviewers[index]} rating={rating} />}
                     </tr>
                   ))}
                 </tbody>
@@ -181,6 +235,19 @@ function ResultsView({ results: r, onDispute }: { results: Results; onDispute?: 
               Nota = 1 + 9 × ({r.criteria.map((c) => `${c.weight} × ${percent(c.scaled ?? 0)}`).join(' + ')}) ÷{' '}
               {totalWeight} = {decimal(r.grade)}
             </p>
+            {rating && (
+              <>
+                {rating.notice && <p role="status">{rating.notice}</p>}
+                {rating.error && <ErrorText message={rating.error} />}
+                <p className="muted">
+                  {rating.results.canRate
+                    ? `Poți nota calitatea feedback-ului de la 1 (slab) la 5 (foarte util) până pe ${formatShort(r.disputeDeadline)}, și o poți schimba până atunci. `
+                    : 'Notarea calității feedback-ului s-a încheiat la termenul de contestații. '}
+                  Intră în nota de evaluator a studentului cu 30%; nu e obligatoriu. Studenții văd nota dată evaluărilor
+                  lor, nu și pe cea dată altora.
+                </p>
+              </>
+            )}
           </section>
 
           <ol className="list">

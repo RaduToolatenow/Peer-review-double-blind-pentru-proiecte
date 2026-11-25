@@ -112,6 +112,15 @@ export interface MyAssignment extends Deadlines {
   canWithdraw: boolean;
   /** My reviews for this assignment, numbered; never the team (D-023). */
   reviews: { id: string; number: number; status: ReviewStatus }[];
+  /** D-028: my reviewer grade, after the dispute deadline; null before it or without reviews. */
+  reviewerGrade: ReviewerGrade | null;
+}
+
+/** D-028: a student's own reviewer grade, each review under its number in their list. */
+export interface ReviewerGrade {
+  grade: number | null;
+  provisional: boolean;
+  reviews: { number: number; sent: boolean; accuracy: number | null; rating: number | null; grade: number | null; counted: boolean }[];
 }
 
 export type ReviewStatus = 'ALLOCATED' | 'SUBMITTED';
@@ -157,7 +166,14 @@ export interface Grades {
   allocated: boolean;
   provisional: boolean;
   submissions: { teamId: string; teamName: string; grade: number | null; reviewsCounted: number; calibrated: boolean }[];
-  reviewers: { number: number; reliability: number; flagged: boolean; measured: boolean; reviewsSent: number }[];
+  reviewers: {
+    number: number;
+    reliability: number;
+    flagged: boolean;
+    measured: boolean;
+    reviewsSent: number;
+    reviewerGrade: number | null;
+  }[];
 }
 
 /** D-026: one line of the student's results list. */
@@ -192,6 +208,12 @@ export interface Results {
     scaled: number | null;
     levels: { number: number; score: number; descriptor: string; feedback: string; dispute: DisputeHistory | null }[];
   }[];
+}
+
+/** D-028: the professor's view adds the feedback rating of each review; their calibration is not rateable. */
+export interface TeamResults extends Omit<Results, 'reviewers'> {
+  canRate: boolean;
+  reviewers: { number: number; weight: number; rating: number | null; rateable: boolean }[];
 }
 
 export type DisputeStatus = 'OPEN' | 'UPHELD' | 'REJECTED';
@@ -378,7 +400,9 @@ export const api = {
   updateAssignment: (id: string, changes: Partial<Deadlines>) =>
     request<AssignmentDetail>('PATCH', `/assignments/${id}`, changes),
   grades: (id: string) => request<Grades>('GET', `/assignments/${id}/grades`),
-  teamResults: (id: string, teamId: string) => request<Results>('GET', `/assignments/${id}/teams/${teamId}/results`),
+  teamResults: (id: string, teamId: string) => request<TeamResults>('GET', `/assignments/${id}/teams/${teamId}/results`),
+  rateReview: (id: string, teamId: string, number: number, rating: number) =>
+    request<TeamResults>('PUT', `/assignments/${id}/teams/${teamId}/reviews/${number}/rating`, { rating }),
   myResults: () => request<ResultSummary[]>('GET', '/my/results'),
   myResult: (id: string) => request<Results>('GET', `/my/results/${id}`),
   fileDispute: (id: string, reviewer: number, criterion: number, argument: string) =>

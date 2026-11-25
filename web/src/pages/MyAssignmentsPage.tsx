@@ -1,9 +1,10 @@
 import { FormEvent, useState } from 'react';
 import { Link } from 'react-router';
-import { api, MyAssignment, submitProject } from '../api';
+import { api, MyAssignment, ReviewerGrade, submitProject } from '../api';
 import { formatShort } from '../dates';
 import { ErrorText, Loaded } from '../Layout';
 import { useLoad } from '../useLoad';
+import { decimal } from './ActiveRubricDetailPage';
 import { PHASE_LABELS, PHASE_TONES } from './ActiveRubricsPage';
 
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
@@ -133,10 +134,76 @@ function Reviews({ assignment: a }: { assignment: MyAssignment }) {
           </div>
         ))}
       </dl>
-      <p className="muted">
-        Trimite-le până pe {formatShort(a.reviewDeadline)}. O evaluare trimisă nu se mai poate schimba.
-      </p>
+      {a.phase !== 'closed' && a.phase !== 'disputes' && (
+        <p className="muted">
+          Trimite-le până pe {formatShort(a.reviewDeadline)}. O evaluare trimisă nu se mai poate schimba.
+        </p>
+      )}
+      {a.reviewerGrade ? (
+        <ReviewerGradeView grade={a.reviewerGrade} />
+      ) : (
+        <p className="muted">Nota ta de evaluator apare după termenul de contestații, pe {formatShort(a.disputeDeadline)}.</p>
+      )}
     </section>
+  );
+}
+
+function percent(value: number): string {
+  return `${Math.round(value * 100)}%`;
+}
+
+/** D-028: my reviewer grade and how each of my reviews counted. */
+function ReviewerGradeView({ grade: g }: { grade: ReviewerGrade }) {
+  return (
+    <>
+      <h3>Nota ta de evaluator</h3>
+      {g.provisional && (
+        <p>
+          <span className="badge warning">Provizorie: mai sunt contestații nehotărâte</span>
+        </p>
+      )}
+      {g.grade === null ? (
+        <p className="lead">Fără notă de evaluator: nu există nimic cu care să-ți comparăm evaluările.</p>
+      ) : (
+        <p className="lead">
+          Nota <strong>{decimal(g.grade)}</strong> din 10
+        </p>
+      )}
+      <div className="table-wrap">
+        <table className="data">
+          <thead>
+            <tr>
+              <th>Evaluare</th>
+              <th>Acuratețe</th>
+              <th>Calitatea feedback-ului</th>
+              <th>Nota</th>
+            </tr>
+          </thead>
+          <tbody>
+            {g.reviews.map((r) => (
+              <tr key={r.number}>
+                <td>Proiectul {r.number}</td>
+                <td>{!r.sent ? 'netrimisă' : r.accuracy === null ? 'fără comparație' : percent(r.accuracy)}</td>
+                <td>{!r.sent ? '—' : r.rating === null ? 'neevaluată' : `${r.rating} din 5`}</td>
+                <td>{r.grade === null ? 'nu se socotește' : decimal(r.grade)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <ol className="points">
+        <li>
+          Acuratețea = 1 − abaterea medie a nivelurilor tale față de calibrarea profesorului sau, unde nu există, față
+          de mediana celorlalți evaluatori. La un criteriu cu o contestație admisă, se compară cu nivelul hotărât de
+          profesor.
+        </li>
+        <li>
+          Profesorul poate nota calitatea feedback-ului, de la 1 la 5. Nota unei evaluări = 1 + 9 × (70% acuratețe + 30%
+          calitate); fără notă de la profesor, 1 + 9 × acuratețea.
+        </li>
+        <li>O evaluare netrimisă la termen are nota 1. Nota ta de evaluator e media notelor evaluărilor.</li>
+      </ol>
+    </>
   );
 }
 

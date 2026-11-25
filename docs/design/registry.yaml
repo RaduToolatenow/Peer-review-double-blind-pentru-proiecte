@@ -29,9 +29,9 @@ designs:
   - id: DS-pr-active-rubric-detail
     kind: screen
     source: web/src/pages/ActiveRubricDetailPage.tsx
-    screenshots: [screens/DS-pr-active-rubric-detail.light.png, screens/DS-pr-active-rubric-detail.dark.png]
+    screenshots: [screens/DS-pr-active-rubric-detail.light.png, screens/DS-pr-active-rubric-detail.dark.png, screens/DS-pr-active-rubric-detail.reviewer-grade.light.png, screens/DS-pr-active-rubric-detail.reviewer-grade.dark.png, screens/DS-pr-active-rubric-detail.reviewer-grade.narrow.light.png, screens/DS-pr-active-rubric-detail.reviewer-grade.narrow.dark.png]
     design_ref: mocks/DS-pr-active-rubric-detail.html
-    status: implemented   # D-027: link to the disputes
+    status: implemented   # D-027: link to the disputes; D-028: reviewer grade column
   - id: DS-pr-rubric-drafts
     kind: screen
     source: web/src/pages/RubricDraftsPage.tsx
@@ -77,9 +77,9 @@ designs:
   - id: DS-pr-my-assignments
     kind: screen
     source: web/src/pages/MyAssignmentsPage.tsx
-    screenshots: [screens/DS-pr-my-assignments.light.png, screens/DS-pr-my-assignments.dark.png, screens/DS-pr-my-assignments.reviewer-only.light.png, screens/DS-pr-my-assignments.reviewer-only.dark.png, screens/DS-pr-my-assignments.reviews.light.png, screens/DS-pr-my-assignments.reviews.dark.png]
+    screenshots: [screens/DS-pr-my-assignments.light.png, screens/DS-pr-my-assignments.dark.png, screens/DS-pr-my-assignments.reviewer-only.light.png, screens/DS-pr-my-assignments.reviewer-only.dark.png, screens/DS-pr-my-assignments.reviews.light.png, screens/DS-pr-my-assignments.reviews.dark.png, screens/DS-pr-my-assignments.reviewer-grade.light.png, screens/DS-pr-my-assignments.reviewer-grade.dark.png, screens/DS-pr-my-assignments.reviewer-grade.narrow.light.png, screens/DS-pr-my-assignments.reviewer-grade.narrow.dark.png]
     design_ref: mocks/DS-pr-my-assignments.html
-    status: implemented
+    status: implemented   # D-028: the student's own reviewer grade
   - id: DS-pr-style-tile
     kind: foundation
     source: web/src/styles.css
@@ -143,9 +143,9 @@ designs:
   - id: DS-pr-results
     kind: screen
     source: web/src/pages/ResultsPage.tsx
-    screenshots: [screens/DS-pr-results.light.png, screens/DS-pr-results.dark.png, screens/DS-pr-results.form.light.png, screens/DS-pr-results.form.dark.png, screens/DS-pr-results.professor.light.png, screens/DS-pr-results.professor.dark.png]
+    screenshots: [screens/DS-pr-results.light.png, screens/DS-pr-results.dark.png, screens/DS-pr-results.form.light.png, screens/DS-pr-results.form.dark.png, screens/DS-pr-results.professor.light.png, screens/DS-pr-results.professor.dark.png, screens/DS-pr-results.rating.light.png, screens/DS-pr-results.rating.dark.png, screens/DS-pr-results.rating.narrow.light.png, screens/DS-pr-results.rating.narrow.dark.png, screens/DS-pr-results.rating-closed.light.png, screens/DS-pr-results.rating-closed.dark.png, screens/DS-pr-results.rating-closed.narrow.light.png, screens/DS-pr-results.rating-closed.narrow.dark.png, screens/DS-pr-results.rating-saved.light.png]
     design_ref: mocks/DS-pr-results.html
-    status: implemented   # D-027: dispute column, form and history
+    status: implemented   # D-027: dispute column, form and history; D-028: the professor's feedback rating
   - id: DS-pr-disputes
     kind: screen
     source: web/src/pages/DisputesPage.tsx

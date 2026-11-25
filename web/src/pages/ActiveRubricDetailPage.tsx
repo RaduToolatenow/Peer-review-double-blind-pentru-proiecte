@@ -306,7 +306,7 @@ function Reviewers({ grades }: { grades: Grades }) {
     <section className="section">
       <h2>Evaluatori</h2>
       {grades.reviewers.length === 0 ? (
-        <p className="muted">Niciun evaluator nu a trimis încă o evaluare.</p>
+        <p className="muted">Niciun evaluator nu are încă evaluări alocate.</p>
       ) : (
         <div className="table-wrap">
           <table className="data">
@@ -316,6 +316,7 @@ function Reviewers({ grades }: { grades: Grades }) {
                 <th>Evaluări trimise</th>
                 <th>Fiabilitate</th>
                 <th>Stare</th>
+                <th>Notă de evaluator</th>
               </tr>
             </thead>
             <tbody>
@@ -333,6 +334,7 @@ function Reviewers({ grades }: { grades: Grades }) {
                       <span className="badge success">În regulă</span>
                     )}
                   </td>
+                  <td>{r.reviewerGrade === null ? '—' : decimal(r.reviewerGrade)}</td>
                 </tr>
               ))}
             </tbody>
@@ -343,6 +345,11 @@ function Reviewers({ grades }: { grades: Grades }) {
         Fiabilitatea = 1 − abaterea medie față de calibrarea ta sau, unde nu ai calibrat, față de mediana celorlalți
         evaluatori. Nu scade sub 0,2; sub 0,6 evaluatorul e semnalat. Fără nimic de comparat, rămâne 1. Evaluatorii apar
         doar ca numere.
+      </p>
+      <p className="muted">
+        Nota de evaluator: media notelor evaluărilor lui, fiecare 1 + 9 × (70% acuratețe + 30% calitatea feedback-ului
+        notată de tine), sau doar din acuratețe dacă nu ai notat-o; o evaluare netrimisă după termenul de evaluare are
+        nota 1. Fără nimic de măsurat, „—”. Studentul își vede nota după termenul de contestații.
       </p>
     </section>
   );
