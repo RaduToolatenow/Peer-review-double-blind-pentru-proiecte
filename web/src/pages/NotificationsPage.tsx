@@ -41,7 +41,11 @@ export function NotificationsPage() {
                     </p>
                   )}
                   <p>
-                    <Link to="/">Vezi tema</Link>
+                    {n.kind === 'DISPUTE_DECIDED' ? (
+                      <Link to={`/rezultate/${n.assignmentId}`}>Vezi rezultatele</Link>
+                    ) : (
+                      <Link to="/">Vezi tema</Link>
+                    )}
                   </p>
                 </li>
               ))}

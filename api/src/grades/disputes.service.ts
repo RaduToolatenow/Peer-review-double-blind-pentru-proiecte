@@ -16,7 +16,9 @@ const DISPUTE_SELECT = {
   decision: true,
   decidedAt: true,
   criterionId: true,
-  criterion: { select: { position: true, title: true } },
+  criterion: {
+    select: { position: true, title: true, levels: { orderBy: { score: 'asc' }, select: { id: true, score: true, descriptor: true } } },
+  },
   newLevel: { select: { score: true, descriptor: true } },
   review: {
     select: {
@@ -113,7 +115,7 @@ export class DisputesService {
     decision: string | null;
     decidedAt: Date | null;
     criterionId: string;
-    criterion: { position: number; title: string };
+    criterion: { position: number; title: string; levels: { id: string; score: number; descriptor: string }[] };
     newLevel: { score: number; descriptor: string } | null;
     review: {
       id: string;

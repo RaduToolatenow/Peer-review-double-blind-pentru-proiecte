@@ -42,6 +42,8 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
   const [busy, setBusy] = useState(false);
   // D-025: grades and reliability, computed by the server on every load.
   const grades = useLoad(() => api.grades(a.id), [a.id]);
+  // D-027: how many disputes are still open.
+  const disputes = useLoad(() => api.disputes(a.id), [a.id]);
   const graded = grades.data?.allocated ? grades.data : null;
   const gradeOf = new Map(graded?.submissions.map((s) => [s.teamId, s]) ?? []);
   const passed = (key: keyof Deadlines) => new Date(a[key]).getTime() <= now;
@@ -99,6 +101,16 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
         <dt>Răspunsuri</dt>
         <dd>
           {a.reviewsSubmitted} din {a.reviewsExpected} evaluări trimise
+        </dd>
+        <dt>Contestații</dt>
+        <dd>
+          <Link to={`/grile-active/${a.id}/contestatii`}>
+            {disputes.data
+              ? `${disputes.data.filter((d) => d.status === 'OPEN').length} ${
+                  disputes.data.filter((d) => d.status === 'OPEN').length === 1 ? 'deschisă' : 'deschise'
+                } din ${disputes.data.length}`
+              : 'Vezi contestațiile'}
+          </Link>
         </dd>
       </dl>
 

@@ -59,7 +59,7 @@ export function SentScores({ criteria, scores }: { criteria: StoredCriterion[]; 
 }
 
 /** "86 de caractere", or what is still missing below the minimum. */
-function counter(text: string): string {
+export function counter(text: string): string {
   const n = text.trim().length;
   const count = n === 1 ? '1 caracter' : n >= 20 ? `${n} de caractere` : `${n} caractere`;
   return n >= MIN_FEEDBACK ? count : `${count} · mai scrie cel puțin ${MIN_FEEDBACK - n}`;

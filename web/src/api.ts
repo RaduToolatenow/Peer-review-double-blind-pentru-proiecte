@@ -119,7 +119,7 @@ export type ReviewStatus = 'ALLOCATED' | 'SUBMITTED';
 /** A notification as the server tells it; never a team or a colleague (D-024). */
 export interface AppNotification {
   id: string;
-  kind: 'REVIEWS_ALLOCATED' | 'REVIEW_REMINDER' | 'SUBMISSION_REMINDER';
+  kind: 'REVIEWS_ALLOCATED' | 'REVIEW_REMINDER' | 'SUBMISSION_REMINDER' | 'DISPUTE_DECIDED';
   assignmentId: string;
   title: string;
   text: string;
@@ -178,6 +178,8 @@ export interface Results {
   teamName: string;
   reviewDeadline: string;
   provisional: boolean;
+  disputeDeadline: string;
+  canDispute: boolean;
   grade: number | null;
   reviewers: { number: number; weight: number }[];
   criteria: {
@@ -188,8 +190,37 @@ export interface Results {
     highest: number;
     mean: number | null;
     scaled: number | null;
-    levels: { number: number; score: number; descriptor: string; feedback: string }[];
+    levels: { number: number; score: number; descriptor: string; feedback: string; dispute: DisputeHistory | null }[];
   }[];
+}
+
+export type DisputeStatus = 'OPEN' | 'UPHELD' | 'REJECTED';
+
+/** D-027: a dispute as its team sees it; never who filed it. */
+export interface DisputeHistory {
+  status: DisputeStatus;
+  argument: string;
+  createdAt: string;
+  decision: string | null;
+  decidedAt: string | null;
+  newScore: number | null;
+  newDescriptor: string | null;
+}
+
+/** D-027: a dispute as the professor sees it; never who filed it or who reviewed. */
+export interface Dispute {
+  id: string;
+  teamName: string;
+  reviewer: number;
+  criterion: { position: number; title: string; levels: { id: string; score: number; descriptor: string }[] };
+  level: { score: number; descriptor: string };
+  feedback: string;
+  argument: string;
+  status: DisputeStatus;
+  createdAt: string;
+  decision: string | null;
+  decidedAt: string | null;
+  newLevel: { score: number; descriptor: string } | null;
 }
 
 export interface ClassSummary {
@@ -350,6 +381,15 @@ export const api = {
   teamResults: (id: string, teamId: string) => request<Results>('GET', `/assignments/${id}/teams/${teamId}/results`),
   myResults: () => request<ResultSummary[]>('GET', '/my/results'),
   myResult: (id: string) => request<Results>('GET', `/my/results/${id}`),
+  fileDispute: (id: string, reviewer: number, criterion: number, argument: string) =>
+    request<Results>('POST', `/my/results/${id}/disputes`, { reviewer, criterion, argument }),
+  disputes: (id: string) => request<Dispute[]>('GET', `/assignments/${id}/disputes`),
+  decideDispute: (id: string, disputeId: string, upheld: boolean, levelId: string | null, decision: string) =>
+    request<Dispute>('POST', `/assignments/${id}/disputes/${disputeId}/decision`, {
+      upheld,
+      ...(upheld && levelId ? { levelId } : {}),
+      decision,
+    }),
   calibration: (id: string, submissionId: string) =>
     request<Calibration>('GET', `/assignments/${id}/submissions/${submissionId}/calibration`),
   sendCalibration: (id: string, submissionId: string, scores: ScoreInput[]) =>

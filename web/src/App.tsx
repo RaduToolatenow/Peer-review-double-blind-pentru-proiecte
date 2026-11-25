@@ -14,6 +14,7 @@ import {
 import { ActiveRubricDetailPage } from './pages/ActiveRubricDetailPage';
 import { ActiveRubricsPage } from './pages/ActiveRubricsPage';
 import { CalibrationPage } from './pages/CalibrationPage';
+import { DisputesPage } from './pages/DisputesPage';
 import { MyResultPage, ResultsListPage, TeamResultsPage } from './pages/ResultsPage';
 import { ClassDetailPage } from './pages/ClassDetailPage';
 import { ClassesPage } from './pages/ClassesPage';
@@ -74,6 +75,7 @@ export function App() {
               <Route path="grile-active/:id" element={<ActiveRubricDetailPage />} />
               <Route path="grile-active/:id/calibrare/:submissionId" element={<CalibrationPage />} />
               <Route path="grile-active/:id/rezultate/:teamId" element={<TeamResultsPage />} />
+              <Route path="grile-active/:id/contestatii" element={<DisputesPage />} />
               <Route path="schite" element={<RubricDraftsPage />} />
               <Route path="schite/noua" element={<RubricEditorPage />} />
               <Route path="schite/:id" element={<RubricEditorPage />} />

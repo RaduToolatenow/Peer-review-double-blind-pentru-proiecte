@@ -122,12 +122,13 @@ export class NotificationsService {
       where: { emailedAt: null },
       orderBy: { createdAt: 'asc' },
       take: EMAILS_PER_RUN,
-      select: { id: true, userId: true, user: { select: { email: true } } },
+      select: { id: true, userId: true, kind: true, assignmentId: true, user: { select: { email: true } } },
     });
     for (const row of pending) {
       const [view] = await this.views(row.userId, { id: row.id });
       try {
-        await this.mailer.send(notificationEmail(row.user.email, view, `${appUrl()}/`));
+        const page = row.kind === NotificationKind.DISPUTE_DECIDED ? `rezultate/${row.assignmentId}` : '';
+        await this.mailer.send(notificationEmail(row.user.email, view, `${appUrl()}/${page}`));
       } catch (error) {
         this.logger.error(`Notification ${row.id} not emailed: ${(error as Error).message}`);
         return;

@@ -31,7 +31,7 @@ designs:
     source: web/src/pages/ActiveRubricDetailPage.tsx
     screenshots: [screens/DS-pr-active-rubric-detail.light.png, screens/DS-pr-active-rubric-detail.dark.png]
     design_ref: mocks/DS-pr-active-rubric-detail.html
-    status: draft   # D-027: link to the disputes
+    status: implemented   # D-027: link to the disputes
   - id: DS-pr-rubric-drafts
     kind: screen
     source: web/src/pages/RubricDraftsPage.tsx
@@ -127,7 +127,7 @@ designs:
     source: web/src/pages/NotificationsPage.tsx
     screenshots: [screens/DS-pr-notifications.light.png, screens/DS-pr-notifications.dark.png]
     design_ref: mocks/DS-pr-notifications.html
-    status: draft   # D-027: a dispute decided
+    status: implemented   # D-027: a dispute decided
   - id: DS-pr-calibration
     kind: screen
     source: web/src/pages/CalibrationPage.tsx
@@ -143,12 +143,12 @@ designs:
   - id: DS-pr-results
     kind: screen
     source: web/src/pages/ResultsPage.tsx
-    screenshots: [screens/DS-pr-results.light.png, screens/DS-pr-results.dark.png, screens/DS-pr-results.professor.light.png, screens/DS-pr-results.professor.dark.png]
+    screenshots: [screens/DS-pr-results.light.png, screens/DS-pr-results.dark.png, screens/DS-pr-results.form.light.png, screens/DS-pr-results.form.dark.png, screens/DS-pr-results.professor.light.png, screens/DS-pr-results.professor.dark.png]
     design_ref: mocks/DS-pr-results.html
-    status: draft   # D-027: dispute column, form and history
+    status: implemented   # D-027: dispute column, form and history
   - id: DS-pr-disputes
     kind: screen
     source: web/src/pages/DisputesPage.tsx
     screenshots: [screens/DS-pr-disputes.light.png, screens/DS-pr-disputes.dark.png]
     design_ref: mocks/DS-pr-disputes.html
-    status: draft
+    status: implemented
