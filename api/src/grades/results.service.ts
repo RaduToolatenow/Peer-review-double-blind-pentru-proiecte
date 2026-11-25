@@ -1,16 +1,17 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { teamIsEvaluated } from '../assignments/assignment-scope';
-import { isUniqueViolation } from '../prisma/db-errors';
+import { isRatingOutOfRange, isUnratableReview, isUniqueViolation } from '../prisma/db-errors';
 import { PrismaService } from '../prisma/prisma.service';
 import { DisputeDto } from './dispute.dto';
 import { explain } from './grade';
-import { loadGrading, round2 } from './grading';
+import { Grading, loadGrading, round2 } from './grading';
+import { RatingDto } from './rating.dto';
 
 const NOT_FOUND = 'Nu am găsit rezultatele.';
 const WINDOW = 'Contestațiile se pot trimite între termenul de evaluare și termenul de contestații.';
 const SHORT_ARGUMENT = 'Scrie un argument de cel puțin 20 de caractere.';
+const RATING_WINDOW = 'Calitatea feedback-ului se notează între alocare și termenul de contestații.';
 
-type Grading = NonNullable<Awaited<ReturnType<typeof loadGrading>>>;
 type GradedSubmission = Grading['submissions'][number];
 
 /** D-027: the argument's length is checked by the database (PATTERN-002). */
@@ -71,6 +72,11 @@ function view({ assignment, criteria, reviews, reliability }: Grading, submissio
       };
     }),
   };
+}
+
+/** D-028: ratings are open from allocation until the dispute deadline. */
+function canRate({ assignment }: Grading): boolean {
+  return assignment.allocatedAt !== null && new Date() < assignment.disputeDeadline;
 }
 
 /** The results page (D-026) and disputes filed from it (D-027). */
@@ -153,20 +159,70 @@ export class ResultsService {
     return this.forStudent(userId, assignmentId);
   }
 
-  /** The professor's view of one team, provisional before the review deadline. */
+  /**
+   * The professor's view of one team, provisional before the review deadline, with their rating of
+   * each review's feedback (D-028); their own calibration review is never rated.
+   */
   async forProfessor(userId: string, assignmentId: string, teamId: string) {
+    const grading = await this.professorGrading(userId, assignmentId);
+    if (grading.assignment.allocatedAt === null) {
+      throw new ConflictException('Rezultatele apar după alocarea evaluatorilor.');
+    }
+    const submission = this.teamSubmission(grading, teamId);
+    const results = view(grading, submission);
+    return {
+      ...results,
+      canRate: canRate(grading),
+      reviewers: results.reviewers.map((reviewer, index) => ({
+        ...reviewer,
+        rating: submission.reviews[index].rating?.rating ?? null,
+        rateable: !submission.reviews[index].isCalibration,
+      })),
+    };
+  }
+
+  /**
+   * D-028: the professor rates the feedback of a team's review, chosen by its number, from
+   * allocation until the dispute deadline; a new rating replaces the old one.
+   */
+  async rate(userId: string, assignmentId: string, teamId: string, number: number, dto: RatingDto) {
+    const grading = await this.professorGrading(userId, assignmentId);
+    if (!canRate(grading)) {
+      throw new ConflictException(RATING_WINDOW);
+    }
+    const review = this.teamSubmission(grading, teamId).reviews[number - 1];
+    if (!review) {
+      throw new NotFoundException('Nu am găsit evaluarea.');
+    }
+    const data = { rating: dto.rating, ratedById: userId, ratedAt: new Date() };
+    try {
+      await this.prisma.reviewRating.upsert({ where: { reviewId: review.id }, create: { reviewId: review.id, ...data }, update: data });
+    } catch (error) {
+      if (isRatingOutOfRange(error)) {
+        throw new BadRequestException('Alege o notă de la 1 la 5.');
+      }
+      if (isUnratableReview(error)) {
+        throw new ConflictException('Evaluarea ta de calibrare nu se notează.');
+      }
+      throw error;
+    }
+    return this.forProfessor(userId, assignmentId, teamId);
+  }
+
+  private async professorGrading(userId: string, assignmentId: string) {
     const grading = await loadGrading(this.prisma, { id: assignmentId, createdById: userId });
     if (!grading) {
       throw new NotFoundException('Nu am găsit grila activă.');
     }
-    if (grading.assignment.allocatedAt === null) {
-      throw new ConflictException('Rezultatele apar după alocarea evaluatorilor.');
-    }
+    return grading;
+  }
+
+  private teamSubmission(grading: Grading, teamId: string) {
     const submission = grading.submissions.find((s) => s.teamId === teamId);
     if (!submission) {
       throw new NotFoundException(NOT_FOUND);
     }
-    return view(grading, submission);
+    return submission;
   }
 
   /** The member's team submission and its grading data; 404 without an evaluated team submission. */

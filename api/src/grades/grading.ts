@@ -1,7 +1,7 @@
 import { teamIsEvaluated } from '../assignments/assignment-scope';
 import { ReviewStatus } from '../generated/prisma/enums';
 import { PrismaService } from '../prisma/prisma.service';
-import { GradeCriterion, reliabilities, SentReview } from './grade';
+import { GradeCriterion, OwnReview, reliabilities, reviewerGrades, SentReview } from './grade';
 
 /**
  * Everything the grade functions need for one assignment (D-025, D-026): the rubric, the
@@ -35,6 +35,7 @@ export async function loadGrading(prisma: PrismaService, where: { id: string; cr
               id: true,
               reviewerId: true,
               isCalibration: true,
+              rating: { select: { rating: true } },
               scores: {
                 select: { criterionId: true, feedback: true, level: { select: { score: true, descriptor: true } } },
               },
@@ -67,6 +68,45 @@ export async function loadGrading(prisma: PrismaService, where: { id: string; cr
   const submissions = assignment.submissions.filter((s) => teamIsEvaluated(scope, s.teamId));
   const reviews: SentReview[] = submissions.flatMap((s) => s.reviews.map((r) => sentReview(s.id, r)));
   return { assignment, criteria, submissions, reviews, reliability: reliabilities(criteria, reviews) };
+}
+
+export type Grading = NonNullable<Awaited<ReturnType<typeof loadGrading>>>;
+
+/**
+ * D-028: the grade of every reviewer allocated a peer review on the assignment. An unsent review
+ * counts 1 after the review deadline; a withdrawal removes the withdrawn student's (D-022).
+ */
+export async function loadReviewerGrades(prisma: PrismaService, grading: Grading, now = new Date()) {
+  const { assignment, criteria, submissions, reviews } = grading;
+  const unsent = await prisma.review.findMany({
+    where: { submissionId: { in: submissions.map((s) => s.id) }, status: ReviewStatus.ALLOCATED, isCalibration: false },
+    select: { id: true, submissionId: true, reviewerId: true },
+  });
+  const closed = now >= assignment.reviewDeadline;
+  const own: OwnReview[] = [
+    ...submissions.flatMap((s) =>
+      s.reviews
+        .filter((r) => !r.isCalibration)
+        .map((r) => ({
+          id: r.id,
+          submissionId: s.id,
+          reviewerId: r.reviewerId,
+          sent: true,
+          levels: Object.fromEntries(r.scores.map((score) => [score.criterionId, score.level.score])),
+          upheld: Object.fromEntries(r.disputes.flatMap((d) => (d.newLevel ? [[d.criterionId, d.newLevel.score]] : []))),
+          rating: r.rating?.rating ?? null,
+        })),
+    ),
+    ...unsent.map((r) => ({
+      ...r,
+      sent: false,
+      levels: {},
+      upheld: {},
+      rating: null,
+      counts: closed,
+    })),
+  ];
+  return reviewerGrades(criteria, reviews, own);
 }
 
 /** A sent review as the grade functions see it: an upheld dispute's new level replaces the reviewer's (D-027). */

@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { teamIsEvaluated } from '../assignments/assignment-scope';
 import { phaseAt } from '../assignments/assignments.service';
+import { DisputeStatus } from '../generated/prisma/enums';
+import { loadGrading, loadReviewerGrades } from '../grades/grading';
 import { PrismaService } from '../prisma/prisma.service';
 import { cleanDocx } from './clean-docx';
 import { cleanPdf } from './clean-pdf';
@@ -81,6 +83,13 @@ export class SubmissionsService {
       orderBy: { submissionDeadline: 'asc' },
     });
     const now = new Date();
+    const reviewerGrades = new Map(
+      await Promise.all(
+        assignments
+          .filter((a) => now >= a.disputeDeadline && reviews.some((r) => r.submission.assignmentId === a.id))
+          .map(async (a) => [a.id, await this.reviewerGrade(userId, a.id)] as const),
+      ),
+    );
     return assignments.map((a) => {
       const membership = teamByClass.get(a.classId);
       const evaluated =
@@ -103,8 +112,34 @@ export class SubmissionsService {
         reviews: reviews
           .filter((r) => r.submission.assignmentId === a.id)
           .map((r, index) => ({ id: r.id, number: index + 1, status: r.status })),
+        reviewerGrade: reviewerGrades.get(a.id) ?? null,
       };
     });
+  }
+
+  /**
+   * D-028: the student's own reviewer grade, after the dispute deadline, each review under the
+   * number it has in their list; provisional while a dispute of the assignment is open.
+   */
+  private async reviewerGrade(userId: string, assignmentId: string) {
+    const grading = await loadGrading(this.prisma, { id: assignmentId });
+    const mine = grading ? (await loadReviewerGrades(this.prisma, grading)).get(userId) : undefined;
+    if (!grading || !mine) {
+      return null;
+    }
+    const numbers = await this.prisma.review.findMany({
+      where: { reviewerId: userId, submission: { assignmentId } },
+      orderBy: { id: 'asc' },
+      select: { id: true },
+    });
+    const open = await this.prisma.dispute.count({ where: { status: DisputeStatus.OPEN, review: { submission: { assignmentId } } } });
+    return {
+      grade: mine.grade,
+      provisional: open > 0,
+      reviews: mine.reviews
+        .map(({ id, ...review }) => ({ number: numbers.findIndex((n) => n.id === id) + 1, ...review }))
+        .sort((x, y) => x.number - y.number),
+    };
   }
 
   async submit(userId: string, assignmentId: string, dto: SubmissionDto, file: UploadedFileData | undefined) {

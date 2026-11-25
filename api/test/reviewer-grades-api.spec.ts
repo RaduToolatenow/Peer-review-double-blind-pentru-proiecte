@@ -222,17 +222,15 @@ describe('reviewer grades (D-028)', () => {
     expect((await mine(s.students[2].agent, s.assignment.id)).reviewerGrade.provisional).toBe(true);
   });
 
-  it("does not count the unsent review a withdrawn student kept because nobody could take it (D-022)", async () => {
+  it('grades a withdrawn student on their sent reviews only: withdrawal removes the unsent ones (D-022)', async () => {
     const s = await setup();
     await s.students[2].agent.post(`/api/my/assignments/${s.assignment.id}/withdraw`).expect(200);
-    expect(await ctx.prisma.review.count({ where: { reviewerId: s.students[2].id, status: ReviewStatus.ALLOCATED } })).toBe(1);
+    expect(await ctx.prisma.review.count({ where: { reviewerId: s.students[2].id, status: ReviewStatus.ALLOCATED } })).toBe(0);
     await close(s);
 
     const two = await mine(s.students[2].agent, s.assignment.id);
     expect(two.reviewerGrade.grade).toBe(10);
-    expect(two.reviewerGrade.reviews).toEqual(
-      expect.arrayContaining([{ number: expect.any(Number), sent: false, accuracy: null, rating: null, grade: null, counted: false }]),
-    );
+    expect(two.reviewerGrade.reviews).toEqual([{ number: 1, sent: true, accuracy: 1, rating: null, grade: 10, counted: true }]);
   });
 
   it('shows the professor every reviewer grade by number, a reviewer who sent nothing at 1 after the review deadline', async () => {

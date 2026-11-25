@@ -6,7 +6,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { checkScores, INVALID_REVIEW, ReviewDto } from '../reviews/review.dto';
 import { submissionView } from '../submissions/submissions.service';
 import { aggregate } from './grade';
-import { loadGrading, round2 } from './grading';
+import { loadGrading, loadReviewerGrades, round2 } from './grading';
 
 const NOT_FOUND = 'Nu am găsit predarea.';
 const ALREADY_SENT = 'Ai trimis deja această evaluare; nu se mai poate schimba.';
@@ -118,6 +118,8 @@ export class GradesService {
       return { allocated: false, provisional, submissions: [], reviewers: [] };
     }
     const grades = aggregate(criteria, reviews, reliability, submissions.map((s) => s.id));
+    // D-028: every reviewer allocated a peer review, including one who has sent nothing yet.
+    const reviewerGrades = await loadReviewerGrades(this.prisma, grading);
 
     return {
       allocated: true,
@@ -130,15 +132,19 @@ export class GradesService {
         calibrated: s.reviews.some((r) => r.isCalibration),
       })),
       // D-014: numbered in the order of their random ids, which says nothing about who they are.
-      reviewers: [...reliability.values()]
-        .sort((a, b) => (a.reviewerId < b.reviewerId ? -1 : 1))
-        .map((r, index) => ({
-          number: index + 1,
-          reliability: round2(r.reliability),
-          flagged: r.flagged,
-          measured: r.measured,
-          reviewsSent: reviews.filter((review) => !review.calibration && review.reviewerId === r.reviewerId).length,
-        })),
+      reviewers: [...reviewerGrades.keys()]
+        .sort()
+        .map((reviewerId, index) => {
+          const r = reliability.get(reviewerId) ?? { reliability: 1, flagged: false, measured: false };
+          return {
+            number: index + 1,
+            reliability: round2(r.reliability),
+            flagged: r.flagged,
+            measured: r.measured,
+            reviewsSent: reviews.filter((review) => !review.calibration && review.reviewerId === reviewerId).length,
+            reviewerGrade: reviewerGrades.get(reviewerId)!.grade,
+          };
+        }),
     };
   }
 }

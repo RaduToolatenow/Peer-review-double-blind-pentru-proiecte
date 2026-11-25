@@ -56,3 +56,13 @@ export function isInvalidReview(error: unknown): boolean {
 export function isSentReview(error: unknown): boolean {
   return messageOf(error).includes('review is already sent');
 }
+
+/** D-028: a rating outside 1–5. */
+export function isRatingOutOfRange(error: unknown): boolean {
+  return messageOf(error).includes('review_ratings_rating_range');
+}
+
+/** D-028: only a sent peer review is rated, never the professor's calibration review. */
+export function isUnratableReview(error: unknown): boolean {
+  return messageOf(error).includes('review rating needs a sent peer review');
+}

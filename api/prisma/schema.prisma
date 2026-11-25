@@ -65,6 +65,7 @@ model User {
   withdrawals     AssignmentWithdrawal[]
   disputesFiled   Dispute[]              @relation("DisputeAuthor")
   disputesDecided Dispute[]              @relation("DisputeDecider")
+  reviewsRated    ReviewRating[]
   notifications   Notification[]
 
   @@map("users")
@@ -327,6 +328,7 @@ model Review {
   reviewer   User          @relation(fields: [reviewerId], references: [id])
   scores     ReviewScore[]
   disputes   Dispute[]
+  rating     ReviewRating?
 
   @@unique([submissionId, reviewerId])
   @@map("reviews")
@@ -373,6 +375,20 @@ model Dispute {
 
   @@unique([reviewId, criterionId])
   @@map("disputes")
+}
+
+// D-028: the professor's 1–5 rating of a sent peer review's feedback; the range, the review and the
+// rater are checked in the migration SQL. Changeable until the dispute deadline (checked in the API).
+model ReviewRating {
+  reviewId  String   @id @map("review_id") @db.Uuid
+  rating    Int      @db.SmallInt
+  ratedById String   @map("rated_by_id") @db.Uuid
+  ratedAt   DateTime @default(now()) @map("rated_at") @db.Timestamptz
+
+  review  Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  ratedBy User   @relation(fields: [ratedById], references: [id])
+
+  @@map("review_ratings")
 }
 
 // D-024: one row per student, assignment and event (per dispute for a dispute decided); shown in the app and emailed until emailed_at is set.

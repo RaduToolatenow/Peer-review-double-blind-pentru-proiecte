@@ -134,3 +134,116 @@ export function aggregate(
   const groups = bySubmission(reviews);
   return new Map(submissionIds.map((id) => [id, explain(criteria, groups.get(id) ?? [], reliability).grade]));
 }
+
+/**
+ * D-028: one of a reviewer's own peer reviews, as the reviewer grade sees it: the levels they gave
+ * (never replaced by a dispute), the levels of upheld disputes, and the professor's 1–5 rating.
+ * An unsent review is passed only when it counts against the reviewer.
+ */
+export interface OwnReview {
+  id: string;
+  submissionId: string;
+  reviewerId: string;
+  sent: boolean;
+  levels: Record<string, number>;
+  upheld: Record<string, number>;
+  rating: number | null;
+  /** False for an unsent review that does not count yet (before the review deadline). */
+  counts?: boolean;
+}
+
+export interface ReviewGrade {
+  id: string;
+  sent: boolean;
+  /** 0–1, or null without a reference or when unsent. */
+  accuracy: number | null;
+  rating: number | null;
+  grade: number | null;
+  counted: boolean;
+}
+
+export interface ReviewerGrade {
+  reviewerId: string;
+  grade: number | null;
+  reviews: ReviewGrade[];
+}
+
+export const QUALITY_SHARE = 0.3;
+
+function round(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+/** 1 + 9 × the given 0–1 score, not rounded. */
+function onTen(score: number): number {
+  return 1 + 9 * score;
+}
+
+/**
+ * D-028: each reviewer's grade, the mean of their reviews' grades. A sent review's accuracy is
+ * 1 − its weighted deviation from the D-025 reference, where an upheld dispute's level is the
+ * reference for its criterion; its grade mixes accuracy and the professor's rating 70/30, uses
+ * whichever of the two exists alone, and is left out with neither. A counted unsent review is 1.
+ * `sent` holds every sent review as the grades see them (D-027 levels), for the references.
+ */
+export function reviewerGrades(criteria: GradeCriterion[], sent: SentReview[], own: OwnReview[]): Map<string, ReviewerGrade> {
+  const groups = bySubmission(sent);
+  const result = new Map<string, ReviewerGrade>();
+  // The unrounded review grades, for the mean.
+  const raw = new Map<ReviewGrade, number>();
+
+  for (const review of own) {
+    const entry = result.get(review.reviewerId) ?? { reviewerId: review.reviewerId, grade: null, reviews: [] };
+    result.set(review.reviewerId, entry);
+    if (!review.sent) {
+      const counted = review.counts !== false;
+      const unsent: ReviewGrade = { id: review.id, sent: false, accuracy: null, rating: null, grade: counted ? 1 : null, counted };
+      entry.reviews.push(unsent);
+      if (counted) raw.set(unsent, 1);
+      continue;
+    }
+    const others = (groups.get(review.submissionId) ?? []).filter((r) => r.reviewerId !== review.reviewerId);
+    const professor = others.find((r) => r.calibration);
+    const peers = others.filter((r) => !r.calibration);
+    let deviation = 0;
+    let weight = 0;
+    for (const criterion of criteria) {
+      const reference =
+        review.upheld[criterion.id] ??
+        (professor
+          ? professor.levels[criterion.id]
+          : peers.length > 0
+            ? median(peers.map((r) => r.levels[criterion.id]))
+            : undefined);
+      if (reference === undefined) continue;
+      deviation += (criterion.weight * Math.abs(review.levels[criterion.id] - reference)) / (criterion.highest - criterion.lowest);
+      weight += criterion.weight;
+    }
+    const accuracy = weight > 0 ? 1 - deviation / weight : null;
+    const quality = review.rating === null ? null : (review.rating - 1) / 4;
+    const grade =
+      accuracy !== null && quality !== null
+        ? onTen((1 - QUALITY_SHARE) * accuracy + QUALITY_SHARE * quality)
+        : accuracy !== null
+          ? onTen(accuracy)
+          : quality !== null
+            ? onTen(quality)
+            : null;
+    const graded: ReviewGrade = {
+      id: review.id,
+      sent: true,
+      accuracy: accuracy === null ? null : round(accuracy),
+      rating: review.rating,
+      grade: grade === null ? null : round(grade),
+      counted: grade !== null,
+    };
+    entry.reviews.push(graded);
+    if (grade !== null) raw.set(graded, grade);
+  }
+
+  for (const entry of result.values()) {
+    const grades = entry.reviews.flatMap((r) => (raw.has(r) ? [raw.get(r)!] : []));
+    entry.grade = grades.length > 0 ? round(grades.reduce((sum, g) => sum + g, 0) / grades.length) : null;
+  }
+  return result;
+}
