@@ -9,7 +9,7 @@
 A React page talks to a NestJS API under `/api`. The API stores everything in PostgreSQL.
 In production NestJS also serves the React build, so the app has one origin (D-006).
 In production every request passes Cloudflare and then Render's proxy, so the API trusts exactly 3 proxy hops to read the visitor's IP (D-018).
-Built so far: accounts, classes and teams, rubrics and assignments, submissions, allocation, reviews, notifications, calibration and grades (D-025). Grades are computed on read by pure functions in `api/src/grades/grade.ts`, never stored.
+Built so far: accounts, classes and teams, rubrics and assignments, submissions, allocation, reviews, notifications, calibration and grades (D-025), and the results page (D-026). Grades are computed on read by pure functions in `api/src/grades/grade.ts`, never stored.
 
 ```text
 Browser ──> React (web/)

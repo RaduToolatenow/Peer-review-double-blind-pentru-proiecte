@@ -120,12 +120,12 @@ Gata:
 - evaluarea double-blind: evaluatorul vede proiectul și grila, niciodată echipa, și trimite o singură dată un nivel și cel puțin 20 de caractere de feedback la fiecare criteriu;
 - notificări pe email și în aplicație: proiecte primite de evaluat și amintiri cu 24 de ore înaintea termenelor de predare și de evaluare;
 - calibrarea: profesorul evaluează o singură dată proiectele pe care le alege, ca referință pentru evaluatori;
-- fiabilitatea evaluatorului și agregarea notelor ca funcții pure: profesorul vede nota fiecărei echipe (1–10, provizorie până la termenul de evaluare) și evaluatorii doar ca numere, cu fiabilitatea lor și cei semnalați.
+- fiabilitatea evaluatorului și agregarea notelor ca funcții pure: profesorul vede nota fiecărei echipe (1–10, provizorie până la termenul de evaluare) și evaluatorii doar ca numere, cu fiabilitatea lor și cei semnalați;
+- pagina de rezultate (meniul „Rezultate”): după termenul de evaluare, echipa vede nota și fiecare pas al calculului, ponderea fiecărui evaluator, nivelurile și feedback-ul; profesorul vede aceeași pagină pentru fiecare echipă.
 
 Nu e gata:
 
 - nota de evaluator;
-- pagina de rezultate pentru autori;
 - contestațiile și termenul lor;
 - exportul CSV;
 - pilotul cu colegii, interviul cu cadrul didactic, `AI_LOG.md` și `SUBMISSION.md`.
