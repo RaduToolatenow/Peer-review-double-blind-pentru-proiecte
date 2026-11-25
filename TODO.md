@@ -31,7 +31,7 @@
 - [x] Calibrare și fiabilitatea evaluatorului (D-025)
 - [x] Agregarea notelor ca funcție pură (D-025)
 - [x] Contestații cu istoric (D-027)
-- [ ] Nota de evaluator
+- [x] Nota de evaluator (D-028)
 - [x] Pagina de rezultate care explică nota (D-026)
 - [ ] Export CSV
 

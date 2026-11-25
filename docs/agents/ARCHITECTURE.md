@@ -9,7 +9,7 @@
 A React page talks to a NestJS API under `/api`. The API stores everything in PostgreSQL.
 In production NestJS also serves the React build, so the app has one origin (D-006).
 In production every request passes Cloudflare and then Render's proxy, so the API trusts exactly 3 proxy hops to read the visitor's IP (D-018).
-Built so far: accounts, classes and teams, rubrics and assignments, submissions, allocation, reviews, notifications, calibration and grades (D-025), the results page (D-026) and disputes (D-027). Grades are computed on read by pure functions in `api/src/grades/grade.ts`, never stored.
+Built so far: accounts, classes and teams, rubrics and assignments, submissions, allocation, reviews, notifications, calibration and grades (D-025), the results page (D-026), disputes (D-027) and reviewer grades (D-028). Grades are computed on read by pure functions in `api/src/grades/grade.ts`, never stored.
 
 ```text
 Browser ──> React (web/)
@@ -26,7 +26,7 @@ Browser ──> React (web/)
 | Auth | `api/src/auth/` | login, logout, current user, session and role guard | PrismaService |
 | Users | `api/src/users/` | admin user list, public user shape, test accounts | PrismaService |
 | Allocation | `api/src/allocation/` | pure allocation rules (`allocate.ts`), the service that writes them in a locked transaction, the withdraw route (D-022) | PrismaService |
-| Grades | `api/src/grades/` | pure reliability, aggregation and explanation (`grade.ts`), the shared loader (`grading.ts`), the professor's calibration reviews, the grades route (D-025), the results page routes (D-026) and disputes (D-027) | PrismaService |
+| Grades | `api/src/grades/` | pure reliability, aggregation and explanation (`grade.ts`), the shared loader (`grading.ts`), the professor's calibration reviews, the grades route (D-025), the results page routes (D-026), disputes (D-027) and the professor's feedback ratings (D-028) | PrismaService |
 | Jobs | `api/src/jobs/` | starts pg-boss and runs `allocate-due` every minute (D-021) | AllocationService, PostgreSQL `pgboss` schema |
 | Database access | `api/src/prisma/` | shared Prisma client | PostgreSQL |
 | Schema | `api/prisma/` | schema, migrations, seed | PostgreSQL |

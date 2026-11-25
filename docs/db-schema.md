@@ -29,6 +29,8 @@ erDiagram
     rubric_criteria ||--o{ disputes : "pe criteriul"
     disputes ||--o{ notifications : "anunțată prin"
     users ||--o{ disputes : "depune sau decide"
+    reviews ||--o| review_ratings : "notată prin"
+    users ||--o{ review_ratings : "notează"
     assignments ||--o{ assignment_withdrawals : "are"
     users ||--o{ assignment_withdrawals : "se retrage prin"
 
@@ -137,6 +139,12 @@ erDiagram
         uuid decided_by_id FK
         timestamptz decided_at
     }
+    review_ratings {
+        uuid review_id PK
+        smallint rating
+        uuid rated_by_id FK
+        timestamptz rated_at
+    }
     session {
         varchar sid PK
         json sess
@@ -184,6 +192,8 @@ Tabela `login_failures` ține autentificările eșuate din ultimele 15 minute, p
 | Nivelul nou aparține criteriului contestat (D-027) | cheie străină `disputes (new_level_id, criterion_id)` → `criterion_levels (id, criterion_id)` |
 | Contestă doar un membru al echipei evaluate, pe o evaluare trimisă; hotărăște doar profesorul temei, o singură dată (D-027) | trigger `disputes_guard` |
 | O notificare per student, temă și eveniment, sau per student și contestație (D-024, D-027) | indexuri unice parțiale pe `notifications` |
+| Calitatea feedback-ului se notează de la 1 la 5 (D-028) | `CHECK review_ratings_rating_range` |
+| Se notează doar o evaluare trimisă care nu e de calibrare, doar de profesorul temei (D-028) | trigger `review_ratings_guard` |
 | `k` este cel puțin 1 | `CHECK` în migrare |
 | Termenele sunt în ordine: predare, evaluare, contestații | `CHECK` în migrare |
 | Ponderea unui criteriu este pozitivă | `CHECK` în migrare |

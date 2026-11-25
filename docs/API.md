@@ -138,7 +138,7 @@ Răspunsurile nu spun niciodată dacă o adresă are cont. Cel mult 3 emailuri p
 
 | Rută | Cine | Ce face | Coduri |
 |---|---|---|---|
-| `GET /api/my/assignments` | `STUDENT` | Temele claselor mele și cele în care am intrat prin linkul temei, cu `teamName` (`null` când sunt doar evaluator: prin link sau într-o echipă pe care grila nu o evaluează, Q-011), termene, `phase`, `submission` (sau `null`), `withdrawn`, `canWithdraw` și `reviews: [{ id, number, status }]`, evaluările mele numerotate (D-023) | 200 |
+| `GET /api/my/assignments` | `STUDENT` | Temele claselor mele și cele în care am intrat prin linkul temei, cu `teamName` (`null` când sunt doar evaluator: prin link sau într-o echipă pe care grila nu o evaluează, Q-011), termene, `phase`, `submission` (sau `null`), `withdrawn`, `canWithdraw` `reviews: [{ id, number, status }]`, evaluările mele numerotate (D-023), și `reviewerGrade` (D-028): după termenul de contestații `{ grade, provisional, reviews: [{ number, sent, accuracy, rating, grade, counted }] }`, altfel `null`; `provisional` cât timp tema mai are contestații deschise | 200 |
 | `PUT /api/my/assignments/:id/submission` | `STUDENT` | `multipart/form-data`: `link` (http/https), `description` (opțional), `file` (PDF sau DOCX, cel mult 10 MB). Prima predare sau înlocuirea ei, doar până la termenul de predare | 200, 400, 403 echipa nu e evaluată, 404, 409 termen trecut, 413 fișier prea mare |
 | `POST /api/my/assignments/:id/withdraw` | `STUDENT`, evaluator al temei | Retragere definitivă din evaluare (D-022): evaluările netrimise trec la alți colegi. A doua oară nu schimbă nimic. Răspunde `{ withdrawn: true }` | 200, 404, 409 termenul de evaluare a trecut |
 | `GET /api/submissions/:id/file` | profesorul temei, membrii echipei, evaluatorii predării (D-023) | Fișierul curățat de metadate, ca atașament `predare-<cod>.pdf` sau `.docx` | 200, 404 |
@@ -160,7 +160,7 @@ Evaluarea nu spune niciodată echipa sau autorul predării; `submission` are for
 |---|---|---|---|
 | `GET /api/assignments/:id/submissions/:submissionId/calibration` | `PROFESSOR`, `ADMIN`, autorul temei | `{ assignmentId, assignmentTitle, teamName, reviewDeadline, status, submittedAt, canSend, submission, criteria, scores }`, ca o evaluare, plus numele echipei | 200, 404 |
 | `POST /api/assignments/:id/submissions/:submissionId/calibration` | `PROFESSOR`, `ADMIN`, autorul temei | Evaluarea de calibrare, cu același corp ca `POST /api/my/reviews/:id`, trimisă o singură dată, între alocare și termenul de evaluare. Răspunde ca `GET` | 200, 400 incompletă, 404, 409 înainte de alocare, termen trecut sau trimisă deja |
-| `GET /api/assignments/:id/grades` | `PROFESSOR`, `ADMIN`, autorul temei | `{ allocated, provisional, submissions: [{ teamId, teamName, grade, reviewsCounted, calibrated }], reviewers: [{ number, reliability, flagged, measured, reviewsSent }] }`. Înainte de alocare listele sunt goale; `provisional` până la termenul de evaluare; `grade` pe 1–10 cu 2 zecimale sau `null` fără evaluări | 200, 404 |
+| `GET /api/assignments/:id/grades` | `PROFESSOR`, `ADMIN`, autorul temei | `{ allocated, provisional, submissions: [{ teamId, teamName, grade, reviewsCounted, calibrated }], reviewers: [{ number, reliability, flagged, measured, reviewsSent, reviewerGrade }] }`. `reviewers` are toți evaluatorii cu evaluări alocate, și pe cei care n-au trimis nimic; `reviewerGrade` pe 1–10 sau `null` (D-028). Înainte de alocare listele sunt goale; `provisional` până la termenul de evaluare; `grade` pe 1–10 cu 2 zecimale sau `null` fără evaluări | 200, 404 |
 
 Evaluatorii apar doar ca numere, în ordinea id-urilor lor aleatoare (D-014). Evaluarea de calibrare nu intră în alocare, în numărul de evaluări primite și nici în notificări.
 
@@ -183,6 +183,14 @@ Forma: `{ assignmentId, title, teamName, reviewDeadline, provisional, grade, rev
 | `POST /api/assignments/:id/disputes/:disputeId/decision` | `PROFESSOR`, `ADMIN`, autorul temei | `{ upheld, levelId?, decision }`: admisă cu nivelul corect al criteriului sau respinsă, cu o decizie de cel puțin 20 de caractere; oricând, o singură dată. Răspunde cu contestația | 200, 400, 404, 409 hotărâtă deja |
 
 Rezultatele (`GET /api/my/results/:id` și ruta profesorului) au și `disputeDeadline`, `canDispute`, iar fiecare rând din `levels` are `dispute: { status, argument, createdAt, decision, decidedAt, newScore, newDescriptor }` sau `null`. Un nivel nou admis înlocuiește nivelul evaluatorului în fiabilitate și în notă; nivelul inițial rămâne afișat.
+
+## Nota de evaluator (D-028)
+
+| Rută | Cine | Ce face | Coduri |
+|---|---|---|---|
+| `PUT /api/assignments/:id/teams/:teamId/reviews/:number/rating` | `PROFESSOR`, `ADMIN`, autorul temei | `{ rating }`, de la 1 la 5: calitatea feedback-ului evaluării cu acel număr pe pagina de rezultate a echipei; între alocare și termenul de contestații; o notă nouă o înlocuiește pe cea veche. Răspunde cu rezultatele echipei | 200, 400 în afara 1–5, 404, 409 în afara intervalului sau calibrarea profesorului |
+
+Rezultatele echipei văzute de profesor au și `canRate`, iar fiecare evaluator din `reviewers` are `rating` (sau `null`) și `rateable` (`false` pentru calibrarea profesorului). Studentul își vede nota de evaluator în `GET /api/my/assignments`; profesorul vede notele doar după numărul evaluatorului, în `GET /api/assignments/:id/grades`.
 
 ## Notificări (D-024)
 
