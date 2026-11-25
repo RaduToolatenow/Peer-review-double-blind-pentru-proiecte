@@ -13,6 +13,7 @@ interface Due {
   userId: string;
   assignmentId: string;
   kind: NotificationKind;
+  disputeId?: string;
 }
 
 /**
@@ -89,6 +90,27 @@ export class NotificationsService {
       }
     }
 
+    // D-027: a dispute decided, to every confirmed member of the disputing team, once per dispute.
+    const decided = await this.prisma.dispute.findMany({
+      where: { decidedAt: { not: null } },
+      select: {
+        id: true,
+        review: {
+          select: {
+            submission: {
+              select: { assignmentId: true, team: { select: { members: { where: { user: confirmed }, select: { userId: true } } } } },
+            },
+          },
+        },
+      },
+    });
+    for (const d of decided) {
+      const { assignmentId, team } = d.review.submission;
+      for (const m of team.members) {
+        due.push({ userId: m.userId, assignmentId, kind: NotificationKind.DISPUTE_DECIDED, disputeId: d.id });
+      }
+    }
+
     if (due.length > 0) {
       await this.prisma.notification.createMany({ data: due, skipDuplicates: true });
     }
@@ -130,7 +152,10 @@ export class NotificationsService {
       this.prisma.notification.findMany({
         where: { userId, ...where },
         orderBy: { createdAt: 'desc' },
-        include: { assignment: { select: { title: true, submissionDeadline: true, reviewDeadline: true } } },
+        include: {
+          assignment: { select: { title: true, submissionDeadline: true, reviewDeadline: true } },
+          dispute: { select: { status: true, criterion: { select: { title: true } } } },
+        },
       }),
       this.prisma.review.findMany({
         where: { reviewerId: userId },
@@ -146,6 +171,7 @@ export class NotificationsService {
         reviewDeadline: n.assignment.reviewDeadline,
         reviewCount: mine.length,
         unsentCount: mine.filter((r) => r.status === ReviewStatus.ALLOCATED).length,
+        dispute: n.dispute ? { criterionTitle: n.dispute.criterion.title, upheld: n.dispute.status === 'UPHELD' } : undefined,
       });
       return {
         id: n.id,

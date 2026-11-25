@@ -39,12 +39,14 @@ const unsent = (n: number) => (n === 1 ? '1 evaluare netrimisă' : `${n} evaluă
 
 /** What a notification needs to be told; counts are taken when it is shown (D-024). */
 export interface NotificationContext {
-  kind: 'REVIEWS_ALLOCATED' | 'REVIEW_REMINDER' | 'SUBMISSION_REMINDER';
+  kind: 'REVIEWS_ALLOCATED' | 'REVIEW_REMINDER' | 'SUBMISSION_REMINDER' | 'DISPUTE_DECIDED';
   assignmentTitle: string;
   submissionDeadline: Date;
   reviewDeadline: Date;
   reviewCount: number;
   unsentCount: number;
+  /** D-027: the decided dispute; never the reviewer. */
+  dispute?: { criterionTitle: string; upheld: boolean };
 }
 
 /** The title and text of a notification, the same in the app and in the email. Never a team or a name (D-014). */
@@ -65,6 +67,13 @@ export function notificationMessage(n: NotificationContext): { title: string; te
       return {
         title: 'Predarea se închide mâine',
         text: `Echipa ta nu a predat încă la ${title}. Termenul de predare e pe ${display.format(n.submissionDeadline)}.`,
+      };
+    case 'DISPUTE_DECIDED':
+      return {
+        title: 'Contestația a primit răspuns',
+        text: `La ${title}, contestația echipei tale pentru criteriul „${n.dispute?.criterionTitle ?? ''}” a fost ${
+          n.dispute?.upheld ? 'admisă; nota a fost recalculată' : 'respinsă'
+        }. Vezi decizia pe pagina de rezultate.`,
       };
   }
 }

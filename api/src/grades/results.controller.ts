@@ -1,6 +1,7 @@
-import { Controller, Get, Param, ParseUUIDPipe, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, ParseUUIDPipe, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthenticatedRequest, Roles, SessionGuard } from '../auth/session.guard';
 import { Role } from '../generated/prisma/enums';
+import { DisputeDto } from './dispute.dto';
 import { ResultsService } from './results.service';
 
 /** The results page that explains the grade (D-026). */
@@ -19,6 +20,14 @@ export class ResultsController {
   @Roles(Role.STUDENT)
   forStudent(@Req() request: AuthenticatedRequest, @Param('id', ParseUUIDPipe) id: string) {
     return this.results.forStudent(request.user.id, id);
+  }
+
+  /** D-027: a team member disputes one criterion of a received review. */
+  @Post('my/results/:id/disputes')
+  @HttpCode(200)
+  @Roles(Role.STUDENT)
+  dispute(@Req() request: AuthenticatedRequest, @Param('id', ParseUUIDPipe) id: string, @Body() dto: DisputeDto) {
+    return this.results.dispute(request.user.id, id, dto);
   }
 
   @Get('assignments/:id/teams/:teamId/results')

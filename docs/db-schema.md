@@ -172,6 +172,11 @@ Tabela `login_failures` ține autentificările eșuate din ultimele 15 minute, p
 | Criteriul notat e din grila temei, iar o evaluare trimisă nu primește scoruri noi (D-023) | trigger `review_scores_guard` |
 | O evaluare devine `SUBMITTED` doar cu toate criteriile notate și apoi nu se mai schimbă (D-023) | trigger `reviews_guard_update` |
 | Doar profesorul care a creat tema scrie evaluări de calibrare, și doar pe acestea (D-025) | trigger `reviews_guard_calibration` |
+| O singură contestație per evaluare și criteriu (D-027) | `disputes (review_id, criterion_id)` unic |
+| Argument de cel puțin 20 de caractere; decizie de cel puțin 20 de caractere și nivel nou doar la admitere (D-027) | `CHECK disputes_argument_length`, `CHECK disputes_decision_state` |
+| Nivelul nou aparține criteriului contestat (D-027) | cheie străină `disputes (new_level_id, criterion_id)` → `criterion_levels (id, criterion_id)` |
+| Contestă doar un membru al echipei evaluate, pe o evaluare trimisă; hotărăște doar profesorul temei, o singură dată (D-027) | trigger `disputes_guard` |
+| O notificare per student, temă și eveniment, sau per student și contestație (D-024, D-027) | indexuri unice parțiale pe `notifications` |
 | `k` este cel puțin 1 | `CHECK` în migrare |
 | Termenele sunt în ordine: predare, evaluare, contestații | `CHECK` în migrare |
 | Ponderea unui criteriu este pozitivă | `CHECK` în migrare |

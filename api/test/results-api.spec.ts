@@ -138,7 +138,7 @@ describe('results page (D-026)', () => {
     expect(res.body.criteria).toHaveLength(2);
     expect(res.body.criteria[0]).toMatchObject({ position: 1, title: 'Calitatea codului', weight: 1, lowest: 1, highest: 2, mean: 2, scaled: 1 });
     expect(res.body.criteria[0].levels).toEqual(
-      [1, 2, 3].map((number) => ({ number, score: 2, descriptor: 'Bun', feedback: GOOD })),
+      [1, 2, 3].map((number) => ({ number, score: 2, descriptor: 'Bun', feedback: GOOD, dispute: null })),
     );
 
     const text = JSON.stringify(res.body);

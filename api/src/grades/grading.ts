@@ -38,6 +38,18 @@ export async function loadGrading(prisma: PrismaService, where: { id: string; cr
               scores: {
                 select: { criterionId: true, feedback: true, level: { select: { score: true, descriptor: true } } },
               },
+              disputes: {
+                select: {
+                  id: true,
+                  criterionId: true,
+                  status: true,
+                  argument: true,
+                  createdAt: true,
+                  decision: true,
+                  decidedAt: true,
+                  newLevel: { select: { score: true, descriptor: true } },
+                },
+              },
             },
           },
         },
@@ -57,15 +69,22 @@ export async function loadGrading(prisma: PrismaService, where: { id: string; cr
   return { assignment, criteria, submissions, reviews, reliability: reliabilities(criteria, reviews) };
 }
 
+/** A sent review as the grade functions see it: an upheld dispute's new level replaces the reviewer's (D-027). */
 export function sentReview(
   submissionId: string,
-  review: { reviewerId: string; isCalibration: boolean; scores: { criterionId: string; level: { score: number } }[] },
+  review: {
+    reviewerId: string;
+    isCalibration: boolean;
+    scores: { criterionId: string; level: { score: number } }[];
+    disputes: { criterionId: string; newLevel: { score: number } | null }[];
+  },
 ): SentReview {
+  const upheld = new Map(review.disputes.flatMap((d) => (d.newLevel ? [[d.criterionId, d.newLevel.score] as const] : [])));
   return {
     submissionId,
     reviewerId: review.reviewerId,
     calibration: review.isCalibration,
-    levels: Object.fromEntries(review.scores.map((score) => [score.criterionId, score.level.score])),
+    levels: Object.fromEntries(review.scores.map((score) => [score.criterionId, upheld.get(score.criterionId) ?? score.level.score])),
   };
 }
 

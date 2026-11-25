@@ -35,6 +35,8 @@ enum NotificationKind {
   REVIEWS_ALLOCATED
   REVIEW_REMINDER
   SUBMISSION_REMINDER
+  // D-027: one per student and dispute.
+  DISPUTE_DECIDED
 }
 
 enum DisputeStatus {
@@ -234,9 +236,10 @@ model RubricCriterion {
   weight   Int
   position Int
 
-  rubric Rubric           @relation(fields: [rubricId], references: [id], onDelete: Cascade)
-  levels CriterionLevel[]
-  scores ReviewScore[]
+  rubric   Rubric           @relation(fields: [rubricId], references: [id], onDelete: Cascade)
+  levels   CriterionLevel[]
+  scores   ReviewScore[]
+  disputes Dispute[]
 
   @@unique([rubricId, position])
   @@map("rubric_criteria")
@@ -250,6 +253,7 @@ model CriterionLevel {
 
   criterion RubricCriterion @relation(fields: [criterionId], references: [id], onDelete: Cascade)
   scores    ReviewScore[]
+  disputes  Dispute[]
 
   @@unique([criterionId, score])
   // D-023: lets a score's level be checked against its criterion.
@@ -344,9 +348,14 @@ model ReviewScore {
   @@map("review_scores")
 }
 
+// D-027: one criterion of a received review, filed once by a member of the reviewed team and
+// decided once by the assignment's professor; the checks and the guard trigger are in the migration SQL.
 model Dispute {
   id          String        @id @default(uuid()) @db.Uuid
   reviewId    String        @map("review_id") @db.Uuid
+  criterionId String        @map("criterion_id") @db.Uuid
+  // Set exactly when upheld; the SQL foreign key also requires it to be a level of criterion_id.
+  newLevelId  String?       @map("new_level_id") @db.Uuid
   authorId    String        @map("author_id") @db.Uuid
   argument    String
   status      DisputeStatus @default(OPEN)
@@ -355,14 +364,18 @@ model Dispute {
   createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz
   decidedAt   DateTime?     @map("decided_at") @db.Timestamptz
 
-  review    Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  author    User   @relation("DisputeAuthor", fields: [authorId], references: [id])
-  decidedBy User?  @relation("DisputeDecider", fields: [decidedById], references: [id])
+  review        Review          @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  criterion     RubricCriterion @relation(fields: [criterionId], references: [id])
+  newLevel      CriterionLevel? @relation(fields: [newLevelId], references: [id])
+  author        User            @relation("DisputeAuthor", fields: [authorId], references: [id])
+  decidedBy     User?           @relation("DisputeDecider", fields: [decidedById], references: [id])
+  notifications Notification[]
 
+  @@unique([reviewId, criterionId])
   @@map("disputes")
 }
 
-// D-024: one row per student, assignment and event; shown in the app and emailed until emailed_at is set.
+// D-024: one row per student, assignment and event (per dispute for a dispute decided); shown in the app and emailed until emailed_at is set.
 model Notification {
   id           String           @id @default(uuid()) @db.Uuid
   userId       String           @map("user_id") @db.Uuid
@@ -371,10 +384,14 @@ model Notification {
   createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz
   readAt       DateTime?        @map("read_at") @db.Timestamptz
   emailedAt    DateTime?        @map("emailed_at") @db.Timestamptz
+  // D-027: set for a dispute decided.
+  disputeId    String?          @map("dispute_id") @db.Uuid
 
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  dispute    Dispute?   @relation(fields: [disputeId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, assignmentId, kind])
+  // Unique per (user, assignment, kind) without a dispute and per (user, dispute) with one:
+  // two partial unique indexes in the migration SQL, which Prisma cannot express.
   @@map("notifications")
 }
