@@ -26,6 +26,8 @@ erDiagram
     rubric_criteria ||--o{ review_scores : "notat prin"
     criterion_levels ||--o{ review_scores : "ales în"
     reviews ||--o{ disputes : "contestată prin"
+    rubric_criteria ||--o{ disputes : "pe criteriul"
+    disputes ||--o{ notifications : "anunțată prin"
     users ||--o{ disputes : "depune sau decide"
     assignments ||--o{ assignment_withdrawals : "are"
     users ||--o{ assignment_withdrawals : "se retrage prin"
@@ -121,14 +123,19 @@ erDiagram
         enum kind
         timestamptz read_at
         timestamptz emailed_at
+        uuid dispute_id FK
     }
     disputes {
         uuid id PK
         uuid review_id FK
+        uuid criterion_id FK
         uuid author_id FK
         text argument
         enum status
+        uuid new_level_id FK
+        text decision
         uuid decided_by_id FK
+        timestamptz decided_at
     }
     session {
         varchar sid PK
