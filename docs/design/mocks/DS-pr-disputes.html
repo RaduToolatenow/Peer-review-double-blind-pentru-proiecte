@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-disputes</title>
+    <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/inter/index.css" />
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <a class="brand" href="#"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></a>
+        <nav class="nav" aria-label="Meniu">
+          <a href="#" aria-current="page">Grile active</a>
+          <a href="#">Schițe de grile</a>
+          <a href="#">Clase profesor</a>
+        </nav>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <!-- D-027: the professor's disputes for one assignment, open ones first. Never who filed it or who reviewed: the team, the criterion and the reviewer's number only. -->
+      <main>
+        <p><a class="button-link secondary" href="#">← Proiect P1 — evaluare colegi</a></p>
+        <h1>Contestații</h1>
+        <p class="muted">Proiect P1 — evaluare colegi · contestații până pe 15 dec., 23:59 · 1 deschisă din 3</p>
+        <ol class="list">
+          <li class="item">
+            <h2>Echipa 2 · Calitatea codului · Evaluatorul 1</h2>
+            <p><span class="badge warning">Deschisă</span> <span class="muted">trimisă pe 10 dec., 14:02</span></p>
+            <dl class="facts">
+              <dt>Nivel dat</dt><dd>Nota 1 · Cod greu de urmărit, fără structură</dd>
+              <dt>Feedback</dt><dd>Fișierele sunt foarte lungi și greu de urmărit.</dd>
+              <dt>Argument</dt><dd>Codul e împărțit în module pe funcționalități; fișierul lung e doar cel generat de build, care nu trebuia evaluat.</dd>
+            </dl>
+            <form>
+              <fieldset>
+                <legend>Decizia</legend>
+                <label class="check"><input type="radio" name="d1" checked /> Admit contestația, cu nivelul corect:</label>
+                <div class="indent">
+                  <label class="check"><input type="radio" name="l1" /> Nota 1 · Cod greu de urmărit, fără structură</label>
+                  <label class="check"><input type="radio" name="l1" checked /> Nota 2 · Structură clară, câteva duplicări</label>
+                  <label class="check"><input type="radio" name="l1" /> Nota 3 · Cod curat, ușor de extins</label>
+                </div>
+                <label class="check"><input type="radio" name="d1" /> Resping contestația</label>
+              </fieldset>
+              <div class="field">
+                <label for="dec1">Motivarea (cel puțin 20 de caractere)</label>
+                <textarea id="dec1">Am verificat: fișierul lung e generat, iar restul codului e structurat.</textarea>
+              </div>
+              <p class="muted">Decizia nu se mai poate schimba. Echipa primește o notificare.</p>
+              <button class="primary inline" type="button">Trimite decizia</button>
+            </form>
+          </li>
+          <li class="item">
+            <h2>Echipa 1 · Documentația · Evaluatorul 3</h2>
+            <p><span class="badge success">Admisă</span> <span class="muted">hotărâtă pe 11 dec., 09:30</span></p>
+            <dl class="facts">
+              <dt>Nivel dat</dt><dd>Nota 1 · Lipsește</dd>
+              <dt>Nivel nou</dt><dd>Nota 2 · README cu pașii de pornire</dd>
+              <dt>Feedback</dt><dd>Nu am găsit instrucțiuni de rulare.</dd>
+              <dt>Argument</dt><dd>README-ul e în folderul docs, cu pașii de pornire.</dd>
+              <dt>Decizia</dt><dd>README-ul există în docs și e complet.</dd>
+            </dl>
+          </li>
+          <li class="item">
+            <h2>Echipa 3, cu un nume mai lung ca să se vadă cum se rupe pe rânduri · Calitatea codului · Evaluatorul 2</h2>
+            <p><span class="badge">Respinsă</span> <span class="muted">hotărâtă pe 11 dec., 09:41</span></p>
+            <dl class="facts">
+              <dt>Nivel dat</dt><dd>Nota 2 · Structură clară, câteva duplicări</dd>
+              <dt>Feedback</dt><dd>Validarea se repetă în trei locuri.</dd>
+              <dt>Argument</dt><dd>Validarea nu se repetă, sunt trei formulare diferite.</dd>
+              <dt>Decizia</dt><dd>Aceeași regulă de validare e copiată în trei componente.</dd>
+            </dl>
+          </li>
+        </ol>
+      </main>
+
+      <hr />
+
+      <!-- Empty state. -->
+      <main>
+        <h1>Contestații</h1>
+        <p class="muted">Nicio contestație încă. Echipele pot contesta după termenul de evaluare, până pe 15 dec., 23:59.</p>
+      </main>
+    </div>
+  </body>
+</html>

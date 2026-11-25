@@ -25,6 +25,8 @@
         <h1>Proiect P0 — încălzire</h1>
         <p class="muted">Echipa 2 · Evaluare încheiată pe 8 dec., 23:59</p>
         <p class="lead">Nota <strong>7,07</strong> din 10</p>
+        <!-- D-027: between the review deadline and the dispute deadline. -->
+        <p class="muted">Poți contesta nivelul dat de un evaluator la un criteriu, o singură dată, cu un argument, până pe 15 dec., 23:59. Profesorul hotărăște, iar nota se recalculează dacă admite.</p>
 
         <section class="section">
           <h2>Cum a ieșit nota</h2>
@@ -52,14 +54,32 @@
             <p class="muted">Pondere 2 · niveluri de la 1 la 3</p>
             <div class="table-wrap">
               <table class="data">
-                <thead><tr><th>Evaluator</th><th>Nivel</th><th>Feedback</th></tr></thead>
+                <thead><tr><th>Evaluator</th><th>Nivel</th><th>Feedback</th><th>Contestație</th></tr></thead>
                 <tbody>
-                  <tr><td>Evaluatorul 1</td><td>Nota 3 · Cod curat, ușor de extins</td><td>Testele acoperă cazurile importante; numele funcțiilor spun ce fac.</td></tr>
-                  <tr><td>Evaluatorul 2</td><td>Nota 2 · Structură clară, câteva duplicări</td><td>Componentele sunt bine separate, dar validarea formularului se repetă în trei locuri, iar două dintre ele au deja comportamente diferite pentru același câmp.</td></tr>
-                  <tr><td>Evaluatorul 3</td><td>Nota 1 · Cod greu de urmărit, fără structură</td><td>Fișierele sunt foarte lungi și greu de urmărit.</td></tr>
+                  <tr><td>Evaluatorul 1</td><td>Nota 3 · Cod curat, ușor de extins</td><td>Testele acoperă cazurile importante; numele funcțiilor spun ce fac.</td><td><button class="secondary" type="button">Contestă</button></td></tr>
+                  <tr><td>Evaluatorul 2</td><td>Nota 2 · Structură clară, câteva duplicări</td><td>Componentele sunt bine separate, dar validarea formularului se repetă în trei locuri, iar două dintre ele au deja comportamente diferite pentru același câmp.</td><td><span class="badge warning">În așteptare</span></td></tr>
+                  <tr><td>Evaluatorul 3</td><td>Nota 1 · Cod greu de urmărit, fără structură</td><td>Fișierele sunt foarte lungi și greu de urmărit.</td><td><button class="secondary" type="button">Contestă</button></td></tr>
                 </tbody>
               </table>
             </div>
+            <!-- The form opens under the table after "Contestă" on a row. -->
+            <form class="section">
+              <h3>Contestă nivelul dat de Evaluatorul 3</h3>
+              <div class="field">
+                <label for="arg">Argumentul (cel puțin 20 de caractere)</label>
+                <textarea id="arg">Codul e împărțit în module; fișierul lung e cel generat de build.</textarea>
+              </div>
+              <p class="muted">65 de caractere · O contestație nu se mai poate schimba.</p>
+              <div class="actions">
+                <button class="primary inline" type="button">Trimite contestația</button>
+                <button class="secondary" type="button">Renunță</button>
+              </div>
+            </form>
+            <!-- The history of each dispute on this criterion. -->
+            <dl class="facts">
+              <dt>Contestație</dt><dd>Evaluatorul 2 · trimisă pe 10 dec., 14:02 · în așteptare</dd>
+              <dt>Argument</dt><dd>Validarea nu se repetă, sunt trei formulare diferite.</dd>
+            </dl>
             <p>Media ponderată 2,20 → <strong>60%</strong> din scară</p>
           </li>
           <li class="item">
@@ -67,14 +87,22 @@
             <p class="muted">Pondere 1 · niveluri de la 1 la 2</p>
             <div class="table-wrap">
               <table class="data">
-                <thead><tr><th>Evaluator</th><th>Nivel</th><th>Feedback</th></tr></thead>
+                <thead><tr><th>Evaluator</th><th>Nivel</th><th>Feedback</th><th>Contestație</th></tr></thead>
                 <tbody>
-                  <tr><td>Evaluatorul 1</td><td>Nota 2 · README cu pașii de pornire</td><td>Pașii de pornire merg din prima.</td></tr>
-                  <tr><td>Evaluatorul 2</td><td>Nota 2 · README cu pașii de pornire</td><td>README-ul e complet, cu capturi de ecran.</td></tr>
-                  <tr><td>Evaluatorul 3</td><td>Nota 1 · Lipsește</td><td>Nu am găsit instrucțiuni de rulare.</td></tr>
+                  <tr><td>Evaluatorul 1</td><td>Nota 2 · README cu pașii de pornire</td><td>Pașii de pornire merg din prima.</td><td><button class="secondary" type="button">Contestă</button></td></tr>
+                  <tr><td>Evaluatorul 2</td><td>Nota 2 · README cu pașii de pornire</td><td>README-ul e complet, cu capturi de ecran.</td><td><span class="badge">Respinsă</span></td></tr>
+                  <tr><td>Evaluatorul 3</td><td><s>Nota 1 · Lipsește</s><br />Nota 2 · README cu pașii de pornire, după contestație</td><td>Nu am găsit instrucțiuni de rulare.</td><td><span class="badge success">Admisă</span></td></tr>
                 </tbody>
               </table>
             </div>
+            <dl class="facts">
+              <dt>Contestație</dt><dd>Evaluatorul 3 · trimisă pe 10 dec., 13:10 · admisă pe 11 dec., 09:30</dd>
+              <dt>Argument</dt><dd>README-ul e în folderul docs, cu pașii de pornire.</dd>
+              <dt>Decizia</dt><dd>README-ul există în docs și e complet.</dd>
+              <dt>Contestație</dt><dd>Evaluatorul 2 · trimisă pe 10 dec., 13:12 · respinsă pe 11 dec., 09:41</dd>
+              <dt>Argument</dt><dd>Am adăugat și capturi de ecran, nu doar pașii.</dd>
+              <dt>Decizia</dt><dd>Nivelul 2 e deja cel mai mare la acest criteriu.</dd>
+            </dl>
             <p>Media ponderată 1,82 → <strong>82%</strong> din scară</p>
           </li>
         </ol>
