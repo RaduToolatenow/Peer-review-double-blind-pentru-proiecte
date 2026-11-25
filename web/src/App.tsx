@@ -13,6 +13,7 @@ import {
 } from './pages/AccountPages';
 import { ActiveRubricDetailPage } from './pages/ActiveRubricDetailPage';
 import { ActiveRubricsPage } from './pages/ActiveRubricsPage';
+import { CalibrationPage } from './pages/CalibrationPage';
 import { ClassDetailPage } from './pages/ClassDetailPage';
 import { ClassesPage } from './pages/ClassesPage';
 import { JoinTeamPage } from './pages/JoinTeamPage';
@@ -70,6 +71,7 @@ export function App() {
               <Route index element={<Navigate to="/grile-active" replace />} />
               <Route path="grile-active" element={<ActiveRubricsPage />} />
               <Route path="grile-active/:id" element={<ActiveRubricDetailPage />} />
+              <Route path="grile-active/:id/calibrare/:submissionId" element={<CalibrationPage />} />
               <Route path="schite" element={<RubricDraftsPage />} />
               <Route path="schite/noua" element={<RubricEditorPage />} />
               <Route path="schite/:id" element={<RubricEditorPage />} />

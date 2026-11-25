@@ -143,7 +143,7 @@ Răspunsurile nu spun niciodată dacă o adresă are cont. Cel mult 3 emailuri p
 | `POST /api/my/assignments/:id/withdraw` | `STUDENT`, evaluator al temei | Retragere definitivă din evaluare (D-022): evaluările netrimise trec la alți colegi. A doua oară nu schimbă nimic. Răspunde `{ withdrawn: true }` | 200, 404, 409 termenul de evaluare a trecut |
 | `GET /api/submissions/:id/file` | profesorul temei, membrii echipei, evaluatorii predării (D-023) | Fișierul curățat de metadate, ca atașament `predare-<cod>.pdf` sau `.docx` | 200, 404 |
 
-Predarea are forma `{ id, link, description, fileType, fileUrl, submittedAt, updatedAt }` și nu spune cine a predat. Detaliul unei grile active conține la fiecare echipă `link`, `description` și `fileUrl`.
+Predarea are forma `{ id, link, description, fileType, fileUrl, submittedAt, updatedAt }` și nu spune cine a predat. Detaliul unei grile active conține la fiecare echipă `submissionId`, `link`, `description` și `fileUrl`.
 
 ## Evaluări (D-023)
 

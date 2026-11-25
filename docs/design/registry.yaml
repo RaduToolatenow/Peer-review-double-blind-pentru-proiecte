@@ -31,7 +31,7 @@ designs:
     source: web/src/pages/ActiveRubricDetailPage.tsx
     screenshots: [screens/DS-pr-active-rubric-detail.light.png, screens/DS-pr-active-rubric-detail.dark.png]
     design_ref: mocks/DS-pr-active-rubric-detail.html
-    status: draft   # D-025: grades, calibration and reviewers' reliability
+    status: implemented   # D-025 adds grades, calibration and reviewers' reliability
   - id: DS-pr-rubric-drafts
     kind: screen
     source: web/src/pages/RubricDraftsPage.tsx
@@ -131,6 +131,6 @@ designs:
   - id: DS-pr-calibration
     kind: screen
     source: web/src/pages/CalibrationPage.tsx
-    screenshots: [screens/DS-pr-calibration.light.png, screens/DS-pr-calibration.dark.png]
+    screenshots: [screens/DS-pr-calibration.light.png, screens/DS-pr-calibration.dark.png, screens/DS-pr-calibration.sent.light.png, screens/DS-pr-calibration.sent.dark.png]
     design_ref: mocks/DS-pr-calibration.html
-    status: draft
+    status: implemented

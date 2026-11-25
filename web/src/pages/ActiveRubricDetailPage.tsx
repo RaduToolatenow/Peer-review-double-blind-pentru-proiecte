@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
-import { api, AssignmentDetail, Deadlines } from '../api';
+import { api, AssignmentDetail, Deadlines, Grades } from '../api';
 import { formatShort, fromLocalInput, toLocalInput } from '../dates';
 import { ErrorText, Loaded } from '../Layout';
 import { useLoad } from '../useLoad';
@@ -11,6 +11,11 @@ const FIELDS: { key: keyof Deadlines; label: string }[] = [
   { key: 'reviewDeadline', label: 'Evaluare' },
   { key: 'disputeDeadline', label: 'Contestații' },
 ];
+
+/** 8,47 — a grade or a reliability with two decimals, as written in Romanian. */
+function decimal(value: number): string {
+  return value.toLocaleString('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
 /** DS-pr-active-rubric-detail */
 export function ActiveRubricDetailPage() {
@@ -35,6 +40,10 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // D-025: grades and reliability, computed by the server on every load.
+  const grades = useLoad(() => api.grades(a.id), [a.id]);
+  const graded = grades.data?.allocated ? grades.data : null;
+  const gradeOf = new Map(graded?.submissions.map((s) => [s.teamId, s]) ?? []);
   const passed = (key: keyof Deadlines) => new Date(a[key]).getTime() <= now;
   const archivable = new Date(a.archivableFrom).getTime() <= now;
 
@@ -145,7 +154,12 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
       </form>
 
       <section className="section">
-        <h2>Echipe</h2>
+        <h2>Echipe și note</h2>
+        {graded?.provisional && (
+          <p>
+            <span className="badge warning">Note provizorii până la termenul de evaluare</span>
+          </p>
+        )}
         <div className="table-wrap">
           <table className="data">
             <thead>
@@ -153,35 +167,72 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
                 <th>Echipa</th>
                 <th>Predare</th>
                 <th>Evaluări primite</th>
+                {graded && (
+                  <>
+                    <th>Nota (1–10)</th>
+                    <th>Calibrare</th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody>
-              {a.teams.map((team) => (
-                <tr key={team.id}>
-                  <td>{team.name}</td>
-                  <td>
-                    {!team.evaluated ? (
-                      'nu e evaluată'
-                    ) : team.link && team.fileUrl ? (
+              {a.teams.map((team) => {
+                const grade = gradeOf.get(team.id);
+                return (
+                  <tr key={team.id}>
+                    <td>{team.name}</td>
+                    <td>
+                      {!team.evaluated ? (
+                        'nu e evaluată'
+                      ) : team.link && team.fileUrl ? (
+                        <>
+                          <a href={team.link} target="_blank" rel="noreferrer noopener">
+                            Link
+                          </a>{' '}
+                          · <a href={team.fileUrl}>Descarcă fișierul</a>
+                        </>
+                      ) : (
+                        'nepredat'
+                      )}
+                    </td>
+                    <td>{team.evaluated && team.submitted ? `${team.reviewsReceived} din ${a.k}` : '—'}</td>
+                    {graded && (
                       <>
-                        <a href={team.link} target="_blank" rel="noreferrer noopener">
-                          Link
-                        </a>{' '}
-                        · <a href={team.fileUrl}>Descarcă fișierul</a>
+                        <td>{grade?.grade != null ? decimal(grade.grade) : '—'}</td>
+                        <td>
+                          {grade && team.submissionId ? (
+                            <Link to={`/grile-active/${a.id}/calibrare/${team.submissionId}`}>
+                              {grade.calibrated ? 'Calibrată · vezi' : 'Calibrează'}
+                            </Link>
+                          ) : (
+                            '—'
+                          )}
+                        </td>
                       </>
-                    ) : (
-                      'nepredat'
                     )}
-                  </td>
-                  <td>{team.evaluated && team.submitted ? `${team.reviewsReceived} din ${a.k}` : '—'}</td>
-                </tr>
-              ))}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
         {a.teams.length === 0 && <p className="muted">Clasa nu are încă echipe.</p>}
-        <p className="muted">Nu se arată cine a evaluat, doar câte evaluări există.</p>
+        {grades.error && <ErrorText message={grades.error} />}
+        <p className="muted">
+          Nu se arată cine a evaluat, doar câte evaluări există.
+          {graded && ' Calibrarea ta nu intră în evaluările primite.'}
+        </p>
+        {graded ? (
+          <p className="muted">
+            Nota: la fiecare criteriu, media nivelurilor ponderată cu fiabilitatea evaluatorilor (calibrarea ta contează
+            cu 1), adusă între cel mai mic și cel mai mare nivel; apoi media criteriilor după pondere, pe scara 1–10.
+          </p>
+        ) : (
+          grades.data && <p className="muted">Notele și calibrarea apar după alocarea evaluatorilor, la termenul de predare.</p>
+        )}
       </section>
+
+      {graded && <Reviewers grades={graded} />}
 
       <section className="section">
         <h2>Grila</h2>
@@ -226,5 +277,53 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
         )}
       </section>
     </>
+  );
+}
+
+/** D-025: reviewers only by number, with their reliability (D-014). */
+function Reviewers({ grades }: { grades: Grades }) {
+  return (
+    <section className="section">
+      <h2>Evaluatori</h2>
+      {grades.reviewers.length === 0 ? (
+        <p className="muted">Niciun evaluator nu a trimis încă o evaluare.</p>
+      ) : (
+        <div className="table-wrap">
+          <table className="data">
+            <thead>
+              <tr>
+                <th>Evaluator</th>
+                <th>Evaluări trimise</th>
+                <th>Fiabilitate</th>
+                <th>Stare</th>
+              </tr>
+            </thead>
+            <tbody>
+              {grades.reviewers.map((r) => (
+                <tr key={r.number}>
+                  <td>Evaluatorul {r.number}</td>
+                  <td>{r.reviewsSent}</td>
+                  <td>{decimal(r.reliability)}</td>
+                  <td>
+                    {!r.measured ? (
+                      <span className="badge">Nemăsurat</span>
+                    ) : r.flagged ? (
+                      <span className="badge warning">Semnalat</span>
+                    ) : (
+                      <span className="badge success">În regulă</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <p className="muted">
+        Fiabilitatea = 1 − abaterea medie față de calibrarea ta sau, unde nu ai calibrat, față de mediana celorlalți
+        evaluatori. Nu scade sub 0,2; sub 0,6 evaluatorul e semnalat. Fără nimic de comparat, rămâne 1. Evaluatorii apar
+        doar ca numere.
+      </p>
+    </section>
   );
 }

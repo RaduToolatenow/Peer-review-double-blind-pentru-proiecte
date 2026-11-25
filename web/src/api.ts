@@ -82,6 +82,7 @@ export interface AssignmentDetail extends AssignmentSummary {
     evaluated: boolean;
     submitted: boolean;
     reviewsReceived: number;
+    submissionId: string | null;
     link: string | null;
     description: string | null;
     fileUrl: string | null;
@@ -144,6 +145,19 @@ export interface MyReview {
   submission: Submission;
   criteria: StoredCriterion[];
   scores: ScoreInput[];
+}
+
+/** D-025: the professor's calibration of one submission, shaped like a review plus the team. */
+export interface Calibration extends Omit<MyReview, 'id' | 'number'> {
+  assignmentId: string;
+  teamName: string;
+}
+
+export interface Grades {
+  allocated: boolean;
+  provisional: boolean;
+  submissions: { teamId: string; teamName: string; grade: number | null; reviewsCounted: number; calibrated: boolean }[];
+  reviewers: { number: number; reliability: number; flagged: boolean; measured: boolean; reviewsSent: number }[];
 }
 
 export interface ClassSummary {
@@ -300,6 +314,11 @@ export const api = {
   assignment: (id: string) => request<AssignmentDetail>('GET', `/assignments/${id}`),
   updateAssignment: (id: string, changes: Partial<Deadlines>) =>
     request<AssignmentDetail>('PATCH', `/assignments/${id}`, changes),
+  grades: (id: string) => request<Grades>('GET', `/assignments/${id}/grades`),
+  calibration: (id: string, submissionId: string) =>
+    request<Calibration>('GET', `/assignments/${id}/submissions/${submissionId}/calibration`),
+  sendCalibration: (id: string, submissionId: string, scores: ScoreInput[]) =>
+    request<Calibration>('POST', `/assignments/${id}/submissions/${submissionId}/calibration`, { scores }),
 
   classes: () => request<ClassSummary[]>('GET', '/classes'),
   klass: (id: string) => request<ClassDetail>('GET', `/classes/${id}`),

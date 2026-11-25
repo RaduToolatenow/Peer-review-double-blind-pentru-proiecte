@@ -7,11 +7,16 @@ import { teamIsEvaluated } from './assignment-scope';
 import { checkDeadlinesStillOpen, checkNewDeadlines, DEADLINE_KEYS, Deadlines } from './deadlines';
 import { UpdateAssignmentDto } from './update-assignment.dto';
 
-/** The link, description and file URL of a team's submission; never who submitted it (D-014). */
+/** The id, link, description and file URL of a team's submission; never who submitted it (D-014). */
 function submissionFields(submission?: { id: string; link: string; description: string | null }) {
   return submission
-    ? { link: submission.link, description: submission.description, fileUrl: `/api/submissions/${submission.id}/file` }
-    : { link: null, description: null, fileUrl: null };
+    ? {
+        submissionId: submission.id,
+        link: submission.link,
+        description: submission.description,
+        fileUrl: `/api/submissions/${submission.id}/file`,
+      }
+    : { submissionId: null, link: null, description: null, fileUrl: null };
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
