@@ -110,6 +110,40 @@
 
       <hr />
 
+      <!-- D-028: the professor's view adds the feedback rating of each peer review, from allocation until the
+           dispute deadline; choosing a value saves it at once. Their own calibration review is not rated.
+           After the dispute deadline the column shows the rating as text ("4 din 5", "neevaluată"). -->
+      <main>
+        <p><a class="button-link secondary" href="#">← Proiect P0 — încălzire</a></p>
+        <h1>Proiect P0 — încălzire</h1>
+        <p class="muted">Echipa 2 · Evaluare încheiată pe 8 dec., 23:59</p>
+        <p class="lead">Nota <strong>7,07</strong> din 10</p>
+        <section class="section">
+          <h2>Cum a ieșit nota</h2>
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>Evaluator</th><th>Pondere</th><th>Calitatea feedback-ului</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>Evaluatorul 1</td><td>0,85</td>
+                  <td><select aria-label="Calitatea feedback-ului, Evaluatorul 1"><option>neevaluată</option><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option></select></td>
+                </tr>
+                <tr><td>Evaluatorul 2</td><td>1,00</td><td class="muted">calibrarea ta</td></tr>
+                <tr>
+                  <td>Evaluatorul 3</td><td>0,40</td>
+                  <td><select aria-label="Calitatea feedback-ului, Evaluatorul 3"><option selected>neevaluată</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p role="status">Nota pentru feedback-ul Evaluatorului 1 a fost salvată.</p>
+          <p class="muted">Poți nota calitatea feedback-ului de la 1 (slab) la 5 (foarte util) până pe 15 dec., 23:59, și o poți schimba până atunci. Intră în nota de evaluator a studentului cu 30%; nu e obligatoriu. Studenții văd nota dată evaluărilor lor, nu și pe cea dată altora.</p>
+        </section>
+        <p class="muted">Criteriile, nivelurile și contestațiile urmează ca mai sus.</p>
+      </main>
+
+      <hr />
+
       <!-- The professor opens the same view from the active rubric's grade link; before the review deadline it is marked provisional. Without reviews, no grade. -->
       <main>
         <p><a class="button-link secondary" href="#">← Proiect P1 — evaluare colegi</a></p>

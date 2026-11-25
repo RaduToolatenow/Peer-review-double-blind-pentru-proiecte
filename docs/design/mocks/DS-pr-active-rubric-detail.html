@@ -71,15 +71,17 @@
           <h2>Evaluatori</h2>
           <div class="table-wrap">
             <table class="data">
-              <thead><tr><th>Evaluator</th><th>Evaluări trimise</th><th>Fiabilitate</th><th>Stare</th></tr></thead>
+              <thead><tr><th>Evaluator</th><th>Evaluări trimise</th><th>Fiabilitate</th><th>Stare</th><th>Notă de evaluator</th></tr></thead>
               <tbody>
-                <tr><td>Evaluatorul 1</td><td>3</td><td>0,92</td><td><span class="badge success">În regulă</span></td></tr>
-                <tr><td>Evaluatorul 2</td><td>3</td><td>0,45</td><td><span class="badge warning">Semnalat</span></td></tr>
-                <tr><td>Evaluatorul 3</td><td>1</td><td>1,00</td><td><span class="badge">Nemăsurat</span></td></tr>
+                <tr><td>Evaluatorul 1</td><td>3</td><td>0,92</td><td><span class="badge success">În regulă</span></td><td>8,61</td></tr>
+                <tr><td>Evaluatorul 2</td><td>3</td><td>0,45</td><td><span class="badge warning">Semnalat</span></td><td>5,02</td></tr>
+                <tr><td>Evaluatorul 3</td><td>1</td><td>1,00</td><td><span class="badge">Nemăsurat</span></td><td>4,00</td></tr>
+                <tr><td>Evaluatorul 4</td><td>0</td><td>1,00</td><td><span class="badge">Nemăsurat</span></td><td>1,00</td></tr>
               </tbody>
             </table>
           </div>
           <p class="muted">Fiabilitatea = 1 − abaterea medie față de calibrarea ta sau, unde nu ai calibrat, față de mediana celorlalți evaluatori. Nu scade sub 0,2; sub 0,6 evaluatorul e semnalat. Fără nimic de comparat, rămâne 1. Evaluatorii apar doar ca numere.</p>
+          <p class="muted">Nota de evaluator: media notelor evaluărilor lui, fiecare 1 + 9 × (70% acuratețe + 30% calitatea feedback-ului notată de tine), sau doar din acuratețe dacă nu ai notat-o; o evaluare netrimisă după termenul de evaluare are nota 1. Fără nimic de măsurat, „—”. Studentul își vede nota după termenul de contestații.</p>
         </section>
 
         <!-- Before allocation the table keeps only Echipa, Predare and Evaluări primite, with this line under it, and there is no Evaluatori section. -->

@@ -53,6 +53,8 @@
                 <dt><a href="#">Proiectul 2</a></dt><dd><span class="badge warning">Netrimisă</span></dd>
               </dl>
               <p class="muted">Trimite-le până pe 8 dec., 23:59. O evaluare trimisă nu se mai poate schimba.</p>
+              <!-- D-028: before the dispute deadline. -->
+              <p class="muted">Nota ta de evaluator apare după termenul de contestații, pe 15 dec., 23:59.</p>
             </section>
             <!-- D-022: shown until the review deadline. The button opens the browser's confirmation:
                  "Te retragi din evaluarea temei „Proiect P0 — încălzire”? Nu poți reveni." -->
@@ -60,6 +62,39 @@
               <h2>Retragerea din evaluare</h2>
               <p class="muted">Dacă nu mai poți evalua, te poți retrage până la termenul de evaluare. Evaluările pe care nu le-ai trimis trec la alți colegi, iar predarea echipei tale rămâne. Retragerea nu se poate anula.</p>
               <button class="secondary" type="button">Mă retrag din evaluare</button>
+            </section>
+          </li>
+          <li class="item">
+            <!-- D-028: after the dispute deadline, the student's own reviewer grade, each review explained. -->
+            <h2>Proiect P-1 — temă încheiată</h2>
+            <p class="muted">Web Avansat, grupa 231 · Echipa ta: Echipa 1</p>
+            <p><span class="badge">Încheiată</span> <span class="badge success">Predat pe 4 nov., 10:15</span></p>
+            <section class="section" aria-label="Evaluările tale">
+              <h2>Evaluările tale</h2>
+              <dl class="facts">
+                <dt><a href="#">Proiectul 1</a></dt><dd><span class="badge success">Trimisă</span></dd>
+                <dt><a href="#">Proiectul 2</a></dt><dd><span class="badge success">Trimisă</span></dd>
+                <dt>Proiectul 3</dt><dd><span class="badge warning">Netrimisă</span></dd>
+              </dl>
+              <h3>Nota ta de evaluator</h3>
+              <!-- While a dispute of the assignment is still open: -->
+              <p><span class="badge warning">Provizorie: mai sunt contestații nehotărâte</span></p>
+              <p class="lead">Nota <strong>6,31</strong> din 10</p>
+              <div class="table-wrap">
+                <table class="data">
+                  <thead><tr><th>Evaluare</th><th>Acuratețe</th><th>Calitatea feedback-ului</th><th>Nota</th></tr></thead>
+                  <tbody>
+                    <tr><td>Proiectul 1</td><td>92%</td><td>4 din 5</td><td>8,82</td></tr>
+                    <tr><td>Proiectul 2</td><td>90%</td><td>neevaluată</td><td>9,10</td></tr>
+                    <tr><td>Proiectul 3</td><td>netrimisă</td><td>—</td><td>1,00</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <ol class="points">
+                <li>Acuratețea = 1 − abaterea medie a nivelurilor tale față de calibrarea profesorului sau, unde nu există, față de mediana celorlalți evaluatori. La un criteriu cu o contestație admisă, se compară cu nivelul hotărât de profesor.</li>
+                <li>Profesorul poate nota calitatea feedback-ului, de la 1 la 5. Nota unei evaluări = 1 + 9 × (70% acuratețe + 30% calitate); fără notă de la profesor, 1 + 9 × acuratețea.</li>
+                <li>O evaluare netrimisă la termen are nota 1. Nota ta de evaluator e media notelor evaluărilor.</li>
+              </ol>
             </section>
           </li>
           <li class="item">
