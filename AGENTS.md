@@ -85,7 +85,8 @@ The full brief is in `docs/brief.md`. Built so far: login with an attempt limit,
 classes and teams with join codes, rubric drafts sent to classes, submissions with
 cleaned files, reviewer allocation with withdrawals and late arrivals, double-blind reviews
 sent once with feedback per criterion, and notifications by email and in the app, all run by
-a pg-boss job every minute. Calibration, aggregation, results and disputes are not built yet.
+a pg-boss job every minute; the professor's calibration and grades weighted by reviewer
+reliability (D-025). Results, disputes, the reviewer grade and CSV export are not built yet.
 
 ## 2. Stack and commands
 TypeScript with NestJS 11 (D-002, D-008), React and Vite (D-001), PostgreSQL 17 with Prisma 7 (D-004).
@@ -96,7 +97,7 @@ npm ci                        # install
 npm run db:migrate            # apply migrations
 npm run db:seed               # test accounts
 npm run typecheck             # type-check api and web
-npm test                      # 132 tests; needs PostgreSQL running
+npm test                      # 153 tests; needs PostgreSQL running
 npm run build                 # build web, then api
 npm start                     # http://localhost:3000
 npm run dev:api               # API in watch mode

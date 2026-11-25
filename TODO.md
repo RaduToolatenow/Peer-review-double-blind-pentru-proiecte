@@ -28,8 +28,8 @@
 - [x] Alocarea evaluatorilor cu toate constrângerile (D-021, D-022)
 - [x] Sosiri târzii și retrageri, cu realocare minimală (D-022)
 - [x] Evaluare double-blind cu feedback obligatoriu per criteriu (D-023)
-- [ ] Calibrare și fiabilitatea evaluatorului
-- [ ] Agregarea notelor ca funcție pură
+- [x] Calibrare și fiabilitatea evaluatorului (D-025)
+- [x] Agregarea notelor ca funcție pură (D-025)
 - [ ] Contestații cu istoric
 - [ ] Nota de evaluator
 - [ ] Pagina de rezultate care explică nota

@@ -10,6 +10,7 @@
 - PATTERN-002 · Rules in the database, 409 from the API · approved
 - PATTERN-003 · Page data with useLoad and Loaded · approved
 - PATTERN-004 · Lock the assignment row before changing its allocation · approved
+- PATTERN-005 · Show reviewers only as numbers in the order of their ids · candidate
 
 ---
 
@@ -48,3 +49,11 @@
 - **Why:** Two changes to one assignment at the same time would read the same loads and break the k and k+1 rules; the lock makes them run one after the other.
 - **Source:** code · confidence medium
 - **Confirmed:** 2026-11-25
+
+## PATTERN-005 · Show reviewers only as numbers in the order of their ids
+- **Status:** candidate
+- **Use when:** A response lists reviewers or reviews to someone who must not learn who they are (D-014).
+- **How:** Sort by the reviewer's or review's random UUID and return `number: index + 1`, never the id or email. Nothing in the order depends on the team, the time or the email.
+- **Example:** api/src/grades/grades.service.ts (`reviewers`), api/src/reviews/reviews.service.ts (`number`)
+- **Why:** A random id order says nothing about the person, and the number stays stable between loads.
+- **Source:** code · confidence medium
