@@ -39,6 +39,6 @@
 
 - [ ] Pilot real: minim 8 predări, fiecare cu minim 2 evaluări; `PILOT.md`
 - [ ] Minim 3 modificări din feedback-ul colegilor, în `docs/agents/DECISIONS.md`
-- [ ] Minim 8 decizii, minim 10 intrări în `AI_LOG.md`, `SUBMISSION.md` (24 de decizii; `AI_LOG.md` și `SUBMISSION.md` nu există încă)
-- [ ] Minim 25 de commit-uri pe minim 8 zile diferite (pe 24 nov.: 72 de commit-uri, pe 6 zile)
+- [ ] Minim 8 decizii, minim 10 intrări în `AI_LOG.md`, `SUBMISSION.md` (25 de decizii; `AI_LOG.md` și `SUBMISSION.md` nu există încă)
+- [ ] Minim 25 de commit-uri pe minim 8 zile diferite (pe 25 nov.: 80 de commit-uri, pe 7 zile)
 - [ ] Video demo de 3–5 minute

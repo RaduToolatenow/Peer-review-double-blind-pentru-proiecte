@@ -44,7 +44,7 @@ Input-ul uman este un pilot real cu minim 8 colegi și o discuție cu un cadru d
 | Variabilă | Valoare |
 |---|---|
 | Grila folosită în pilot și k | de stabilit cu colegii (Q-004) |
-| Metoda de agregare și de calcul al fiabilității | de stabilit (Q-005) |
+| Metoda de agregare și de calcul al fiabilității | media nivelurilor ponderată cu fiabilitatea evaluatorilor, pe scara 1–10; fiabilitatea = 1 − abaterea medie față de calibrarea profesorului sau față de mediana colegilor, minim 0,2, semnalat sub 0,6 (D-025) |
 | Ce l-ar face pe cadrul didactic să folosească rezultatele | de aflat din interviu (Q-003) |
 
 ## Arhitectură
@@ -118,12 +118,14 @@ Gata:
 - pentru student: intrarea în echipă cu codul primit și predarea proiectului (link și fișier PDF sau DOCX curățat de autor) până la termenul de predare;
 - alocarea automată a evaluatorilor după termenul de predare, cu retrageri și sosiri târzii, printr-un job pg-boss care rulează în fiecare minut;
 - evaluarea double-blind: evaluatorul vede proiectul și grila, niciodată echipa, și trimite o singură dată un nivel și cel puțin 20 de caractere de feedback la fiecare criteriu;
-- notificări pe email și în aplicație: proiecte primite de evaluat și amintiri cu 24 de ore înaintea termenelor de predare și de evaluare.
+- notificări pe email și în aplicație: proiecte primite de evaluat și amintiri cu 24 de ore înaintea termenelor de predare și de evaluare;
+- calibrarea: profesorul evaluează o singură dată proiectele pe care le alege, ca referință pentru evaluatori;
+- fiabilitatea evaluatorului și agregarea notelor ca funcții pure: profesorul vede nota fiecărei echipe (1–10, provizorie până la termenul de evaluare) și evaluatorii doar ca numere, cu fiabilitatea lor și cei semnalați.
 
 Nu e gata:
 
-- calibrarea, fiabilitatea evaluatorului și nota de evaluator;
-- agregarea notelor și pagina de rezultate;
+- nota de evaluator;
+- pagina de rezultate pentru autori;
 - contestațiile și termenul lor;
 - exportul CSV;
 - pilotul cu colegii, interviul cu cadrul didactic, `AI_LOG.md` și `SUBMISSION.md`.

@@ -9,7 +9,7 @@
 A React page talks to a NestJS API under `/api`. The API stores everything in PostgreSQL.
 In production NestJS also serves the React build, so the app has one origin (D-006).
 In production every request passes Cloudflare and then Render's proxy, so the API trusts exactly 3 proxy hops to read the visitor's IP (D-018).
-Only authentication exists so far. The full data model is already in the database.
+Built so far: accounts, classes and teams, rubrics and assignments, submissions, allocation, reviews, notifications, calibration and grades (D-025). Grades are computed on read by pure functions in `api/src/grades/grade.ts`, never stored.
 
 ```text
 Browser ──> React (web/)
@@ -41,7 +41,7 @@ Login:
 ## State and storage
 | What | Where | Owner | Notes |
 |---|---|---|---|
-| Domain data | PostgreSQL tables, see `docs/db-schema.md` | Prisma migrations | 11 tables |
+| Domain data | PostgreSQL tables, see `docs/db-schema.md` | Prisma migrations | 20 tables |
 | Sessions | PostgreSQL `session` table | connect-pg-simple | 8-hour cookie |
 | Job queue | PostgreSQL `pgboss` schema | pg-boss | created by pg-boss on first start |
 
@@ -60,7 +60,7 @@ Login:
 
 ## Build, deploy, runtime
 `npm run build` builds React, then NestJS. `npm start` runs `api/dist/main.js`.
-CI is in `.github/workflows/ci.yml`. The deploy target is open (Q-006).
+CI is in `.github/workflows/ci.yml`. Every push to `main` deploys to Render, with the database on Supabase (D-009).
 
 ## Boundaries
 - Authentication and roles are enforced on the server by `SessionGuard` (D-005, D-010).
