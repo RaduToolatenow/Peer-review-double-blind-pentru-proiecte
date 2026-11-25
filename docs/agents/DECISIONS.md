@@ -33,6 +33,7 @@
 - D-025 · Calibration, reliability and grade aggregation
 - D-026 · Results page that explains the grade
 - D-027 · Disputes per criterion, decided by the professor
+- D-028 · Reviewer grade from accuracy and the professor's feedback rating
 
 ---
 
@@ -293,5 +294,15 @@
 - **Why:** The brief requires disputes with an argument, decided by the professor, with history. The user chose per-criterion disputes, a new level set by the professor, once per item, and notifying the team of decisions.
 - **Rejected:** Excluding the whole review, or ignoring the reviewer's level, when upheld; disputing a whole review; unlimited disputes on one item; notifying the reviewer; a separate history table.
 - **Evidence:** not built yet; the disputes plan of 2026-11-25.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-028 · Reviewer grade from accuracy and the professor's feedback rating
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Every student allocated peer reviews on an assignment gets a reviewer grade, computed on read by a pure function, never stored. For each sent peer review, accuracy = 1 − the weight-averaged |level − reference| ÷ (highest − lowest level) of its criteria, with the D-025 reference; for a criterion with an upheld dispute (D-027) the new level is the reference and the reviewer's original level is measured. The assignment's professor may rate the feedback of any sent peer review they choose, never a calibration review, 1 to 5, from allocation until the dispute deadline, and may change the rating in that window; rating is optional. Quality = (rating − 1) ÷ 4. Review grade = 1 + 9 × (0.7 × accuracy + 0.3 × quality), or 1 + 9 × accuracy when unrated; a review with no reference and no rating is left out. After the review deadline each review still unsent counts 1, except a withdrawn student's review that could not be moved (D-022). Reviewer grade = the mean of the review grades, 1–10, 2 decimals; none counted means no grade. The student sees only their own, with each of their reviews explained, on My assignments after the dispute deadline, provisional while disputes are open. The professor sees reviewer grades only by reviewer number (D-014). The database enforces the rating range, a sent non-calibration review and the assignment's professor as the rater.
+- **Why:** The brief requires a reviewer grade from calibration and feedback quality. The user chose the professor's rating on any reviews, the 1–5 scale, the 70/30 split, unsent reviews at the lowest grade, the student seeing only their own after the dispute deadline, and the rating window from allocation.
+- **Rejected:** Ratings by the reviewed team; an automatic quality proxy; accuracy only; rating every review or only calibrated ones; scaling by the share sent; ignoring unsent reviews; the professor seeing reviewer grades by email; columns on `reviews`; extending the Rezultate list (D-026).
+- **Evidence:** not built yet; the reviewer grade plan of 2026-11-25.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
