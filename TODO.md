@@ -21,7 +21,7 @@
 - [x] Limitarea încercărilor de autentificare (D-017, D-018)
 - [x] Timp de răspuns egal la login pentru email existent și inexistent (D-017)
 - [x] Clase și echipe cu cod, schițe de grile (1–100 criterii), trimiterea către o clasă, grile active cu termene (D-011–D-015)
-- [ ] Termenele aplicate la predare, evaluare și contestații (cu jobul programat): predarea și evaluarea gata; contestațiile odată cu ele
+- [x] Termenele aplicate la predare, evaluare și contestații (cu jobul programat) (D-027)
 - [x] Job programat cu pg-boss pentru închiderea fazelor și notificări (D-021, D-024)
 - [x] Predări cu link și fișier, în Supabase Storage (D-016)
 - [x] Curățarea metadatelor din PDF și DOCX; servire prin proxy, fără numele original
@@ -30,7 +30,7 @@
 - [x] Evaluare double-blind cu feedback obligatoriu per criteriu (D-023)
 - [x] Calibrare și fiabilitatea evaluatorului (D-025)
 - [x] Agregarea notelor ca funcție pură (D-025)
-- [ ] Contestații cu istoric
+- [x] Contestații cu istoric (D-027)
 - [ ] Nota de evaluator
 - [x] Pagina de rezultate care explică nota (D-026)
 - [ ] Export CSV
@@ -39,6 +39,6 @@
 
 - [ ] Pilot real: minim 8 predări, fiecare cu minim 2 evaluări; `PILOT.md`
 - [ ] Minim 3 modificări din feedback-ul colegilor, în `docs/agents/DECISIONS.md`
-- [ ] Minim 8 decizii, minim 10 intrări în `AI_LOG.md`, `SUBMISSION.md` (26 de decizii; `AI_LOG.md` și `SUBMISSION.md` nu există încă)
-- [ ] Minim 25 de commit-uri pe minim 8 zile diferite (pe 25 nov.: 87 de commit-uri, pe 7 zile)
+- [ ] Minim 8 decizii, minim 10 intrări în `AI_LOG.md`, `SUBMISSION.md` (27 de decizii; `AI_LOG.md` și `SUBMISSION.md` nu există încă)
+- [ ] Minim 25 de commit-uri pe minim 8 zile diferite (pe 25 nov.: 94 de commit-uri, pe 7 zile)
 - [ ] Video demo de 3–5 minute

@@ -86,8 +86,8 @@ classes and teams with join codes, rubric drafts sent to classes, submissions wi
 cleaned files, reviewer allocation with withdrawals and late arrivals, double-blind reviews
 sent once with feedback per criterion, and notifications by email and in the app, all run by
 a pg-boss job every minute; the professor's calibration and grades weighted by reviewer
-reliability (D-025), and the results page that explains each grade (D-026). Disputes, the
-reviewer grade and CSV export are not built yet.
+reliability (D-025), the results page that explains each grade (D-026), and disputes per criterion
+decided by the professor (D-027). The reviewer grade and CSV export are not built yet.
 
 ## 2. Stack and commands
 TypeScript with NestJS 11 (D-002, D-008), React and Vite (D-001), PostgreSQL 17 with Prisma 7 (D-004).
@@ -98,7 +98,7 @@ npm ci                        # install
 npm run db:migrate            # apply migrations
 npm run db:seed               # test accounts
 npm run typecheck             # type-check api and web
-npm test                      # 163 tests; needs PostgreSQL running
+npm test                      # 173 tests; needs PostgreSQL running
 npm run build                 # build web, then api
 npm start                     # http://localhost:3000
 npm run dev:api               # API in watch mode
