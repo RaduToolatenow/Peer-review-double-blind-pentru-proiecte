@@ -11,6 +11,7 @@
 - PATTERN-003 · Page data with useLoad and Loaded · approved
 - PATTERN-004 · Lock the assignment row before changing its allocation · approved
 - PATTERN-005 · Show reviewers only as numbers in the order of their ids · approved
+- PATTERN-006 · Address a review by its number on the results page, never by id · candidate
 
 ---
 
@@ -58,3 +59,12 @@
 - **Why:** A random id order says nothing about the person, and the number stays stable between loads.
 - **Source:** code · confidence medium
 - **Confirmed:** 2026-11-25
+
+## PATTERN-006 · Address a review by its number on the results page, never by id
+- **Status:** candidate
+- **Use when:** A route acts on one review of a team's submission for someone who sees reviewers only as numbers (D-014), such as a dispute or the professor's feedback rating.
+- **How:** Take the team (or the member's own team) and the reviewer's `number` from the results page. On the server, load the submission's sent reviews ordered by id (PATTERN-005) and pick `reviews[number - 1]`; answer 404 when there is none. The review id never leaves the server.
+- **Example:** api/src/grades/results.service.ts (`dispute`, `rate`)
+- **Why:** The client never learns a review id that could link reviews across pages, and the number matches what the page shows.
+- **Source:** code · confidence medium
+
