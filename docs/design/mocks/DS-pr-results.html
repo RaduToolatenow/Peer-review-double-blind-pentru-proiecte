@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-results</title>
+    <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/inter/index.css" />
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <a class="brand" href="#"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></a>
+        <nav class="nav" aria-label="Meniu">
+          <a href="#">Temele mele</a>
+          <a href="#" aria-current="page">Rezultate</a>
+          <a href="#">Notificări</a>
+        </nav>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <!-- D-026: every step of the grade. Reviewers only as numbers, in the order of the review ids; the professor's calibration may be one of them, unlabelled. -->
+      <main>
+        <p><a class="button-link secondary" href="#">← Rezultate</a></p>
+        <h1>Proiect P0 — încălzire</h1>
+        <p class="muted">Echipa 2 · Evaluare încheiată pe 8 dec., 23:59</p>
+        <p class="lead">Nota <strong>7,07</strong> din 10</p>
+
+        <section class="section">
+          <h2>Cum a ieșit nota</h2>
+          <ol class="points">
+            <li>Fiecare evaluator are o pondere, fiabilitatea lui: 1 − abaterea medie față de calibrarea profesorului sau, unde nu există, față de mediana celorlalți evaluatori. Nu scade sub 0,2. O calibrare a profesorului poate fi printre evaluări și are ponderea 1.</li>
+            <li>La fiecare criteriu se face media nivelurilor, ponderată cu ponderile evaluatorilor, și se aduce pe o scară de la 0% (cel mai mic nivel) la 100% (cel mai mare).</li>
+            <li>Nota = 1 + 9 × media acestor procente, ponderată cu ponderile criteriilor.</li>
+          </ol>
+          <div class="table-wrap">
+            <table class="data">
+              <thead><tr><th>Evaluator</th><th>Pondere</th></tr></thead>
+              <tbody>
+                <tr><td>Evaluatorul 1</td><td>0,85</td></tr>
+                <tr><td>Evaluatorul 2</td><td>1,00</td></tr>
+                <tr><td>Evaluatorul 3</td><td>0,40</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="muted">Nota = 1 + 9 × (2 × 60% + 1 × 82%) ÷ 3 = 7,07</p>
+        </section>
+
+        <ol class="list">
+          <li class="item">
+            <h2>1. Calitatea codului</h2>
+            <p class="muted">Pondere 2 · niveluri de la 1 la 3</p>
+            <div class="table-wrap">
+              <table class="data">
+                <thead><tr><th>Evaluator</th><th>Nivel</th><th>Feedback</th></tr></thead>
+                <tbody>
+                  <tr><td>Evaluatorul 1</td><td>Nota 3 · Cod curat, ușor de extins</td><td>Testele acoperă cazurile importante; numele funcțiilor spun ce fac.</td></tr>
+                  <tr><td>Evaluatorul 2</td><td>Nota 2 · Structură clară, câteva duplicări</td><td>Componentele sunt bine separate, dar validarea formularului se repetă în trei locuri, iar două dintre ele au deja comportamente diferite pentru același câmp.</td></tr>
+                  <tr><td>Evaluatorul 3</td><td>Nota 1 · Cod greu de urmărit, fără structură</td><td>Fișierele sunt foarte lungi și greu de urmărit.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Media ponderată 2,20 → <strong>60%</strong> din scară</p>
+          </li>
+          <li class="item">
+            <h2>2. Documentația</h2>
+            <p class="muted">Pondere 1 · niveluri de la 1 la 2</p>
+            <div class="table-wrap">
+              <table class="data">
+                <thead><tr><th>Evaluator</th><th>Nivel</th><th>Feedback</th></tr></thead>
+                <tbody>
+                  <tr><td>Evaluatorul 1</td><td>Nota 2 · README cu pașii de pornire</td><td>Pașii de pornire merg din prima.</td></tr>
+                  <tr><td>Evaluatorul 2</td><td>Nota 2 · README cu pașii de pornire</td><td>README-ul e complet, cu capturi de ecran.</td></tr>
+                  <tr><td>Evaluatorul 3</td><td>Nota 1 · Lipsește</td><td>Nu am găsit instrucțiuni de rulare.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Media ponderată 1,82 → <strong>82%</strong> din scară</p>
+          </li>
+        </ol>
+      </main>
+
+      <hr />
+
+      <!-- The professor opens the same view from the active rubric's grade link; before the review deadline it is marked provisional. Without reviews, no grade. -->
+      <main>
+        <p><a class="button-link secondary" href="#">← Proiect P1 — evaluare colegi</a></p>
+        <h1>Proiect P1 — evaluare colegi</h1>
+        <p class="muted">Echipa 3 · Evaluare până pe 8 dec., 23:59</p>
+        <p><span class="badge warning">Notă provizorie până la termenul de evaluare</span></p>
+        <p class="lead">Fără notă: proiectul nu a primit încă nicio evaluare.</p>
+      </main>
+    </div>
+  </body>
+</html>

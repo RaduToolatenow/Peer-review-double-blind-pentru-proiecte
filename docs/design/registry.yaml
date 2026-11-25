@@ -19,7 +19,7 @@ designs:
     source: web/src/Layout.tsx, web/src/Brand.tsx
     screenshots: [screens/DS-pr-admin-professors.light.png, screens/DS-pr-admin-professors.dark.png, screens/DS-pr-menu.student.light.png, screens/DS-pr-menu.student.dark.png]
     design_ref: mocks/DS-pr-menu.html
-    status: implemented
+    status: draft   # D-026: the student menu gains Rezultate
   - id: DS-pr-active-rubrics
     kind: screen
     source: web/src/pages/ActiveRubricsPage.tsx
@@ -31,7 +31,7 @@ designs:
     source: web/src/pages/ActiveRubricDetailPage.tsx
     screenshots: [screens/DS-pr-active-rubric-detail.light.png, screens/DS-pr-active-rubric-detail.dark.png]
     design_ref: mocks/DS-pr-active-rubric-detail.html
-    status: implemented   # D-025 adds grades, calibration and reviewers' reliability
+    status: draft   # D-026: the grade links to the team's results
   - id: DS-pr-rubric-drafts
     kind: screen
     source: web/src/pages/RubricDraftsPage.tsx
@@ -134,3 +134,15 @@ designs:
     screenshots: [screens/DS-pr-calibration.light.png, screens/DS-pr-calibration.dark.png, screens/DS-pr-calibration.sent.light.png, screens/DS-pr-calibration.sent.dark.png]
     design_ref: mocks/DS-pr-calibration.html
     status: implemented
+  - id: DS-pr-results-list
+    kind: screen
+    source: web/src/pages/ResultsPage.tsx
+    screenshots: [screens/DS-pr-results-list.light.png, screens/DS-pr-results-list.dark.png]
+    design_ref: mocks/DS-pr-results-list.html
+    status: draft
+  - id: DS-pr-results
+    kind: screen
+    source: web/src/pages/ResultsPage.tsx
+    screenshots: [screens/DS-pr-results.light.png, screens/DS-pr-results.dark.png]
+    design_ref: mocks/DS-pr-results.html
+    status: draft

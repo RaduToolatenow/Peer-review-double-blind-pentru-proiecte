@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DS-pr-results-list</title>
+    <link rel="stylesheet" href="../../../node_modules/@fontsource-variable/inter/index.css" />
+    <link rel="stylesheet" href="../../../web/src/tokens.css" />
+    <link rel="stylesheet" href="../../../web/src/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <a class="brand" href="#"><img src="../../../web/public/logo.svg" alt="" /><span><strong>Peer review</strong><small>evaluare între colegi</small></span></a>
+        <nav class="nav" aria-label="Meniu">
+          <a href="#">Temele mele</a>
+          <a href="#" aria-current="page">Rezultate</a>
+          <a href="#">Notificări</a>
+        </nav>
+        <button class="secondary" type="button">Deconectare</button>
+      </header>
+      <!-- D-026: the assignments where the student's team is evaluated and handed in, latest review deadline first. -->
+      <main>
+        <h1>Rezultate</h1>
+        <ol class="list">
+          <li class="item">
+            <h2>Proiect P1 — evaluare colegi</h2>
+            <p class="muted">Web Avansat, grupa 231 · Echipa 2</p>
+            <p><span class="badge warning">Disponibile după 8 dec., 23:59</span></p>
+          </li>
+          <li class="item">
+            <h2>Proiect P0 — o temă cu un titlu mai lung ca să se vadă cum se rupe pe rânduri</h2>
+            <p class="muted">Web Avansat, grupa 231 · Echipa 2</p>
+            <p>Nota <strong>7,07</strong> din 10</p>
+            <p><a href="#">Vezi cum a ieșit nota</a></p>
+          </li>
+          <li class="item">
+            <h2>Tema fără evaluări</h2>
+            <p class="muted">Programare, grupa 232 · Ionescu Maria (individual)</p>
+            <p>Fără notă: proiectul nu a primit nicio evaluare.</p>
+            <p><a href="#">Vezi detaliile</a></p>
+          </li>
+        </ol>
+      </main>
+
+      <hr />
+
+      <!-- Empty state. -->
+      <main>
+        <h1>Rezultate</h1>
+        <p class="muted">Aici apar notele temelor la care echipa ta a predat un proiect, după termenul de evaluare.</p>
+      </main>
+    </div>
+  </body>
+</html>
