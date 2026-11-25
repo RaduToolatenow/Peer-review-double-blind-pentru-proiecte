@@ -30,6 +30,7 @@
 - D-022 · Reviewer allocation, withdrawals and late arrivals
 - D-023 · A review is sent once, complete and final
 - D-024 · Notifications by email and in the app, from the every-minute job
+- D-025 · Calibration, reliability and grade aggregation
 
 ---
 
@@ -161,7 +162,7 @@
 - **Rejected:** Double-blind only between students, with the professor seeing reviewers.
 - **Evidence:** api/src/users/users.controller.ts still lists every email; changed in S2 step 1.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-24
+- **Confirmed:** 2026-11-25
 
 ## D-015 · Professor and admin menu
 - **Status:** approved
@@ -251,7 +252,7 @@
 - **Rejected:** Drafts saved on the server. Changing a sent review until the deadline. Authors seeing reviews as they arrive.
 - **Evidence:** not built yet; the reviews plan of 2026-11-24.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-24
+- **Confirmed:** 2026-11-25
 
 ## D-024 · Notifications by email and in the app, from the every-minute job
 - **Status:** approved
@@ -262,3 +263,13 @@
 - **Evidence:** not built yet; the notifications plan of 2026-11-24.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-24
+
+## D-025 · Calibration, reliability and grade aggregation
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** After allocation and until the review deadline, the professor who created an assignment may calibrate any submission they choose with one review, sent once and complete like a student's (D-023), marked `is_calibration`; a database trigger allows `is_calibration` exactly when the reviewer is that professor. Calibration reviews do not count in allocation loads, review counts or notifications. A reviewer's reliability is measured per assignment: for every criterion of every review they sent, the deviation is |their level − reference| ÷ (the criterion's highest level − its lowest level), where the reference is the professor's level on a calibrated submission and otherwise the median of the other peer reviewers' levels; the deviations are averaged with the criterion weights. Reliability = max(0.2, 1 − deviation); a reviewer is flagged when 1 − deviation < 0.6; with nothing to compare against, reliability is 1 and the reviewer is shown as not measured. A submission's grade: for each criterion, the reliability-weighted mean of the sent levels, the professor counted at reliability 1, scaled to 0–1 between the criterion's lowest and highest level; grade = 1 + 9 × the weight-averaged result, rounded to 2 decimals; no sent review means no grade. Grades are computed on read by a pure function, never stored, shown to the professor from allocation and marked provisional until the review deadline. Reviewers appear only as numbers (D-014).
+- **Why:** The brief requires professor calibration, reliability from calibration and peer medians, and unreliable reviewers counting less, explained rather than hidden. The user answered Q-005 and chose the professor picking submissions, the professor's score counting at reliability 1, the 1–10 scale, the 0.2 floor and the 0.6 flag.
+- **Rejected:** The system picking N submissions at random; the professor's score replacing the grade or not counting; a weighted median; a trimmed mean; a percentage or rubric-point scale; a separate calibration table; grades stored by the job.
+- **Evidence:** not built yet; the calibration and aggregation plan of 2026-11-25.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25

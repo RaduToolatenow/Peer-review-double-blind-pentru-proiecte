@@ -13,7 +13,7 @@
 - Q-002 · What can the pilot review, given that colleagues' P1 projects are due the same day as this one?
 - Q-003 · Which professor or teaching assistant is interviewed, and what would make them use the results?
 - Q-004 · What are the pilot rubric and the value of k?
-- Q-005 · What are the aggregation and reliability methods?
+- Q-005 · What are the aggregation and reliability methods? · _answered_
 - Q-006 · Where is the app deployed? · _answered_
 - Q-007 · How do users authenticate: password accounts, invitations or something else? · _answered_
 - Q-008 · Are pilot submissions individual, or do teams exist? · _answered_
@@ -46,9 +46,12 @@
 - **Who answers:** the student, with the pilot colleagues
 
 ## Q-005 · What are the aggregation and reliability methods?
-- **Status:** open
+- **Status:** answered 2026-11-25
 - **Blocks:** the aggregation function and the results page.
 - **Who answers:** the student
+- **User answers (2026-11-25):** Aggregation is a reliability-weighted mean of the reviewers' levels per criterion, then combined with the rubric's criterion weights. Reliability comes from the mean absolute deviation, normalised to 0–1, from the professor's calibration scores where the professor reviewed the same submission, and from the other reviewers' median elsewhere; reliability = 1 − deviation, with a floor so nobody counts zero, and reviewers above a threshold are flagged. Calibration and aggregation are planned first.
+- **Answer:** Reliability-weighted mean; reliability from calibration plus peer median. Floor 0.2, flag below 0.6, grade on 1–10 with 2 decimals; the professor picks the calibrated submissions and counts at reliability 1.
+- **Recorded as:** D-025
 
 ## Q-006 · Where is the app deployed?
 - **Status:** answered 2026-11-17

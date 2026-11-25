@@ -29,7 +29,7 @@
 - **Example:** api/prisma/migrations/20261117120000_reusable_rubrics/migration.sql, api/src/rubrics/rubrics.service.ts
 - **Why:** One copy of the rule, which no future route can bypass.
 - **Source:** code · confidence high
-- **Confirmed:** 2026-11-17
+- **Confirmed:** 2026-11-25
 
 ## PATTERN-003 · Page data with useLoad and Loaded
 - **Status:** approved
@@ -47,4 +47,4 @@
 - **Example:** api/src/allocation/allocation.service.ts (`lock`, `loadState`, `apply`), api/src/allocation/allocate.ts
 - **Why:** Two changes to one assignment at the same time would read the same loads and break the k and k+1 rules; the lock makes them run one after the other.
 - **Source:** code · confidence medium
-- **Confirmed:** 2026-11-24
+- **Confirmed:** 2026-11-25
