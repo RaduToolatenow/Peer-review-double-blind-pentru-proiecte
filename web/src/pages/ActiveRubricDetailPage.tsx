@@ -13,7 +13,7 @@ const FIELDS: { key: keyof Deadlines; label: string }[] = [
 ];
 
 /** 8,47 — a grade or a reliability with two decimals, as written in Romanian. */
-function decimal(value: number): string {
+export function decimal(value: number): string {
   return value.toLocaleString('ro-RO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
@@ -198,7 +198,15 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
                     <td>{team.evaluated && team.submitted ? `${team.reviewsReceived} din ${a.k}` : '—'}</td>
                     {graded && (
                       <>
-                        <td>{grade?.grade != null ? decimal(grade.grade) : '—'}</td>
+                        <td>
+                          {grade ? (
+                            <Link to={`/grile-active/${a.id}/rezultate/${team.id}`}>
+                              {grade.grade !== null ? decimal(grade.grade) : 'fără notă'}
+                            </Link>
+                          ) : (
+                            '—'
+                          )}
+                        </td>
                         <td>
                           {grade && team.submissionId ? (
                             <Link to={`/grile-active/${a.id}/calibrare/${team.submissionId}`}>
@@ -220,7 +228,7 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
         {grades.error && <ErrorText message={grades.error} />}
         <p className="muted">
           Nu se arată cine a evaluat, doar câte evaluări există.
-          {graded && ' Calibrarea ta nu intră în evaluările primite.'}
+          {graded && ' Calibrarea ta nu intră în evaluările primite. Nota deschide rezultatele echipei, așa cum le vede ea.'}
         </p>
         {graded ? (
           <p className="muted">

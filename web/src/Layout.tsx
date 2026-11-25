@@ -42,6 +42,7 @@ export function Layout({ user, onLogout }: { user: User; onLogout: () => void })
             <NavLink to="/" end>
               Temele mele
             </NavLink>
+            <NavLink to="/rezultate">Rezultate</NavLink>
             <NavLink to="/notificari">{unread > 0 ? `Notificări (${unread})` : 'Notificări'}</NavLink>
           </nav>
         )}

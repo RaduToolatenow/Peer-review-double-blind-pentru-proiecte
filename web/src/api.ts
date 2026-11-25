@@ -160,6 +160,38 @@ export interface Grades {
   reviewers: { number: number; reliability: number; flagged: boolean; measured: boolean; reviewsSent: number }[];
 }
 
+/** D-026: one line of the student's results list. */
+export interface ResultSummary {
+  assignmentId: string;
+  title: string;
+  className: string;
+  teamName: string;
+  reviewDeadline: string;
+  available: boolean;
+  grade: number | null;
+}
+
+/** D-026: every step of a team's grade; reviewers only as numbers. */
+export interface Results {
+  assignmentId: string;
+  title: string;
+  teamName: string;
+  reviewDeadline: string;
+  provisional: boolean;
+  grade: number | null;
+  reviewers: { number: number; weight: number }[];
+  criteria: {
+    position: number;
+    title: string;
+    weight: number;
+    lowest: number;
+    highest: number;
+    mean: number | null;
+    scaled: number | null;
+    levels: { number: number; score: number; descriptor: string; feedback: string }[];
+  }[];
+}
+
 export interface ClassSummary {
   id: string;
   name: string;
@@ -315,6 +347,9 @@ export const api = {
   updateAssignment: (id: string, changes: Partial<Deadlines>) =>
     request<AssignmentDetail>('PATCH', `/assignments/${id}`, changes),
   grades: (id: string) => request<Grades>('GET', `/assignments/${id}/grades`),
+  teamResults: (id: string, teamId: string) => request<Results>('GET', `/assignments/${id}/teams/${teamId}/results`),
+  myResults: () => request<ResultSummary[]>('GET', '/my/results'),
+  myResult: (id: string) => request<Results>('GET', `/my/results/${id}`),
   calibration: (id: string, submissionId: string) =>
     request<Calibration>('GET', `/assignments/${id}/submissions/${submissionId}/calibration`),
   sendCalibration: (id: string, submissionId: string, scores: ScoreInput[]) =>

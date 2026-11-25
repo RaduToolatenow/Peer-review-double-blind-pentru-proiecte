@@ -14,6 +14,7 @@ import {
 import { ActiveRubricDetailPage } from './pages/ActiveRubricDetailPage';
 import { ActiveRubricsPage } from './pages/ActiveRubricsPage';
 import { CalibrationPage } from './pages/CalibrationPage';
+import { MyResultPage, ResultsListPage, TeamResultsPage } from './pages/ResultsPage';
 import { ClassDetailPage } from './pages/ClassDetailPage';
 import { ClassesPage } from './pages/ClassesPage';
 import { JoinTeamPage } from './pages/JoinTeamPage';
@@ -72,6 +73,7 @@ export function App() {
               <Route path="grile-active" element={<ActiveRubricsPage />} />
               <Route path="grile-active/:id" element={<ActiveRubricDetailPage />} />
               <Route path="grile-active/:id/calibrare/:submissionId" element={<CalibrationPage />} />
+              <Route path="grile-active/:id/rezultate/:teamId" element={<TeamResultsPage />} />
               <Route path="schite" element={<RubricDraftsPage />} />
               <Route path="schite/noua" element={<RubricEditorPage />} />
               <Route path="schite/:id" element={<RubricEditorPage />} />
@@ -92,6 +94,8 @@ export function App() {
               <Route index element={<MyAssignmentsPage />} />
               <Route path="echipa" element={<JoinTeamPage />} />
               <Route path="evaluari/:id" element={<ReviewPage />} />
+              <Route path="rezultate" element={<ResultsListPage />} />
+              <Route path="rezultate/:id" element={<MyResultPage />} />
               <Route path="notificari" element={<NotificationsPage />} />
               <Route path="inscriere/:code" element={<JoinAssignmentPage />} />
             </>
