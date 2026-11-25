@@ -164,6 +164,16 @@ Evaluarea nu spune niciodată echipa sau autorul predării; `submission` are for
 
 Evaluatorii apar doar ca numere, în ordinea id-urilor lor aleatoare (D-014). Evaluarea de calibrare nu intră în alocare, în numărul de evaluări primite și nici în notificări.
 
+## Rezultate (D-026)
+
+| Rută | Cine | Ce face | Coduri |
+|---|---|---|---|
+| `GET /api/my/results` | `STUDENT` | Temele la care echipa mea e evaluată și a predat: `[{ assignmentId, title, className, teamName, reviewDeadline, available, grade }]`. Înainte de termenul de evaluare `available: false` și `grade: null` | 200 |
+| `GET /api/my/results/:id` | `STUDENT`, membru al echipei | Rezultatele, doar după termenul de evaluare (forma de mai jos) | 200, 404 fără echipă evaluată sau predare, 409 înainte de termen |
+| `GET /api/assignments/:id/teams/:teamId/results` | `PROFESSOR`, `ADMIN`, autorul temei | Aceleași rezultate pentru o echipă, oricând după alocare, cu `provisional` până la termenul de evaluare | 200, 404, 409 înainte de alocare |
+
+Forma: `{ assignmentId, title, teamName, reviewDeadline, provisional, grade, reviewers: [{ number, weight }], criteria: [{ position, title, weight, lowest, highest, mean, scaled, levels: [{ number, score, descriptor, feedback }] }] }`. Evaluatorii sunt numerotați în ordinea id-urilor aleatoare ale evaluărilor (PATTERN-005); calibrarea profesorului e unul dintre ei, fără etichetă, cu ponderea 1. `mean` și `scaled` sunt `null` fără evaluări.
+
 ## Notificări (D-024)
 
 | Rută | Cine | Ce face | Coduri |

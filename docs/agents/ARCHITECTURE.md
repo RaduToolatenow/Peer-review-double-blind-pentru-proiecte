@@ -26,7 +26,7 @@ Browser ──> React (web/)
 | Auth | `api/src/auth/` | login, logout, current user, session and role guard | PrismaService |
 | Users | `api/src/users/` | admin user list, public user shape, test accounts | PrismaService |
 | Allocation | `api/src/allocation/` | pure allocation rules (`allocate.ts`), the service that writes them in a locked transaction, the withdraw route (D-022) | PrismaService |
-| Grades | `api/src/grades/` | pure reliability and aggregation (`grade.ts`), the professor's calibration reviews and the grades route (D-025) | PrismaService |
+| Grades | `api/src/grades/` | pure reliability, aggregation and explanation (`grade.ts`), the shared loader (`grading.ts`), the professor's calibration reviews, the grades route (D-025) and the results page routes (D-026) | PrismaService |
 | Jobs | `api/src/jobs/` | starts pg-boss and runs `allocate-due` every minute (D-021) | AllocationService, PostgreSQL `pgboss` schema |
 | Database access | `api/src/prisma/` | shared Prisma client | PostgreSQL |
 | Schema | `api/prisma/` | schema, migrations, seed | PostgreSQL |

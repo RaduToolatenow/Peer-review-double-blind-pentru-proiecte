@@ -1,12 +1,12 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { lock } from '../allocation/allocation.service';
-import { teamIsEvaluated } from '../assignments/assignment-scope';
 import { ReviewStatus } from '../generated/prisma/enums';
 import { isInvalidReview, isSentReview } from '../prisma/db-errors';
 import { PrismaService } from '../prisma/prisma.service';
 import { checkScores, INVALID_REVIEW, ReviewDto } from '../reviews/review.dto';
 import { submissionView } from '../submissions/submissions.service';
-import { aggregate, GradeCriterion, reliabilities, SentReview } from './grade';
+import { aggregate } from './grade';
+import { loadGrading, round2 } from './grading';
 
 const NOT_FOUND = 'Nu am găsit predarea.';
 const ALREADY_SENT = 'Ai trimis deja această evaluare; nu se mai poate schimba.';
@@ -108,54 +108,16 @@ export class GradesService {
 
   /** The grade of every evaluated team's submission and each reviewer's reliability, by number. */
   async grades(userId: string, assignmentId: string) {
-    const assignment = await this.prisma.assignment.findFirst({
-      where: { id: assignmentId, createdById: userId },
-      include: {
-        chosenTeams: { select: { teamId: true } },
-        rubric: { select: { criteria: { select: { id: true, weight: true, levels: { select: { score: true } } } } } },
-        submissions: {
-          orderBy: { team: { name: 'asc' } },
-          select: {
-            id: true,
-            teamId: true,
-            team: { select: { name: true } },
-            reviews: {
-              where: { status: ReviewStatus.SUBMITTED },
-              select: {
-                reviewerId: true,
-                isCalibration: true,
-                scores: { select: { criterionId: true, level: { select: { score: true } } } },
-              },
-            },
-          },
-        },
-      },
-    });
-    if (!assignment) {
+    const grading = await loadGrading(this.prisma, { id: assignmentId, createdById: userId });
+    if (!grading) {
       throw new NotFoundException('Nu am găsit grila activă.');
     }
+    const { assignment, criteria, submissions, reviews, reliability } = grading;
     const provisional = new Date() < assignment.reviewDeadline;
     if (assignment.allocatedAt === null) {
       return { allocated: false, provisional, submissions: [], reviewers: [] };
     }
-
-    const criteria: GradeCriterion[] = assignment.rubric.criteria.map((c) => {
-      const scores = c.levels.map((l) => l.score);
-      return { id: c.id, weight: c.weight, lowest: Math.min(...scores), highest: Math.max(...scores) };
-    });
-    const scope = { rubricAppliesTo: assignment.rubricAppliesTo, chosenTeamIds: assignment.chosenTeams.map((t) => t.teamId) };
-    const submissions = assignment.submissions.filter((s) => teamIsEvaluated(scope, s.teamId));
-    const reviews: SentReview[] = submissions.flatMap((s) =>
-      s.reviews.map((r) => ({
-        submissionId: s.id,
-        reviewerId: r.reviewerId,
-        calibration: r.isCalibration,
-        levels: Object.fromEntries(r.scores.map((score) => [score.criterionId, score.level.score])),
-      })),
-    );
-    const reliability = reliabilities(criteria, reviews);
     const grades = aggregate(criteria, reviews, reliability, submissions.map((s) => s.id));
-    const round = (value: number) => Math.round(value * 100) / 100;
 
     return {
       allocated: true,
@@ -172,7 +134,7 @@ export class GradesService {
         .sort((a, b) => (a.reviewerId < b.reviewerId ? -1 : 1))
         .map((r, index) => ({
           number: index + 1,
-          reliability: round(r.reliability),
+          reliability: round2(r.reliability),
           flagged: r.flagged,
           measured: r.measured,
           reviewsSent: reviews.filter((review) => !review.calibration && review.reviewerId === r.reviewerId).length,

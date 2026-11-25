@@ -91,10 +91,40 @@ export function reliabilities(criteria: GradeCriterion[], reviews: SentReview[])
   return result;
 }
 
+export interface Explanation {
+  /** The weight of each given review, in the same order: reliability, or 1 for the professor's calibration. */
+  weights: number[];
+  /** Per criterion: the weighted mean level and that mean scaled to 0–1; null without reviews. */
+  criteria: { id: string; mean: number | null; scaled: number | null }[];
+  grade: number | null;
+}
+
 /**
- * Each submission's grade on 1–10, 2 decimals: per criterion the reliability-weighted mean level
- * scaled to 0–1, then averaged with the criterion weights. Null without sent reviews.
+ * One submission's grade on 1–10, 2 decimals, and every step of it (D-026): per criterion the
+ * reliability-weighted mean level scaled to 0–1, then averaged with the criterion weights.
  */
+export function explain(
+  criteria: GradeCriterion[],
+  sent: SentReview[],
+  reliability: Map<string, ReviewerReliability>,
+): Explanation {
+  const weights = sent.map((r) => (r.calibration ? 1 : (reliability.get(r.reviewerId)?.reliability ?? 1)));
+  const readers = weights.reduce((sum, w) => sum + w, 0);
+  const totalWeight = criteria.reduce((sum, c) => sum + c.weight, 0);
+  if (sent.length === 0 || totalWeight === 0) {
+    return { weights, criteria: criteria.map((c) => ({ id: c.id, mean: null, scaled: null })), grade: null };
+  }
+  let score = 0;
+  const steps = criteria.map((criterion) => {
+    const mean = sent.reduce((sum, r, i) => sum + weights[i] * r.levels[criterion.id], 0) / readers;
+    const scaled = (mean - criterion.lowest) / (criterion.highest - criterion.lowest);
+    score += criterion.weight * scaled;
+    return { id: criterion.id, mean, scaled };
+  });
+  return { weights, criteria: steps, grade: Math.round((1 + (9 * score) / totalWeight) * 100) / 100 };
+}
+
+/** Each submission's grade (see explain), or null without sent reviews. */
 export function aggregate(
   criteria: GradeCriterion[],
   reviews: SentReview[],
@@ -102,23 +132,5 @@ export function aggregate(
   submissionIds: string[],
 ): Map<string, number | null> {
   const groups = bySubmission(reviews);
-  const totalWeight = criteria.reduce((sum, c) => sum + c.weight, 0);
-  const grades = new Map<string, number | null>();
-
-  for (const submissionId of submissionIds) {
-    const sent = groups.get(submissionId) ?? [];
-    if (sent.length === 0 || totalWeight === 0) {
-      grades.set(submissionId, null);
-      continue;
-    }
-    const weightOf = (r: SentReview) => (r.calibration ? 1 : (reliability.get(r.reviewerId)?.reliability ?? 1));
-    const readers = sent.reduce((sum, r) => sum + weightOf(r), 0);
-    let score = 0;
-    for (const criterion of criteria) {
-      const mean = sent.reduce((sum, r) => sum + weightOf(r) * r.levels[criterion.id], 0) / readers;
-      score += (criterion.weight * (mean - criterion.lowest)) / (criterion.highest - criterion.lowest);
-    }
-    grades.set(submissionId, Math.round((1 + (9 * score) / totalWeight) * 100) / 100);
-  }
-  return grades;
+  return new Map(submissionIds.map((id) => [id, explain(criteria, groups.get(id) ?? [], reliability).grade]));
 }
