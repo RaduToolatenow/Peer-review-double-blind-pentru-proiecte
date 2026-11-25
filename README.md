@@ -122,11 +122,11 @@ Gata:
 - calibrarea: profesorul evaluează o singură dată proiectele pe care le alege, ca referință pentru evaluatori;
 - fiabilitatea evaluatorului și agregarea notelor ca funcții pure: profesorul vede nota fiecărei echipe (1–10, provizorie până la termenul de evaluare) și evaluatorii doar ca numere, cu fiabilitatea lor și cei semnalați;
 - pagina de rezultate (meniul „Rezultate”): după termenul de evaluare, echipa vede nota și fiecare pas al calculului, ponderea fiecărui evaluator, nivelurile și feedback-ul; profesorul vede aceeași pagină pentru fiecare echipă;
-- contestații: între termenul de evaluare și cel de contestații, un membru al echipei contestă nivelul dat de un evaluator la un criteriu, cu argument; profesorul admite cu nivelul corect sau respinge, motivat, iar echipa primește o notificare; nivelul admis intră în notă, iar istoricul rămâne pe pagina de rezultate.
+- contestații: între termenul de evaluare și cel de contestații, un membru al echipei contestă nivelul dat de un evaluator la un criteriu, cu argument; profesorul admite cu nivelul corect sau respinge, motivat, iar echipa primește o notificare; nivelul admis intră în notă, iar istoricul rămâne pe pagina de rezultate;
+- nota de evaluator: fiecare evaluare primește 1 + 9 × (70% acuratețe față de calibrarea profesorului sau mediana colegilor + 30% calitatea feedback-ului, notată opțional de profesor de la 1 la 5), o evaluare netrimisă la termen are nota 1, iar nota de evaluator e media lor; studentul își vede doar nota lui, explicată, după termenul de contestații, iar profesorul vede notele doar după numărul evaluatorului (D-028).
 
 Nu e gata:
 
-- nota de evaluator;
 - exportul CSV;
 - pilotul cu colegii, interviul cu cadrul didactic, `AI_LOG.md` și `SUBMISSION.md`.
 
