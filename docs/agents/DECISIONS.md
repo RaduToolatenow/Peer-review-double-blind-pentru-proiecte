@@ -31,6 +31,7 @@
 - D-023 · A review is sent once, complete and final
 - D-024 · Notifications by email and in the app, from the every-minute job
 - D-025 · Calibration, reliability and grade aggregation
+- D-026 · Results page that explains the grade
 
 ---
 
@@ -271,5 +272,15 @@
 - **Why:** The brief requires professor calibration, reliability from calibration and peer medians, and unreliable reviewers counting less, explained rather than hidden. The user answered Q-005 and chose the professor picking submissions, the professor's score counting at reliability 1, the 1–10 scale, the 0.2 floor and the 0.6 flag.
 - **Rejected:** The system picking N submissions at random; the professor's score replacing the grade or not counting; a weighted median; a trimmed mean; a percentage or rubric-point scale; a separate calibration table; grades stored by the job.
 - **Evidence:** not built yet; the calibration and aggregation plan of 2026-11-25.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-026 · Results page that explains the grade
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** A student's menu has "Rezultate", listing the assignments where their team is evaluated and has a submission, also before the review deadline as "available after <date>" without a grade. After the review deadline a team member, including one who withdrew as a reviewer, opens the full results: the grade, each reviewer's weight, and for every criterion each reviewer's level and feedback, the reliability-weighted mean and its scaled value, computed by the same pure function as the professor's grades (D-025). Reviewers are numbered in the order of their review's random id (D-014); the professor's calibration review is one of them, unlabelled, with weight 1. The professor who created the assignment opens the same view for any team after allocation, marked provisional before the review deadline. Results are not stored.
+- **Why:** The brief requires a results page that explains how the grade came out, with the algorithm and weights shown, not hidden. The user chose the full breakdown, the hidden calibration, the professor's view and the menu item.
+- **Rejected:** Labelling the professor's calibration; showing only a formula text without the weights; authors only; a link in the student's assignments instead of a menu item; storing results.
+- **Evidence:** not built yet; the results plan of 2026-11-25.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
