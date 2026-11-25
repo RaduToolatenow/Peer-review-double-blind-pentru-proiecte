@@ -1,4 +1,4 @@
-import { aggregate, GradeCriterion, reliabilities, ReviewerReliability, SentReview } from '../src/grades/grade';
+import { aggregate, explain, GradeCriterion, reliabilities, ReviewerReliability, SentReview } from '../src/grades/grade';
 
 /** D-025: reliability and grades as pure functions. */
 
@@ -105,5 +105,36 @@ describe('aggregate (D-025)', () => {
     const grades = aggregate(two, [review('s', 'a', { x: 5, y: 3 })], given([['a', 1]]), ['s', 'empty']);
     expect(grades.get('s')).toBe(10);
     expect(grades.get('empty')).toBeNull();
+  });
+});
+
+describe('explain (D-026)', () => {
+  const two: GradeCriterion[] = [
+    { id: 'x', weight: 3, lowest: 1, highest: 5 },
+    { id: 'y', weight: 1, lowest: 1, highest: 3 },
+  ];
+  const reliability = new Map([['b', { reviewerId: 'b', reliability: 0.2, flagged: true, measured: true }]]);
+
+  it("gives each reviewer's weight, each criterion's weighted mean and scaled value, and the grade", () => {
+    const sent = [review('s', 'prof', { x: 5, y: 3 }, true), review('s', 'b', { x: 1, y: 1 })];
+    const result = explain(two, sent, reliability);
+
+    expect(result.weights).toEqual([1, 0.2]);
+    expect(result.criteria.map((c) => c.id)).toEqual(['x', 'y']);
+    expect(result.criteria[0].mean).toBeCloseTo(5.2 / 1.2);
+    expect(result.criteria[0].scaled).toBeCloseTo(0.8333, 4);
+    expect(result.criteria[1].mean).toBeCloseTo(3.2 / 1.2);
+    expect(result.grade).toBe(8.5);
+    expect(result.grade).toBe(aggregate(two, sent, reliability, ['s']).get('s'));
+  });
+
+  it('gives no grade and no means without sent reviews', () => {
+    const result = explain(two, [], reliability);
+    expect(result.grade).toBeNull();
+    expect(result.weights).toEqual([]);
+    expect(result.criteria.map((c) => [c.mean, c.scaled])).toEqual([
+      [null, null],
+      [null, null],
+    ]);
   });
 });
