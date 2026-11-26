@@ -31,8 +31,10 @@
               <div class="field"><label for="link">Linkul proiectului</label><input id="link" type="url" placeholder="https://..." /></div>
               <p class="muted">Linkul și fișierul ajung la colegi fără numele tău. Nu pune în link numele tău sau al colegilor de echipă.</p>
               <div class="field"><label for="desc">Descriere (opțional)</label><textarea id="desc">Aplicație de rezervări pentru sala de sport.</textarea></div>
-              <div class="field"><label for="file">Fișierul proiectului (PDF sau DOCX, cel mult 10 MB)</label><input id="file" type="file" /></div>
+              <!-- D-032: six types; the ZIP warning, since names inside code cannot be removed automatically. -->
+              <div class="field"><label for="file">Fișierul proiectului (PDF, DOCX, PPTX, ODT, ODP sau ZIP; cel mult 10 MB, ZIP 20 MB)</label><input id="file" type="file" /></div>
               <p class="muted">Autorul din fișier se șterge automat înainte să fie salvat.</p>
+              <p class="muted">La ZIP, șterge numele tău din cod, comentarii și README: din text nu se poate șterge automat.</p>
               <button class="primary inline" type="button">Predă proiectul</button>
             </form>
           </li>
