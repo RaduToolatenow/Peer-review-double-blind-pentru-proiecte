@@ -25,6 +25,7 @@ Browser ──> React (web/)
 | App setup | `api/src/main.ts`, `api/src/configure-app.ts` | prefix, validation, sessions, the request limit (`rate-limit.ts`, D-031), static files | PostgreSQL session table |
 | Auth | `api/src/auth/` | login, logout, current user, session and role guard, sign-up and password reset, the new-password check (`password-policy.ts`, D-030) | PrismaService |
 | Users | `api/src/users/` | admin user list, public user shape, test accounts | PrismaService |
+| Admin | `api/src/admin/` | professors and their rubrics read only (D-015), adding a professor through `AccountService.inviteProfessor` and deleting one without classes or sent rubrics (D-034) | PrismaService, AccountService |
 | Submissions | `api/src/submissions/` | upload, file type by bytes (`file-type.ts`), cleaning of PDF, DOCX, PPTX, ODT, ODP and ZIP (`clean-*.ts`, D-032), file store, download proxy under a generic name | PrismaService, Supabase Storage or a local folder |
 | Allocation | `api/src/allocation/` | pure allocation rules (`allocate.ts`), the service that writes them in a locked transaction, the withdraw route (D-022) | PrismaService |
 | Grades | `api/src/grades/` | pure reliability, aggregation and explanation (`grade.ts`), the shared loader (`grading.ts`), the professor's calibration reviews, the grades route (D-025), the results page routes (D-026), disputes (D-027) the professor's feedback ratings (D-028) and the CSV export (`csv.ts`, D-029) | PrismaService |

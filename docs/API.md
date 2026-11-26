@@ -205,12 +205,14 @@ Rezultatele echipei văzute de profesor au și `canRate`, iar fiecare evaluator 
 
 `kind` e `REVIEWS_ALLOCATED`, `REVIEW_REMINDER` sau `SUBMISSION_REMINDER`. Textul nu numește niciodată o echipă sau un coleg (D-014).
 
-## Admin (D-015)
+## Admin (D-015, D-034)
 
-Necesită rolul `ADMIN`. Doar citire.
+Necesită rolul `ADMIN`. Grilele profesorilor sunt doar citire; adminul adaugă și șterge profesori.
 
 | Rută | Ce face |
 |---|---|
 | `GET /api/admin/professors` | `[{ id, fullName, email, draftCount, activeCount }]` |
 | `GET /api/admin/professors/:id/rubrics` | Grilele unui profesor, cu `status` |
 | `GET /api/admin/rubrics/:id` | O grilă completă |
+| `POST /api/admin/professors` | `{ email, fullName }`, email de orice domeniu → 201 `{ id, email, fullName, role }`. Contul rămâne neconfirmat până când profesorul își alege parola din linkul primit pe email (`/parola-noua/:token`, valabil 24 de ore). 409 dacă emailul are deja un cont; 429 peste limita de emailuri (D-033); 503 dacă emailul nu pleacă (contul rămâne, profesorul folosește „Am uitat parola”) |
+| `DELETE /api/admin/professors/:id` | 204: șterge profesorul și schițele lui și îi închide sesiunile. 409 dacă are o clasă sau o grilă trimisă unei clase; 404 dacă id-ul nu e al unui profesor |

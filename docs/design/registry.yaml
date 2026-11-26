@@ -71,9 +71,9 @@ designs:
   - id: DS-pr-admin-professors
     kind: screen
     source: web/src/pages/ProfessorsPage.tsx
-    screenshots: [screens/DS-pr-admin-professors.light.png, screens/DS-pr-admin-professors.dark.png]
+    screenshots: [screens/DS-pr-admin-professors.light.png, screens/DS-pr-admin-professors.dark.png, screens/DS-pr-admin-professors.narrow.light.png, screens/DS-pr-admin-professors.narrow.dark.png, screens/DS-pr-admin-professors.added.light.png, screens/DS-pr-admin-professors.added.dark.png, screens/DS-pr-admin-professors.refused.light.png, screens/DS-pr-admin-professors.refused.dark.png]
     design_ref: mocks/DS-pr-admin-professors.html
-    status: implemented
+    status: implemented   # D-034: add and delete professors
   - id: DS-pr-my-assignments
     kind: screen
     source: web/src/pages/MyAssignmentsPage.tsx

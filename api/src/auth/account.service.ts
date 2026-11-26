@@ -1,6 +1,7 @@
 import { createHash, randomBytes } from 'node:crypto';
 import {
   BadRequestException,
+  ConflictException,
   HttpException,
   HttpStatus,
   Inject,
@@ -13,14 +14,18 @@ import { AllocationService } from '../allocation/allocation.service';
 import { Email } from '../mail/mailer';
 import { EmailTokenPurpose, Role } from '../generated/prisma/enums';
 import { appUrl, Mailer, MAILER } from '../mail/mailer';
-import { accountExistsEmail, confirmEmail, resetPasswordEmail } from '../mail/messages';
+import { accountExistsEmail, confirmEmail, professorInviteEmail, resetPasswordEmail } from '../mail/messages';
+import { isUniqueViolation } from '../prisma/db-errors';
 import { PrismaService } from '../prisma/prisma.service';
+import { PUBLIC_USER_SELECT, PublicUser } from '../users/public-user';
 import { hashPassword } from './password';
 import { weakPassword } from './password-policy';
 
 const HOUR_MS = 60 * 60 * 1000;
 const VERIFY_VALID_MS = 24 * HOUR_MS;
 const RESET_VALID_MS = HOUR_MS;
+/** D-034: a new professor's link to set a password. */
+const INVITE_VALID_MS = 24 * HOUR_MS;
 /** D-033: the email limit counts the last 15 minutes. */
 const EMAIL_WINDOW_MS = 15 * 60 * 1000;
 const MAX_EMAILS_PER_ADDRESS = 3;
@@ -128,6 +133,29 @@ export class AccountService {
       await this.send(resetPasswordEmail(email, `${appUrl()}/parola-noua/${token}`));
     }
     return { message: SENT_RESET };
+  }
+
+  /**
+   * D-034: the admin adds a professor. The account stays unconfirmed, with a password nobody
+   * knows, until the professor sets one from the emailed link (the new-password page).
+   */
+  async inviteProfessor(email: string, fullName: string, ip: string): Promise<PublicUser> {
+    await this.limitEmails(email, ip);
+    let professor: PublicUser;
+    try {
+      professor = await this.prisma.user.create({
+        data: { email, fullName, role: Role.PROFESSOR, passwordHash: await hashPassword(randomBytes(32).toString('base64url')) },
+        select: PUBLIC_USER_SELECT,
+      });
+    } catch (error) {
+      if (isUniqueViolation(error)) {
+        throw new ConflictException('Există deja un cont cu acest email.');
+      }
+      throw error;
+    }
+    const token = await this.newToken(professor.id, EmailTokenPurpose.RESET, INVITE_VALID_MS);
+    await this.send(professorInviteEmail(email, `${appUrl()}/parola-noua/${token}`));
+    return professor;
   }
 
   /** Sets the new password, confirms the address the link was sent to, and closes every session. */

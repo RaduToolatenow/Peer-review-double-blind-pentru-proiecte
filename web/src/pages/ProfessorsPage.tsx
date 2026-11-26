@@ -1,15 +1,59 @@
+import { FormEvent, useState } from 'react';
 import { Link, useParams } from 'react-router';
-import { api } from '../api';
-import { Loaded } from '../Layout';
+import { api, Professor } from '../api';
+import { ErrorText, Loaded } from '../Layout';
 import { useLoad } from '../useLoad';
 import { criteriaCount } from '../words';
 
-/** DS-pr-admin-professors: professors and a count of student accounts, never students' emails (D-014). */
+/**
+ * DS-pr-admin-professors: professors and a count of student accounts, never students' emails (D-014).
+ * The admin adds a professor, who sets a password from the emailed link, and deletes one without
+ * classes or sent rubrics (D-034).
+ */
 export function ProfessorsPage() {
   const state = useLoad(async () => {
     const [professors, users] = await Promise.all([api.professors(), api.users()]);
     return { professors, studentCount: users.studentCount };
   }, []);
+  const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [notice, setNotice] = useState<string | null>(null);
+  const [addError, setAddError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function act(action: () => Promise<void>, setError: (message: string | null) => void) {
+    setNotice(null);
+    setAddError(null);
+    setDeleteError(null);
+    setBusy(true);
+    try {
+      await action();
+    } catch (failure) {
+      setError((failure as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function add(event: FormEvent) {
+    event.preventDefault();
+    void act(async () => {
+      const professor = await api.addProfessor(email, fullName);
+      setEmail('');
+      setFullName('');
+      setNotice(`Am trimis un email la ${professor.email}. Profesorul își alege parola din linkul primit, valabil 24 de ore.`);
+      await state.reload();
+    }, setAddError);
+  }
+
+  function remove(professor: Professor) {
+    if (!window.confirm(`Ștergi contul profesorului ${professor.fullName}? Schițele lui se șterg și ele.`)) return;
+    void act(async () => {
+      await api.deleteProfessor(professor.id);
+      await state.reload();
+    }, setDeleteError);
+  }
 
   return (
     <>
@@ -20,8 +64,45 @@ export function ProfessorsPage() {
             <p className="muted">
               Grilele fiecărui profesor, doar citire. Conturi de student: {studentCount} (emailurile lor nu se afișează).
             </p>
+            <form onSubmit={add} noValidate>
+              <fieldset>
+                <legend>Profesor nou</legend>
+                <div className="row">
+                  <div className="field">
+                    <label htmlFor="professor-email">Email</label>
+                    <input
+                      id="professor-email"
+                      type="email"
+                      placeholder="ex. nume.prenume@ulbsibiu.ro"
+                      value={email}
+                      maxLength={200}
+                      onChange={(event) => setEmail(event.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="professor-name">Nume complet</label>
+                    <input
+                      id="professor-name"
+                      placeholder="ex. Ana Popescu"
+                      value={fullName}
+                      maxLength={100}
+                      onChange={(event) => setFullName(event.target.value)}
+                    />
+                  </div>
+                </div>
+                <button className="primary inline" type="submit" disabled={busy}>
+                  Adaugă profesorul
+                </button>
+              </fieldset>
+            </form>
+            {addError && <ErrorText message={addError} />}
+            {notice && (
+              <p className="notice" role="status">
+                {notice}
+              </p>
+            )}
             {professors.length === 0 ? (
-              <p className="muted">Nu există încă niciun cont de profesor.</p>
+              <p className="muted">Nu există încă niciun cont de profesor. Adaugă-l pe primul mai sus.</p>
             ) : (
               <div className="table-wrap">
                 <table className="data">
@@ -31,6 +112,7 @@ export function ProfessorsPage() {
                       <th>Email</th>
                       <th>Schițe</th>
                       <th>Grile active</th>
+                      <th>Acțiuni</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -42,12 +124,28 @@ export function ProfessorsPage() {
                         <td>{p.email}</td>
                         <td>{p.draftCount}</td>
                         <td>{p.activeCount}</td>
+                        <td>
+                          <button
+                            className="secondary"
+                            type="button"
+                            aria-label={`Șterge ${p.fullName}`}
+                            disabled={busy}
+                            onClick={() => remove(p)}
+                          >
+                            Șterge
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             )}
+            {deleteError && <ErrorText message={deleteError} />}
+            <p className="muted">
+              Un profesor se poate șterge doar dacă nu are nicio clasă și nicio grilă trimisă; schițele lui se șterg odată
+              cu contul.
+            </p>
           </>
         )}
       </Loaded>

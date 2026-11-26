@@ -445,6 +445,8 @@ export const api = {
   joinTeam: (code: string) => request<{ className: string; teamName: string }>('POST', '/teams/join', { code }),
 
   professors: () => request<Professor[]>('GET', '/admin/professors'),
+  addProfessor: (email: string, fullName: string) => request<User>('POST', '/admin/professors', { email, fullName }),
+  deleteProfessor: (id: string) => request<void>('DELETE', `/admin/professors/${id}`),
   professorRubrics: (id: string) => request<RubricSummary[]>('GET', `/admin/professors/${id}/rubrics`),
   adminRubric: (id: string) => request<Rubric>('GET', `/admin/rubrics/${id}`),
   users: () => request<{ staff: User[]; studentCount: number }>('GET', '/users'),

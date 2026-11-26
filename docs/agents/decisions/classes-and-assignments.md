@@ -58,6 +58,6 @@
 - **Rule:** The admin adds a professor with an email of any domain and a full name. The account stays unconfirmed until the professor sets a password through an emailed link (a RESET token valid 24 hours, opening the existing new-password page); an email that already has an account gets 409. The admin deletes a professor only when the professor has no class and no rubric sent to a class; their drafts are deleted with the account and their sessions are closed. The database's RESTRICT foreign keys enforce this, and the API answers 409. Only professor accounts are added or deleted this way.
 - **Why:** The user wants the admin to manage professors; until now professor accounts came only from the seed. Blocking on classes and sent rubrics keeps students' teams, submissions and grades.
 - **Rejected:** The admin setting the first password; deleting a professor's classes, assignments and grades with the account; deactivating instead of deleting; making an existing student account a professor; only `@ulbsibiu.ro` addresses for professors.
-- **Evidence:** to be built: api/src/admin/admin.controller.ts, api/src/auth/account.service.ts (`inviteProfessor`), web/src/pages/ProfessorsPage.tsx, api/test/admin-api.spec.ts.
+- **Evidence:** api/src/admin/admin.controller.ts (`addProfessor`, `deleteProfessor`), api/src/admin/professor.dto.ts, api/src/auth/account.service.ts (`inviteProfessor`), api/src/mail/messages.ts (`professorInviteEmail`), web/src/pages/ProfessorsPage.tsx, api/test/admin-api.spec.ts.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-26

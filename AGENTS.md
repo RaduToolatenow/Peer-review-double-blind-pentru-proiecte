@@ -91,7 +91,8 @@ decided by the professor (D-027), the reviewer grade from accuracy and the profe
 feedback rating (D-028), and the CSV export of an assignment's grades and reviewers (D-029).
 New passwords are checked against common ones (D-030), and the API limits each account
 or IP to 120 requests a minute (D-031). Submissions accept cleaned PDF, DOCX, PPTX, ODT, ODP and ZIP (D-032).
-The email limit counts the last 15 minutes (D-033).
+The email limit counts the last 15 minutes (D-033). The admin adds professors, who set
+their password from an emailed link, and deletes those without classes or sent rubrics (D-034).
 
 ## 2. Stack and commands
 TypeScript with NestJS 11 (D-002, D-008), React and Vite (D-001), PostgreSQL 17 with Prisma 7 (D-004).
@@ -102,7 +103,7 @@ npm ci                        # install
 npm run db:migrate            # apply migrations
 npm run db:seed               # test accounts
 npm run typecheck             # type-check api and web
-npm test                      # 234 tests; needs PostgreSQL running
+npm test                      # 242 tests; needs PostgreSQL running
 npm run build                 # build web, then api
 npm start                     # http://localhost:3000
 npm run dev:api               # API in watch mode

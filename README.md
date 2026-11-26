@@ -116,7 +116,7 @@ Gata:
 - teste automate și CI;
 - deploy pe Render, cu baza de date pe Supabase;
 - pentru profesor și admin: schițe de grile, trimiterea unei grile către o clasă, grile active cu termene, clase și echipe cu cod de intrare;
-- pentru admin: grilele fiecărui profesor, doar citire;
+- pentru admin: grilele fiecărui profesor, doar citire; adăugarea unui profesor, care își alege parola din linkul primit pe email, și ștergerea unui profesor fără clase și fără grile trimise (D-034);
 - pentru student: intrarea în echipă cu codul primit și predarea proiectului (link și fișier PDF, DOCX, PPTX, ODT, ODP sau ZIP cu codul sursă, curățat de autor; la ZIP se scot și `.git`, `node_modules`, folderele de build și autorii, linkurile de repo și contactele din `package.json` și `composer.json`, D-032) până la termenul de predare;
 - alocarea automată a evaluatorilor după termenul de predare, cu retrageri și sosiri târzii, printr-un job pg-boss care rulează în fiecare minut;
 - evaluarea double-blind: evaluatorul vede proiectul și grila, niciodată echipa, și trimite o singură dată un nivel și cel puțin 20 de caractere de feedback la fiecare criteriu;

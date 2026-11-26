@@ -26,6 +26,15 @@ export function resetPasswordEmail(to: string, link: string): Email {
   };
 }
 
+/** D-034: the admin added this professor; the link opens the new-password page. */
+export function professorInviteEmail(to: string, link: string): Email {
+  return {
+    to,
+    subject: 'Contul tău de profesor Peer review',
+    text: `Bună,\n\nAi primit un cont de profesor Peer review. Ca să-ți alegi parola, deschide linkul de mai jos în cel mult 24 de ore:\n\n${link}\n\nDacă linkul a expirat, cere unul nou din „Am uitat parola”, pe pagina de autentificare.${SIGNATURE}`,
+  };
+}
+
 const display = new Intl.DateTimeFormat('ro-RO', {
   timeZone: 'Europe/Bucharest',
   day: 'numeric',
