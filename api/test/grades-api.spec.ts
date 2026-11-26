@@ -210,6 +210,7 @@ describe('calibration and grades (D-025)', () => {
         grade: t === 0 ? 10 : 9.18,
         reviewsCounted: 2,
         calibrated: true,
+        disputes: { open: 0, upheld: 0, rejected: 0 },
       })),
     );
     expect(res.body.reviewers.map((r: { number: number }) => r.number)).toEqual([1, 2, 3]);

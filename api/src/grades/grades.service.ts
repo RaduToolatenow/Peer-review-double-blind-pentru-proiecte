@@ -1,10 +1,11 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { lock } from '../allocation/allocation.service';
-import { ReviewStatus } from '../generated/prisma/enums';
+import { DisputeStatus, ReviewStatus } from '../generated/prisma/enums';
 import { isInvalidReview, isSentReview } from '../prisma/db-errors';
 import { PrismaService } from '../prisma/prisma.service';
 import { checkScores, INVALID_REVIEW, ReviewDto } from '../reviews/review.dto';
 import { submissionView } from '../submissions/submissions.service';
+import { csvDecimal, toCsv } from './csv';
 import { aggregate } from './grade';
 import { loadGrading, loadReviewerGrades, round2 } from './grading';
 
@@ -130,6 +131,7 @@ export class GradesService {
         grade: grades.get(s.id) ?? null,
         reviewsCounted: s.reviews.filter((r) => !r.isCalibration).length,
         calibrated: s.reviews.some((r) => r.isCalibration),
+        disputes: disputeCounts(s.reviews.flatMap((r) => r.disputes)),
       })),
       // D-014: numbered in the order of their random ids, which says nothing about who they are.
       reviewers: [...reviewerGrades.keys()]
@@ -147,4 +149,54 @@ export class GradesService {
         }),
     };
   }
+
+  /** D-029: note.csv, one row per evaluated team with a submission, as the grades show them. */
+  async exportTeams(userId: string, assignmentId: string) {
+    const grades = await this.allocatedGrades(userId, assignmentId);
+    const status = grades.provisional ? 'provizorie' : 'finală';
+    return toCsv(
+      ['Echipa', 'Evaluări primite', 'Calibrată', 'Nota (1–10)', 'Contestații deschise', 'Contestații admise', 'Contestații respinse', 'Stare'],
+      grades.submissions.map((s) => [
+        s.teamName,
+        s.reviewsCounted,
+        s.calibrated,
+        csvDecimal(s.grade),
+        s.disputes.open,
+        s.disputes.upheld,
+        s.disputes.rejected,
+        status,
+      ]),
+    );
+  }
+
+  /** D-029: evaluatori.csv, one row per reviewer number (D-014), as the grades show them. */
+  async exportReviewers(userId: string, assignmentId: string) {
+    const grades = await this.allocatedGrades(userId, assignmentId);
+    const status = grades.provisional ? 'provizorie' : 'finală';
+    return toCsv(
+      ['Evaluator (nr.)', 'Fiabilitate', 'Semnalat', 'Măsurată', 'Evaluări trimise', 'Nota de evaluator (1–10)', 'Stare'],
+      grades.reviewers.map((r) => [
+        r.number,
+        csvDecimal(r.reliability),
+        r.flagged,
+        r.measured,
+        r.reviewsSent,
+        csvDecimal(r.reviewerGrade),
+        status,
+      ]),
+    );
+  }
+
+  private async allocatedGrades(userId: string, assignmentId: string) {
+    const grades = await this.grades(userId, assignmentId);
+    if (!grades.allocated) {
+      throw new ConflictException('Exportul e disponibil după alocarea evaluatorilor.');
+    }
+    return grades;
+  }
+}
+
+function disputeCounts(disputes: { status: DisputeStatus }[]) {
+  const count = (status: DisputeStatus) => disputes.filter((d) => d.status === status).length;
+  return { open: count(DisputeStatus.OPEN), upheld: count(DisputeStatus.UPHELD), rejected: count(DisputeStatus.REJECTED) };
 }

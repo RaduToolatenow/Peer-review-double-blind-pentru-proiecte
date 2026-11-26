@@ -1,10 +1,10 @@
-import { Body, Controller, Get, HttpCode, Param, ParseUUIDPipe, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Header, HttpCode, Param, ParseUUIDPipe, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthenticatedRequest, Roles, SessionGuard } from '../auth/session.guard';
 import { Role } from '../generated/prisma/enums';
 import { ReviewDto } from '../reviews/review.dto';
 import { GradesService } from './grades.service';
 
-/** The professor's calibration reviews and an assignment's grades (D-025). */
+/** The professor's calibration reviews and an assignment's grades (D-025), also as CSV (D-029). */
 @Controller('assignments/:id')
 @UseGuards(SessionGuard)
 export class GradesController {
@@ -14,6 +14,23 @@ export class GradesController {
   @Roles(Role.PROFESSOR, Role.ADMIN)
   list(@Req() request: AuthenticatedRequest, @Param('id', ParseUUIDPipe) id: string) {
     return this.grades.grades(request.user.id, id);
+  }
+
+  /** D-029: the grades page as CSV, one file per table. */
+  @Get('export/note.csv')
+  @Roles(Role.PROFESSOR, Role.ADMIN)
+  @Header('Content-Type', 'text/csv; charset=utf-8')
+  @Header('Content-Disposition', 'attachment; filename="note.csv"')
+  exportTeams(@Req() request: AuthenticatedRequest, @Param('id', ParseUUIDPipe) id: string) {
+    return this.grades.exportTeams(request.user.id, id);
+  }
+
+  @Get('export/evaluatori.csv')
+  @Roles(Role.PROFESSOR, Role.ADMIN)
+  @Header('Content-Type', 'text/csv; charset=utf-8')
+  @Header('Content-Disposition', 'attachment; filename="evaluatori.csv"')
+  exportReviewers(@Req() request: AuthenticatedRequest, @Param('id', ParseUUIDPipe) id: string) {
+    return this.grades.exportReviewers(request.user.id, id);
   }
 
   @Get('submissions/:submissionId/calibration')
