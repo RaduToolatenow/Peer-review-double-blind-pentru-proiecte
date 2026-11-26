@@ -52,6 +52,8 @@
         <section class="section">
           <h2>Echipe și note</h2>
           <p><span class="badge warning">Note provizorii până la termenul de evaluare</span></p>
+          <!-- D-029: after allocation, one CSV per table; provisional rows say "provizorie" in the file. -->
+          <p><a class="button-link secondary" href="#" download>Descarcă notele (CSV)</a></p>
           <div class="table-wrap">
             <table class="data">
               <thead><tr><th>Echipa</th><th>Predare</th><th>Evaluări primite</th><th>Nota (1–10)</th><th>Calibrare</th></tr></thead>
@@ -69,6 +71,7 @@
 
         <section class="section">
           <h2>Evaluatori</h2>
+          <p><a class="button-link secondary" href="#" download>Descarcă evaluatorii (CSV)</a></p>
           <div class="table-wrap">
             <table class="data">
               <thead><tr><th>Evaluator</th><th>Evaluări trimise</th><th>Fiabilitate</th><th>Stare</th><th>Notă de evaluator</th></tr></thead>
@@ -84,7 +87,7 @@
           <p class="muted">Nota de evaluator: media notelor evaluărilor lui, fiecare 1 + 9 × (70% acuratețe + 30% calitatea feedback-ului notată de tine), sau doar din acuratețe dacă nu ai notat-o; o evaluare netrimisă după termenul de evaluare are nota 1. Fără nimic de măsurat, „—”. Studentul își vede nota după termenul de contestații.</p>
         </section>
 
-        <!-- Before allocation the table keeps only Echipa, Predare and Evaluări primite, with this line under it, and there is no Evaluatori section. -->
+        <!-- Before allocation the table keeps only Echipa, Predare and Evaluări primite, with this line under it, there is no Evaluatori section and no CSV download. -->
         <section class="section">
           <h2>Echipe și note</h2>
           <p class="muted">Notele și calibrarea apar după alocarea evaluatorilor, la termenul de predare.</p>
