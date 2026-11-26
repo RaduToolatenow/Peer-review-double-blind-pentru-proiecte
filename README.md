@@ -111,6 +111,7 @@ Gata:
 - Docker Compose pentru PostgreSQL;
 - autentificare cu limită de încercări, deconectare și roluri verificate pe server;
 - înscriere prin linkul temei, doar cu email `@ulbsibiu.ro` confirmat, și „Am uitat parola”; o parolă nouă nu poate fi una des folosită (lista NCSC din SecLists), un singur caracter repetat sau numele din adresă (D-030, după feedback-ul colegilor);
+- limita de emailuri (înscriere, retrimiterea confirmării, „Am uitat parola”): cel mult 3 pentru aceeași adresă și 20 de pe același IP în 15 minute, nu într-o oră (D-033, după feedback-ul colegilor);
 - limită de cereri împotriva refresh-ului repetat: peste 120 de cereri pe minut de la un cont (sau de la un IP, fără cont) API-ul răspunde „Prea multe cereri” până trece minutul (D-031, după feedback-ul colegilor);
 - teste automate și CI;
 - deploy pe Render, cu baza de date pe Supabase;

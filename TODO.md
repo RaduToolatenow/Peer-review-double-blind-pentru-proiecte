@@ -38,9 +38,10 @@
 ## S3: finalizare
 
 - [ ] Pilot real: minim 8 predări, fiecare cu minim 2 evaluări; `PILOT.md`
-- [ ] Minim 3 modificări din feedback-ul colegilor, în `docs/agents/DECISIONS.md`
+- [x] Minim 3 modificări din feedback-ul colegilor, în `docs/agents/DECISIONS.md` (D-030, D-031, D-033)
   - [x] Verificarea securității parolelor: parole des folosite, repetate sau cu numele din adresă refuzate (D-030, Q-012)
   - [x] Protecție anti-spam la refresh repetat: 120 de cereri pe minut per cont sau IP, apoi 429 (D-031, Q-013)
-- [ ] Minim 8 decizii, minim 10 intrări în `AI_LOG.md`, `SUBMISSION.md` (32 de decizii; `AI_LOG.md` și `SUBMISSION.md` nu există încă)
-- [ ] Minim 25 de commit-uri pe minim 8 zile diferite (pe 26 nov., pe ramura `feat/more-file-types`: 129 commit-uri, pe 8 zile; contează după push)
+  - [x] Limita de emailuri pe 15 minute în loc de o oră (D-033)
+- [ ] Minim 8 decizii, minim 10 intrări în `AI_LOG.md`, `SUBMISSION.md` (33 de decizii; `AI_LOG.md` și `SUBMISSION.md` nu există încă)
+- [ ] Minim 25 de commit-uri pe minim 8 zile diferite (pe 26 nov., pe ramura `feat/email-limit-15min`: 134 commit-uri, pe 8 zile; contează după push)
 - [ ] Video demo de 3–5 minute

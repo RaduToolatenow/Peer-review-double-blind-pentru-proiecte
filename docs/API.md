@@ -105,7 +105,7 @@ Fiecare grilă activă are `phase` (`submission`, `review`, `disputes`, `closed`
 
 ## Cont, confirmare și parolă (D-010, D-020)
 
-Răspunsurile nu spun niciodată dacă o adresă are cont. Cel mult 3 emailuri pe oră pentru aceeași adresă și 20 de pe același IP (`429`).
+Răspunsurile nu spun niciodată dacă o adresă are cont. Cel mult 3 emailuri în 15 minute pentru aceeași adresă și 20 de pe același IP (`429` „Prea multe emailuri cerute. Încearcă din nou peste 15 minute.”, D-033).
 
 | Rută | Corp | Răspuns |
 |---|---|---|

@@ -78,7 +78,7 @@
 - **Rule:** Sign-up, resending the confirmation and password reset share one limit: 3 emails per address and 20 per IP over the last 15 minutes, rolling. Over it the API answers 429 "Prea multe emailuri cerute. Încearcă din nou peste 15 minute." Every request counts, whether or not an account exists, so the limit reveals no account (D-020). The password reset link stays valid one hour.
 - **Why:** Colleagues' feedback: the one-hour block after a few requests was too long. 15 minutes matches the login limit (D-017).
 - **Rejected:** 20 minutes; lowering the counts; counting only failed requests (it would reveal which addresses have accounts).
-- **Evidence:** the email limit plan of 2026-11-26.
+- **Evidence:** api/src/auth/account.service.ts (`limitEmails`, `EMAIL_WINDOW_MS`), api/test/register.spec.ts.
 - **Source:** user · colleagues' feedback · confidence high
 - **Confirmed:** 2026-11-26
 
