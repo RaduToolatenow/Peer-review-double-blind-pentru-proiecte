@@ -165,7 +165,14 @@ export interface Calibration extends Omit<MyReview, 'id' | 'number'> {
 export interface Grades {
   allocated: boolean;
   provisional: boolean;
-  submissions: { teamId: string; teamName: string; grade: number | null; reviewsCounted: number; calibrated: boolean }[];
+  submissions: {
+    teamId: string;
+    teamName: string;
+    grade: number | null;
+    reviewsCounted: number;
+    calibrated: boolean;
+    disputes: { open: number; upheld: number; rejected: number };
+  }[];
   reviewers: {
     number: number;
     reliability: number;
@@ -281,6 +288,11 @@ export interface SendRubricInput extends Deadlines {
   k: number;
   appliesTo: Scope;
   teamIds: string[];
+}
+
+/** D-029: the download address of an assignment's note.csv or evaluatori.csv. */
+export function exportUrl(assignmentId: string, file: 'note' | 'evaluatori'): string {
+  return `/api/assignments/${assignmentId}/export/${file}.csv`;
 }
 
 const NETWORK_ERROR = 'Nu am putut contacta serverul. Încearcă din nou.';

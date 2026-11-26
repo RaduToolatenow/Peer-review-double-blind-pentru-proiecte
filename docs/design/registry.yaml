@@ -29,9 +29,9 @@ designs:
   - id: DS-pr-active-rubric-detail
     kind: screen
     source: web/src/pages/ActiveRubricDetailPage.tsx
-    screenshots: [screens/DS-pr-active-rubric-detail.light.png, screens/DS-pr-active-rubric-detail.dark.png, screens/DS-pr-active-rubric-detail.reviewer-grade.light.png, screens/DS-pr-active-rubric-detail.reviewer-grade.dark.png, screens/DS-pr-active-rubric-detail.reviewer-grade.narrow.light.png, screens/DS-pr-active-rubric-detail.reviewer-grade.narrow.dark.png]
+    screenshots: [screens/DS-pr-active-rubric-detail.light.png, screens/DS-pr-active-rubric-detail.dark.png, screens/DS-pr-active-rubric-detail.reviewer-grade.light.png, screens/DS-pr-active-rubric-detail.reviewer-grade.dark.png, screens/DS-pr-active-rubric-detail.reviewer-grade.narrow.light.png, screens/DS-pr-active-rubric-detail.reviewer-grade.narrow.dark.png, screens/DS-pr-active-rubric-detail.csv.light.png, screens/DS-pr-active-rubric-detail.csv.dark.png, screens/DS-pr-active-rubric-detail.csv.narrow.light.png, screens/DS-pr-active-rubric-detail.csv.narrow.dark.png]
     design_ref: mocks/DS-pr-active-rubric-detail.html
-    status: draft   # D-027: link to the disputes; D-028: reviewer grade column; D-029: CSV downloads drafted
+    status: implemented   # D-027: link to the disputes; D-028: reviewer grade column; D-029: CSV downloads
   - id: DS-pr-rubric-drafts
     kind: screen
     source: web/src/pages/RubricDraftsPage.tsx

@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
-import { api, AssignmentDetail, Deadlines, Grades } from '../api';
+import { api, AssignmentDetail, Deadlines, exportUrl, Grades } from '../api';
 import { formatShort, fromLocalInput, toLocalInput } from '../dates';
 import { ErrorText, Loaded } from '../Layout';
 import { useLoad } from '../useLoad';
@@ -172,6 +172,13 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
             <span className="badge warning">Note provizorii până la termenul de evaluare</span>
           </p>
         )}
+        {graded && (
+          <p>
+            <a className="button-link secondary" href={exportUrl(a.id, 'note')} download>
+              Descarcă notele (CSV)
+            </a>
+          </p>
+        )}
         <div className="table-wrap">
           <table className="data">
             <thead>
@@ -252,7 +259,7 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
         )}
       </section>
 
-      {graded && <Reviewers grades={graded} />}
+      {graded && <Reviewers assignmentId={a.id} grades={graded} />}
 
       <section className="section">
         <h2>Grila</h2>
@@ -301,10 +308,15 @@ function Detail({ assignment: a, onChange }: { assignment: AssignmentDetail; onC
 }
 
 /** D-025: reviewers only by number, with their reliability (D-014). */
-function Reviewers({ grades }: { grades: Grades }) {
+function Reviewers({ assignmentId, grades }: { assignmentId: string; grades: Grades }) {
   return (
     <section className="section">
       <h2>Evaluatori</h2>
+      <p>
+        <a className="button-link secondary" href={exportUrl(assignmentId, 'evaluatori')} download>
+          Descarcă evaluatorii (CSV)
+        </a>
+      </p>
       {grades.reviewers.length === 0 ? (
         <p className="muted">Niciun evaluator nu are încă evaluări alocate.</p>
       ) : (
