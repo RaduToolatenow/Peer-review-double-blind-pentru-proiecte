@@ -22,14 +22,47 @@
       <main>
         <h1>Profesori</h1>
         <p class="muted">Grilele fiecărui profesor, doar citire. Conturi de student: 37 (emailurile lor nu se afișează).</p>
+
+        <!-- D-034: the admin adds a professor; the professor sets a password from the emailed link. -->
+        <form novalidate>
+          <fieldset>
+            <legend>Profesor nou</legend>
+            <div class="row">
+              <div class="field">
+                <label for="professor-email">Email</label>
+                <input id="professor-email" type="email" placeholder="ex. nume.prenume@ulbsibiu.ro" />
+              </div>
+              <div class="field">
+                <label for="professor-name">Nume complet</label>
+                <input id="professor-name" placeholder="ex. Ana Popescu" />
+              </div>
+            </div>
+            <button class="primary inline" type="submit">Adaugă profesorul</button>
+          </fieldset>
+        </form>
+        <!-- After a successful add: -->
+        <p class="notice" role="status">
+          Am trimis un email la ana.popescu@ulbsibiu.ro. Profesorul își alege parola din linkul primit, valabil 24 de ore.
+        </p>
+
         <div class="table-wrap">
           <table class="data">
-            <thead><tr><th>Profesor</th><th>Email</th><th>Schițe</th><th>Grile active</th></tr></thead>
+            <thead><tr><th>Profesor</th><th>Email</th><th>Schițe</th><th>Grile active</th><th>Acțiuni</th></tr></thead>
             <tbody>
-              <tr><td><a href="#">Cont test profesor</a></td><td>profesor@peer-review.test</td><td>2</td><td>1</td></tr>
+              <tr>
+                <td><a href="#">Cont test profesor</a></td><td>profesor@peer-review.test</td><td>2</td><td>1</td>
+                <td><button class="secondary" type="button" aria-label="Șterge Cont test profesor">Șterge</button></td>
+              </tr>
+              <tr>
+                <td><a href="#">Ana Popescu</a></td><td>ana.popescu@ulbsibiu.ro</td><td>0</td><td>0</td>
+                <td><button class="secondary" type="button" aria-label="Șterge Ana Popescu">Șterge</button></td>
+              </tr>
             </tbody>
           </table>
         </div>
+        <!-- After "Șterge" (window.confirm first) on a professor with classes or sent rubrics: -->
+        <p class="error" role="alert">! Profesorul are clase sau grile trimise unei clase, așa că nu poate fi șters.</p>
+        <p class="muted">Un profesor se poate șterge doar dacă nu are nicio clasă și nicio grilă trimisă; schițele lui se șterg odată cu contul.</p>
       </main>
     </div>
   </body>
