@@ -152,3 +152,5 @@ deploys, so the user says go for every push.
 - `npm run typecheck` and `npm run build` pass.
 - Screenshots of every changed screen, light and dark, compared with `docs/design/DESIGN.md`.
 - New practices recorded as candidate patterns; open points recorded as Q- entries.
+- Documentation updated for the change: `README.md`, `TODO.md` (items, decision and commit counts), `docs/API.md`,
+  `docs/db-schema.md`, `docs/agents/ARCHITECTURE.md`, the test count and section 1 here, and the Evidence of each entry it implements.
