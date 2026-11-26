@@ -20,6 +20,8 @@
 - Q-009 · What is the maximum number of criteria in a rubric, and what does a rubric apply to? · _answered_
 - Q-010 · What is a "round", and should a reviewer avoid a team they already reviewed? · _answered_
 - Q-011 · Should members of a team the rubric does not apply to see the assignment in their list? · _answered_
+- Q-012 · What password security check should be added, after colleagues' feedback?
+- Q-013 · What protection against refresh spam should be added, after colleagues' feedback?
 
 ---
 
@@ -98,3 +100,18 @@
 - **Known:** D-011 says their submission is not evaluated but they may still review, and D-022 counts them as reviewers. `GET /api/my/assignments` lists an assignment only when the student's team is evaluated or the student joined through the link, so these members are allocated reviews but cannot see the assignment.
 - **User answers (2026-11-24):** Yes, as reviewers only.
 - **Answer:** `GET /api/my/assignments` also lists an assignment where the student is a member of a team in the class that the rubric does not apply to; the student sees no submission section, only their reviews, and can withdraw.
+
+## Q-012 · What password security check should be added, after colleagues' feedback?
+- **Status:** open
+- **Raised:** 2026-11-26, by the user, from colleagues' feedback: "verificare securitate parole, posibilă îmbunătățire".
+- **Today:** a password needs at least 10 characters (D-020), is hashed with argon2, and login has an attempt limit (D-017).
+- **Blocks:** a change to sign-up and password reset; it counts toward the 3 changes from feedback.
+- **Who answers:** the user
+
+## Q-013 · What protection against refresh spam should be added, after colleagues' feedback?
+- **Status:** open
+- **Raised:** 2026-11-26, by the user, from colleagues' feedback: "protecție anti spam de refresh spam".
+- **Today:** only failed logins are limited (D-017); other routes have no request limit.
+- **Blocks:** a request limit on the API; it counts toward the 3 changes from feedback.
+- **Who answers:** the user
+
