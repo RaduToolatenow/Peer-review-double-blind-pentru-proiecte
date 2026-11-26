@@ -91,7 +91,7 @@ designs:
     source: web/src/pages/AccountPages.tsx
     screenshots: [screens/DS-pr-register.light.png, screens/DS-pr-register.dark.png]
     design_ref: mocks/DS-pr-register.html
-    status: implemented
+    status: draft  # D-030: password hint drafted
   - id: DS-pr-check-email
     kind: screen
     source: web/src/pages/AccountPages.tsx
@@ -115,7 +115,7 @@ designs:
     source: web/src/pages/AccountPages.tsx
     screenshots: [screens/DS-pr-reset.light.png, screens/DS-pr-reset.dark.png]
     design_ref: mocks/DS-pr-reset.html
-    status: implemented
+    status: draft  # D-030: password hint drafted
   - id: DS-pr-review
     kind: screen
     source: web/src/pages/ReviewPage.tsx

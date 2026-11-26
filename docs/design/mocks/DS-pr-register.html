@@ -25,7 +25,8 @@
         <h1>Creează cont</h1>
         <p class="muted">Cu linkul temei devii evaluator la ea, după ce îți confirmi emailul.</p>
         <div class="field"><label for="email">Emailul de la universitate</label><input id="email" type="email" placeholder="prenume.nume@ulbsibiu.ro" /></div>
-        <div class="field"><label for="password">Parolă (cel puțin 10 caractere)</label><input id="password" type="password" /></div>
+        <!-- D-030: the rule under the field; a refused password shows the server message below the form. -->
+        <div class="field"><label for="password">Parolă</label><input id="password" type="password" aria-describedby="password-hint" /><span class="muted" id="password-hint">Minim 10 caractere; nu o parolă des folosită și nu numele din adresa ta.</span></div>
         <p class="muted">Nu îți cerem numele: nimeni nu vede cine evaluează.</p>
         <p class="error" role="alert">! Folosește adresa de email de la universitate (@ulbsibiu.ro).</p>
         <button class="primary" type="button">Creează contul</button>

@@ -15,7 +15,8 @@
         <form class="card" novalidate>
           <h1>Parolă nouă</h1>
           <p class="muted">După schimbare, contul se deconectează de pe toate dispozitivele.</p>
-          <div class="field"><label for="p1">Parola nouă (cel puțin 10 caractere)</label><input id="p1" type="password" /></div>
+          <!-- D-030: the rule under the field. -->
+          <div class="field"><label for="p1">Parola nouă</label><input id="p1" type="password" aria-describedby="p1-hint" /><span class="muted" id="p1-hint">Minim 10 caractere; nu o parolă des folosită și nu numele din adresa ta.</span></div>
           <div class="field"><label for="p2">Repetă parola</label><input id="p2" type="password" /></div>
           <p class="error" role="alert">! Parolele nu sunt la fel.</p>
           <button class="primary" type="button">Schimbă parola</button>
