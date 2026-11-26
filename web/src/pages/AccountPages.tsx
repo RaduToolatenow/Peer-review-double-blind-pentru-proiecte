@@ -67,14 +67,16 @@ export function RegisterPage() {
           />
         </div>
         <div className="field">
-          <label htmlFor="password">Parolă (cel puțin 10 caractere)</label>
+          <label htmlFor="password">Parolă</label>
           <input
             id="password"
             type="password"
             autoComplete="new-password"
+            aria-describedby="password-hint"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
+          <PasswordHint id="password-hint" />
         </div>
         <p className="muted">Nu îți cerem numele: nimeni nu vede cine evaluează.</p>
         {error && <ErrorText message={error} />}
@@ -296,14 +298,16 @@ export function ResetPasswordPage() {
         <h1>Parolă nouă</h1>
         <p className="muted">După schimbare, contul se deconectează de pe toate dispozitivele.</p>
         <div className="field">
-          <label htmlFor="new-password">Parola nouă (cel puțin 10 caractere)</label>
+          <label htmlFor="new-password">Parola nouă</label>
           <input
             id="new-password"
             type="password"
             autoComplete="new-password"
+            aria-describedby="new-password-hint"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
+          <PasswordHint id="new-password-hint" />
         </div>
         <div className="field">
           <label htmlFor="repeat-password">Repetă parola</label>
@@ -361,5 +365,14 @@ export function JoinAssignmentPage() {
         )}
       </Loaded>
     </div>
+  );
+}
+
+/** D-030: the server's rule for a new password, shown before it is sent. */
+function PasswordHint({ id }: { id: string }) {
+  return (
+    <span className="muted" id={id}>
+      Minim 10 caractere; nu o parolă des folosită și nu numele din adresa ta.
+    </span>
   );
 }
