@@ -21,6 +21,8 @@ import { weakPassword } from './password-policy';
 const HOUR_MS = 60 * 60 * 1000;
 const VERIFY_VALID_MS = 24 * HOUR_MS;
 const RESET_VALID_MS = HOUR_MS;
+/** D-033: the email limit counts the last 15 minutes. */
+const EMAIL_WINDOW_MS = 15 * 60 * 1000;
 const MAX_EMAILS_PER_ADDRESS = 3;
 const MAX_EMAILS_PER_IP = 20;
 
@@ -197,9 +199,9 @@ export class AccountService {
     }
   }
 
-  /** At most 3 emails an hour per address and 20 per IP; counted whether or not an account exists. */
+  /** At most 3 emails per address and 20 per IP in 15 minutes (D-033); counted whether or not an account exists. */
   private async limitEmails(email: string, ip: string): Promise<void> {
-    const since = new Date(Date.now() - HOUR_MS);
+    const since = new Date(Date.now() - EMAIL_WINDOW_MS);
     await this.prisma.emailRequest.deleteMany({ where: { createdAt: { lt: since } } });
     const [forAddress, forIp] = await Promise.all([
       this.prisma.emailRequest.count({ where: { email, createdAt: { gt: since } } }),
@@ -209,7 +211,7 @@ export class AccountService {
       throw new HttpException(
         {
           statusCode: HttpStatus.TOO_MANY_REQUESTS,
-          message: 'Prea multe emailuri cerute. Încearcă din nou peste o oră.',
+          message: 'Prea multe emailuri cerute. Încearcă din nou peste 15 minute.',
           error: 'Too Many Requests',
         },
         HttpStatus.TOO_MANY_REQUESTS,
