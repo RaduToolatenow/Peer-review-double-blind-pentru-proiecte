@@ -31,6 +31,21 @@ describe('database constraints', () => {
     await expect(ctx.prisma.review.create({ data: review })).rejects.toMatchObject({ code: 'P2002' });
   });
 
+  it('accepts only the known submission file types (D-032)', async () => {
+    const professor = await createUser(ctx.prisma, 'prof@test.example', 'parola', Role.PROFESSOR);
+    const rubric = await createRubric(ctx.prisma, professor.id);
+    const klass = await createClass(ctx.prisma, professor.id, 3);
+    const assignment = await createAssignment(ctx.prisma, professor.id, rubric.id, klass.id);
+    const submission = (teamIndex: number, fileType: string) =>
+      ctx.prisma.submission.create({
+        data: { assignmentId: assignment.id, teamId: klass.teams[teamIndex].id, link: 'https://example.com/p', fileKey: `t${teamIndex}`, fileType },
+      });
+
+    await submission(0, 'zip');
+    await submission(1, 'odp');
+    await expect(submission(2, 'exe')).rejects.toThrow(/submissions_file_type_known/);
+  });
+
   /** A review of team 1's submission by a student of team 2, on a rubric with one criterion. */
   async function reviewSetup() {
     const professor = await createUser(ctx.prisma, 'prof@test.example', 'parola', Role.PROFESSOR);

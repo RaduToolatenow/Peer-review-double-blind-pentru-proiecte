@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import { readdirSync, rmSync } from 'node:fs';
 import { strToU8, zipSync } from 'fflate';
 import { PDFDocument } from 'pdf-lib';
@@ -29,6 +30,16 @@ function docx(): Buffer {
       '[Content_Types].xml': strToU8('<Types/>'),
       'word/document.xml': strToU8('<w:document xmlns:w="w"><w:body/></w:document>'),
       'docProps/core.xml': strToU8('<cp:coreProperties xmlns:cp="cp" xmlns:dc="dc"><dc:creator>Popescu Andrei</dc:creator></cp:coreProperties>'),
+    }),
+  );
+}
+
+function openDocument(kind: 'text' | 'presentation'): Buffer {
+  return Buffer.from(
+    zipSync({
+      mimetype: [strToU8(`application/vnd.oasis.opendocument.${kind}`), { level: 0 }],
+      'content.xml': [strToU8('<office:document-content xmlns:office="o"/>'), {}],
+      'meta.xml': [strToU8('<office:document-meta xmlns:office="o" xmlns:dc="dc"><office:meta><dc:creator>Popescu Andrei</dc:creator></office:meta></office:document-meta>'), {}],
     }),
   );
 }
@@ -106,7 +117,7 @@ describe('submissions API (D-016)', () => {
     const url = `/api/my/assignments/${assignment.id}/submission`;
 
     const noFile = await submit(student, assignment.id).expect(400);
-    expect(noFile.body.message).toBe('Încarcă fișierul proiectului (PDF sau DOCX).');
+    expect(noFile.body.message).toBe('Încarcă fișierul proiectului (PDF, DOCX, PPTX, ODT, ODP sau ZIP).');
 
     const noLink = await student.put(url).attach('file', await pdf(), 'p.pdf').expect(400);
     expect(noLink.body.message).toContain('Introdu linkul proiectului.');
@@ -115,7 +126,7 @@ describe('submissions API (D-016)', () => {
     expect(badLink.body.message).toContain('Linkul începe cu http:// sau https://.');
 
     const fake = await submit(student, assignment.id, Buffer.from('nu sunt pdf'), 'fals.pdf').expect(400);
-    expect(fake.body.message).toBe('Fișierul trebuie să fie PDF sau DOCX.');
+    expect(fake.body.message).toBe('Fișierul trebuie să fie PDF, DOCX, PPTX, ODT, ODP sau ZIP.');
 
     const big = await submit(student, assignment.id, Buffer.alloc(10 * 1024 * 1024 + 1), 'mare.pdf').expect(413);
     expect(big.body.message).toBe('Fișierul are cel mult 10 MB.');
@@ -166,6 +177,51 @@ describe('submissions API (D-016)', () => {
     expect(detail.body.teams[0].fileUrl).toMatch(/^\/api\/submissions\/.+\/file$/);
     expect(JSON.stringify(detail.body)).not.toContain(me.id);
     expect(JSON.stringify(detail.body)).not.toContain('student@test.example');
+  });
+
+  it('accepts PPTX, ODT, ODP and ZIP, and serves each with its type under a generic name (D-032)', async () => {
+    const { professor, student, assignment } = await setup();
+    const files = {
+      pptx: {
+        file: Buffer.from(zipSync({ '[Content_Types].xml': strToU8('<Types/>'), 'ppt/presentation.xml': strToU8('<p:presentation xmlns:p="p"/>') })),
+        type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      },
+      odt: { file: openDocument('text'), type: 'application/vnd.oasis.opendocument.text' },
+      odp: { file: openDocument('presentation'), type: 'application/vnd.oasis.opendocument.presentation' },
+      zip: { file: Buffer.from(zipSync({ 'proiect-popescu/index.js': strToU8('console.log(1)') })), type: 'application/zip' },
+    };
+    for (const [fileType, { file, type }] of Object.entries(files)) {
+      const res = await submit(student, assignment.id, file, `proiectul-meu.${fileType}`).expect(200);
+      expect(res.body.submission.fileType).toBe(fileType);
+      const download = await professor.get(res.body.submission.fileUrl).expect(200);
+      expect(download.headers['content-type']).toBe(type);
+      expect(download.headers['content-disposition']).toMatch(new RegExp(`^attachment; filename="predare-[0-9a-f]{8}\\.${fileType}"$`));
+    }
+  });
+
+  it('accepts a ZIP up to 20 MB, other files up to 10 MB, and refuses anything over 20 MB (D-032)', async () => {
+    const { student, assignment } = await setup();
+
+    const bigZip = Buffer.from(zipSync({ 'proiect/date.bin': [new Uint8Array(randomBytes(11 * 1024 * 1024)), { level: 0 }] }));
+    const ok = await submit(student, assignment.id, bigZip, 'proiect.zip').expect(200);
+    expect(ok.body.submission.fileType).toBe('zip');
+
+    const bigPdf = Buffer.concat([await pdf(), Buffer.alloc(10 * 1024 * 1024)]);
+    const pdfRes = await submit(student, assignment.id, bigPdf, 'mare.pdf').expect(413);
+    expect(pdfRes.body.message).toBe('Fișierul are cel mult 10 MB.');
+
+    const huge = await submit(student, assignment.id, Buffer.alloc(20 * 1024 * 1024 + 1), 'imens.zip').expect(413);
+    expect(huge.body.message).toBe('Arhiva ZIP are cel mult 20 MB, celelalte fișiere cel mult 10 MB.');
+  });
+
+  it('refuses a ZIP with too many entries and stores nothing (D-032)', async () => {
+    const { student, assignment } = await setup();
+    const many: Record<string, Uint8Array> = {};
+    for (let i = 0; i <= 20_000; i += 1) many[`f${i}.txt`] = new Uint8Array(0);
+
+    const res = await submit(student, assignment.id, Buffer.from(zipSync(many)), 'proiect.zip').expect(400);
+    expect(res.body.message).toBe('Arhiva ZIP e prea mare după dezarhivare (cel mult 200 MB și 20.000 de fișiere).');
+    expect(await ctx.prisma.submission.count()).toBe(0);
   });
 
   it('is only for students', async () => {
