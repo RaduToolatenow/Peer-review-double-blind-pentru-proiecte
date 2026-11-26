@@ -18,7 +18,7 @@
 - **Rule:** Login keeps server-side sessions in an httpOnly cookie and argon2 hashes (D-005). Anyone with an assignment's link may create an account, but only with an `@ulbsibiu.ro` email, and the account is active only after the email is verified. The person becomes a reviewer for that assignment whether or not they submitted. The system allocates which submissions they review; they never choose. One email is one account, and an account reviews a submission at most once.
 - **Why:** The user wants anyone at the university with the link to be able to review, without the professor's list. A verified email stops one person from reviewing the same project twice under several accounts.
 - **Rejected:** Invitation-only accounts from the professor's list (D-003). Reviewers choosing which projects to open, which would break the allocation constraints in the brief.
-- **Evidence:** api/prisma/schema.prisma (`users.email` unique, `reviews` unique on submission and reviewer); sign-up and verification are not built yet.
+- **Evidence:** api/src/auth/account.service.ts, api/src/auth/join.controller.ts, api/src/auth/account.dto.ts (`UNIVERSITY_EMAIL`), api/prisma/schema.prisma (`users.email` unique, `reviews` unique on submission and reviewer), api/test/register.spec.ts.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-22
 
@@ -48,7 +48,7 @@
 - **Rule:** Email goes out over SMTP, through Brevo in production. Sign-up asks only for an `@ulbsibiu.ro` email and a password of at least 10 characters, no name. An account is confirmed through an emailed link valid 24 hours; a password is reset through an emailed link valid one hour. Both tokens are stored only as a hash and work once. Sign-up, resending the confirmation and password reset answer the same whatever the address, so they never reveal which addresses have accounts. At most 3 emails an hour per address and 20 per IP. An unconfirmed account cannot log in. A password reset closes the account's other sessions. The reviewers of an assignment are the members of its class's teams plus anyone who joined through the assignment's link.
 - **Why:** D-010 needs a verified university email. Brevo sends from a confirmed address without owning a domain, which Resend's free plan cannot. Hashed single-use tokens and equal answers protect accounts and the list of students.
 - **Rejected:** Resend (free plan sends only to the account owner without a verified domain); Gmail SMTP (sends from a personal account, which Google may throttle); a 6-digit code instead of a link; asking for a name.
-- **Evidence:** not built yet.
+- **Evidence:** api/src/auth/account.service.ts, api/src/mail/, api/prisma/migrations/20261122120000_sign_up_and_email/, web/src/pages/AccountPages.tsx, api/test/register.spec.ts, api/test/password-reset.spec.ts.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-22
 
