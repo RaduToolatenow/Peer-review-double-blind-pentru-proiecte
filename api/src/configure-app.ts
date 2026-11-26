@@ -3,6 +3,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import connectPgSimple from 'connect-pg-simple';
 import session from 'express-session';
 import { requireEnv } from './env';
+import { RateLimiter, rateLimit } from './rate-limit';
 
 const SESSION_MAX_AGE_MS = 8 * 60 * 60 * 1000;
 
@@ -33,6 +34,8 @@ export function configureApp(app: NestExpressApplication) {
       cookie: { httpOnly: true, sameSite: 'lax', secure: isProduction, maxAge: SESSION_MAX_AGE_MS },
     }),
   );
+  // D-031: after the session, so a signed-in user is counted per account, not per shared IP.
+  app.use('/api', rateLimit(new RateLimiter(120, 60_000)));
 
   return store;
 }
