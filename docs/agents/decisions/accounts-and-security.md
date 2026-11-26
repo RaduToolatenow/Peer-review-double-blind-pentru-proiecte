@@ -20,7 +20,7 @@
 - **Rejected:** Invitation-only accounts from the professor's list (D-003). Reviewers choosing which projects to open, which would break the allocation constraints in the brief.
 - **Evidence:** api/src/auth/account.service.ts, api/src/auth/join.controller.ts, api/src/auth/account.dto.ts (`UNIVERSITY_EMAIL`), api/prisma/schema.prisma (`users.email` unique, `reviews` unique on submission and reviewer), api/test/register.spec.ts.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-22
+- **Confirmed:** 2026-11-26
 
 ## D-017 · Login attempt limit and equal timing
 - **Status:** approved

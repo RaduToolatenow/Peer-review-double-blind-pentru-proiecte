@@ -23,6 +23,7 @@
 - D-012 · Classes and teams entered by the professor, joined by team code
 - D-013 · A rubric sent to a class is the assignment
 - D-015 · Professor and admin menu
+- D-034 · The admin adds and deletes professors
 
 ### [Design](decisions/design.md)
 - D-019 · Visual design inspired by smartportal, without university branding

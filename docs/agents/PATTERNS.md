@@ -31,7 +31,7 @@
 - **Example:** api/prisma/migrations/20261117120000_reusable_rubrics/migration.sql, api/src/rubrics/rubrics.service.ts
 - **Why:** One copy of the rule, which no future route can bypass.
 - **Source:** code · confidence high
-- **Confirmed:** 2026-11-25
+- **Confirmed:** 2026-11-26
 
 ## PATTERN-003 · Page data with useLoad and Loaded
 - **Status:** approved
