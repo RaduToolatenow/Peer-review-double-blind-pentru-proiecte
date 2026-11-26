@@ -23,7 +23,7 @@ Browser ──> React (web/)
 |---|---|---|---|
 | Web | `web/src/` | login page and start page | API through `web/src/api.ts` |
 | App setup | `api/src/main.ts`, `api/src/configure-app.ts` | prefix, validation, sessions, static files | PostgreSQL session table |
-| Auth | `api/src/auth/` | login, logout, current user, session and role guard | PrismaService |
+| Auth | `api/src/auth/` | login, logout, current user, session and role guard, sign-up and password reset, the new-password check (`password-policy.ts`, D-030) | PrismaService |
 | Users | `api/src/users/` | admin user list, public user shape, test accounts | PrismaService |
 | Allocation | `api/src/allocation/` | pure allocation rules (`allocate.ts`), the service that writes them in a locked transaction, the withdraw route (D-022) | PrismaService |
 | Grades | `api/src/grades/` | pure reliability, aggregation and explanation (`grade.ts`), the shared loader (`grading.ts`), the professor's calibration reviews, the grades route (D-025), the results page routes (D-026), disputes (D-027) the professor's feedback ratings (D-028) and the CSV export (`csv.ts`, D-029) | PrismaService |
@@ -64,5 +64,6 @@ CI is in `.github/workflows/ci.yml`. Every push to `main` deploys to Render, wit
 
 ## Boundaries
 - Authentication and roles are enforced on the server by `SessionGuard` (D-005, D-010).
+- New passwords are checked on the server against common ones, repeats and the email's name (D-030).
 - `PUBLIC_USER_SELECT` limits which user fields leave the server.
 - Allocation keeps who reviews what inside the server: no route returns another reviewer's id or email (D-014, D-022).

@@ -107,11 +107,11 @@ Răspunsurile nu spun niciodată dacă o adresă are cont. Cel mult 3 emailuri p
 
 | Rută | Corp | Răspuns |
 |---|---|---|
-| `POST /api/auth/register` | `{ email @ulbsibiu.ro, password ≥ 10, joinCode? }` | `202` „Ți-am trimis un email…”; `400`; `404` cod de temă necunoscut; `429` |
+| `POST /api/auth/register` | `{ email @ulbsibiu.ro, password ≥ 10, joinCode? }` | `202` „Ți-am trimis un email…”; `400`, și pentru o parolă des folosită, dintr-un singur caracter repetat sau care conține numele din adresă (D-030); `404` cod de temă necunoscut; `429` |
 | `POST /api/auth/verify` | `{ token }` din linkul `/confirmare/<token>` (24 h, o singură dată) | `200 { message, assignmentTitle }`; `400` link invalid |
 | `POST /api/auth/resend-verification` | `{ email }` | `202`; `429` |
 | `POST /api/auth/forgot-password` | `{ email }` | `202`; `429` |
-| `POST /api/auth/reset-password` | `{ token, password ≥ 10 }` din `/parola-noua/<token>` (1 h, o singură dată) | `200`; închide toate sesiunile contului; `400` |
+| `POST /api/auth/reset-password` | `{ token, password ≥ 10 }` din `/parola-noua/<token>` (1 h, o singură dată) | `200`; închide toate sesiunile contului; `400`, și pentru o parolă slabă (D-030), caz în care linkul rămâne valabil |
 | `GET /api/join/:code` | — (public) | `200 { assignmentTitle, className }`; `404` |
 | `POST /api/join/:code` | — (`STUDENT` logat) | `200 { assignmentTitle }`: devine evaluator la temă |
 

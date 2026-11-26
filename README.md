@@ -110,7 +110,7 @@ Gata:
 - schema bazei de date, cu migrări și constrângeri;
 - Docker Compose pentru PostgreSQL;
 - autentificare cu limită de încercări, deconectare și roluri verificate pe server;
-- înscriere prin linkul temei, doar cu email `@ulbsibiu.ro` confirmat, și „Am uitat parola”;
+- înscriere prin linkul temei, doar cu email `@ulbsibiu.ro` confirmat, și „Am uitat parola”; o parolă nouă nu poate fi una des folosită (lista NCSC din SecLists), un singur caracter repetat sau numele din adresă (D-030, după feedback-ul colegilor);
 - teste automate și CI;
 - deploy pe Render, cu baza de date pe Supabase;
 - pentru profesor și admin: schițe de grile, trimiterea unei grile către o clasă, grile active cu termene, clase și echipe cu cod de intrare;

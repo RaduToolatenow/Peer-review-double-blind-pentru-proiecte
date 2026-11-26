@@ -58,7 +58,7 @@
 - **Rule:** At sign-up and password reset the server refuses with 400, ignoring case, a password on the common-password list, a password of one repeated character, or a password that contains the email's name part or one of its pieces, split on `.`, `_` and `-`, of at least 4 characters. The list is the NCSC 100k list from SecLists (MIT licence), cut to entries of at least 10 characters, lowercased and kept in the repo. The answer depends only on the password and the address typed, so D-020's equal answers stay. Existing passwords are not checked. The sign-up and reset forms show the rule under the password field.
 - **Why:** Colleagues' feedback asked for a password security check (Q-012). The user chose a local list, which needs no outside service and sends no data out, new passwords only, and a hint on the forms.
 - **Rejected:** Have I Been Pwned (an outside service on every sign-up); composition rules (NIST advises against them); a zxcvbn strength score (a new dependency); checking passwords at login.
-- **Evidence:** the password security plan of 2026-11-26.
+- **Evidence:** api/src/auth/password-policy.ts, api/src/auth/common-passwords.ts, api/src/auth/account.service.ts, web/src/pages/AccountPages.tsx, api/test/password-policy.spec.ts, api/test/register.spec.ts, api/test/password-reset.spec.ts.
 - **Source:** user · colleagues' feedback · confidence high
 - **Confirmed:** 2026-11-26
 
