@@ -3,6 +3,7 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  HttpException,
   Inject,
   Injectable,
   NotFoundException,
@@ -12,10 +13,12 @@ import { phaseAt } from '../assignments/assignments.service';
 import { DisputeStatus } from '../generated/prisma/enums';
 import { loadGrading, loadReviewerGrades } from '../grades/grading';
 import { PrismaService } from '../prisma/prisma.service';
-import { cleanDocx } from './clean-docx';
+import { cleanOffice } from './clean-office';
+import { cleanOpenDocument } from './clean-opendocument';
 import { cleanPdf } from './clean-pdf';
+import { cleanZip, ZipTooLargeError } from './clean-zip';
 import { FILE_STORE, FileStore } from './file-store';
-import { CONTENT_TYPES, detectFileType, FileType } from './file-type';
+import { CONTENT_TYPES, detectFileType, FileType, MAX_BYTES } from './file-type';
 import { SubmissionDto, UploadedFileData } from './submission.dto';
 
 const NOT_FOUND = 'Nu am găsit tema.';
@@ -162,11 +165,15 @@ export class SubmissionsService {
       throw new ConflictException('Termenul de predare a trecut.');
     }
     if (!file || file.size === 0) {
-      throw new BadRequestException('Încarcă fișierul proiectului (PDF sau DOCX).');
+      throw new BadRequestException('Încarcă fișierul proiectului (PDF, DOCX, PPTX, ODT, ODP sau ZIP).');
     }
     const fileType = detectFileType(file.buffer);
+    // D-032: up to 20 MB arrives (the ZIP limit); anything else stops at 10 MB.
+    if (fileType !== 'zip' && file.size > MAX_BYTES) {
+      throw new HttpException({ statusCode: 413, message: 'Fișierul are cel mult 10 MB.', error: 'Payload Too Large' }, 413);
+    }
     if (!fileType) {
-      throw new BadRequestException('Fișierul trebuie să fie PDF sau DOCX.');
+      throw new BadRequestException('Fișierul trebuie să fie PDF, DOCX, PPTX, ODT, ODP sau ZIP.');
     }
 
     const cleaned = await this.clean(fileType, file.buffer);
@@ -219,9 +226,23 @@ export class SubmissionsService {
 
   private async clean(fileType: FileType, file: Buffer): Promise<Buffer> {
     try {
-      return fileType === 'pdf' ? await cleanPdf(file) : cleanDocx(file);
-    } catch {
-      throw new BadRequestException('Fișierul nu poate fi citit. Salvează-l din nou ca PDF sau DOCX și reîncearcă.');
+      switch (fileType) {
+        case 'pdf':
+          return await cleanPdf(file);
+        case 'docx':
+        case 'pptx':
+          return cleanOffice(file);
+        case 'odt':
+        case 'odp':
+          return cleanOpenDocument(file);
+        case 'zip':
+          return await cleanZip(file);
+      }
+    } catch (error) {
+      if (error instanceof ZipTooLargeError) {
+        throw new BadRequestException(error.message);
+      }
+      throw new BadRequestException('Fișierul nu poate fi citit. Salvează-l din nou și reîncearcă.');
     }
   }
 }

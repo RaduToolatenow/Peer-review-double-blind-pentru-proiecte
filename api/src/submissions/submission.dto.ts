@@ -3,8 +3,6 @@ import { IsNotEmpty, IsOptional, IsString, IsUrl, MaxLength } from 'class-valida
 
 const trim = ({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value);
 
-export const MAX_FILE_BYTES = 10 * 1024 * 1024;
-
 /** The text fields of the multipart upload; the file comes separately. */
 export class SubmissionDto {
   @Transform(trim)

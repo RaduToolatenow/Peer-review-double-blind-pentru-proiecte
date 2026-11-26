@@ -20,10 +20,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { AuthenticatedRequest, Roles, SessionGuard } from '../auth/session.guard';
 import { Role } from '../generated/prisma/enums';
-import { MAX_FILE_BYTES, SubmissionDto, UploadedFileData } from './submission.dto';
+import { MAX_ZIP_BYTES } from './file-type';
+import { SubmissionDto, UploadedFileData } from './submission.dto';
 import { SubmissionsService } from './submissions.service';
 
-/** Multer's own message is English; answer with the Romanian one. */
+/** Multer's own message is English; answer with the Romanian one. Multer stops at the ZIP limit (D-032). */
 @Catch(PayloadTooLargeException)
 class FileTooLargeFilter implements ExceptionFilter {
   catch(_: PayloadTooLargeException, host: ArgumentsHost): void {
@@ -31,7 +32,7 @@ class FileTooLargeFilter implements ExceptionFilter {
       .switchToHttp()
       .getResponse<Response>()
       .status(413)
-      .json({ statusCode: 413, message: 'Fișierul are cel mult 10 MB.', error: 'Payload Too Large' });
+      .json({ statusCode: 413, message: 'Arhiva ZIP are cel mult 20 MB, celelalte fișiere cel mult 10 MB.', error: 'Payload Too Large' });
   }
 }
 
@@ -49,7 +50,7 @@ export class SubmissionsController {
   @Put('my/assignments/:id/submission')
   @Roles(Role.STUDENT)
   @UseFilters(FileTooLargeFilter)
-  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: MAX_FILE_BYTES, files: 1 } }))
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: MAX_ZIP_BYTES, files: 1 } }))
   submit(
     @Req() request: AuthenticatedRequest,
     @Param('id', ParseUUIDPipe) id: string,

@@ -213,7 +213,7 @@ describe('cleanZip (D-032)', () => {
   }
 
   it('removes version control, editor, dependency and build folders and system files at any depth', async () => {
-    const names = zipEntries(cleanZip(await project())).map((e) => e.name);
+    const names = zipEntries(await cleanZip(await project())).map((e) => e.name);
 
     expect(names.sort()).toEqual(
       [
@@ -231,7 +231,7 @@ describe('cleanZip (D-032)', () => {
   });
 
   it('removes authors from package.json and composer.json, keeping the other fields', async () => {
-    const files = unzipSync(new Uint8Array(cleanZip(await project())));
+    const files = unzipSync(new Uint8Array(await cleanZip(await project())));
 
     expect(JSON.parse(strFromU8(files['proiect/package.json']))).toEqual({ name: 'app', version: '1.0.0', scripts: { start: 'node index.js' } });
     expect(JSON.parse(strFromU8(files['proiect/api/composer.json']))).toEqual({ name: 'echipa/api', require: { php: '>=8.2' } });
@@ -239,7 +239,7 @@ describe('cleanZip (D-032)', () => {
 
   it('cleans the documents inside, leaves an inner ZIP as it is, and sets every date to 1 January 1980', async () => {
     const original = await project();
-    const cleaned = cleanZip(original);
+    const cleaned = await cleanZip(original);
     const files = unzipSync(new Uint8Array(cleaned));
 
     for (const path of ['proiect/docs/raport.docx', 'proiect/docs/prezentare.pptx', 'proiect/docs/nota.odt']) {
@@ -256,23 +256,23 @@ describe('cleanZip (D-032)', () => {
     }
   });
 
-  it('keeps the folders as they are when there is no single top folder', () => {
+  it('keeps the folders as they are when there is no single top folder', async () => {
     const zip = Buffer.from(zipSync({ 'src/a.js': strToU8('1'), 'README.md': strToU8('# x') }));
 
-    expect(zipEntries(cleanZip(zip)).map((e) => e.name).sort()).toEqual(['README.md', 'src/a.js']);
+    expect(zipEntries(await cleanZip(zip)).map((e) => e.name).sort()).toEqual(['README.md', 'src/a.js']);
   });
 
-  it('refuses an archive over 20,000 entries or 200 MB unpacked, without unpacking it', () => {
+  it('refuses an archive over 20,000 entries or 200 MB unpacked, without unpacking it', async () => {
     const many: Record<string, Uint8Array> = {};
     for (let i = 0; i <= 20_000; i += 1) many[`f${i}.txt`] = new Uint8Array(0);
-    expect(() => cleanZip(Buffer.from(zipSync(many)))).toThrow(ZIP_TOO_LARGE);
+    await expect(cleanZip(Buffer.from(zipSync(many)))).rejects.toThrow(ZIP_TOO_LARGE);
 
     // One small entry whose central directory claims 250 MB.
     const forged = Buffer.from(zipSync({ 'mare.bin': strToU8('x') }));
     let end = forged.length - 22;
     while (forged.readUInt32LE(end) !== 0x06054b50) end -= 1;
     forged.writeUInt32LE(250 * 1024 * 1024, forged.readUInt32LE(end + 16) + 24);
-    expect(() => cleanZip(forged)).toThrow(ZIP_TOO_LARGE);
+    await expect(cleanZip(forged)).rejects.toThrow(ZIP_TOO_LARGE);
   });
 });
 
