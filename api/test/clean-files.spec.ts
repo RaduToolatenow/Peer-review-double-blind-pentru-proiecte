@@ -277,3 +277,108 @@ describe('cleanZip (D-032)', () => {
   }, 30_000);
 });
 
+/** The same file with one entry's unpacked size in the central directory set to `size`. */
+function claimSize(file: Buffer, name: string, size: number): Buffer {
+  const forged = Buffer.from(file);
+  let end = forged.length - 22;
+  while (forged.readUInt32LE(end) !== 0x06054b50) end -= 1;
+  let at = forged.readUInt32LE(end + 16);
+  for (let i = 0; i < forged.readUInt16LE(end + 10); i += 1) {
+    const nameLength = forged.readUInt16LE(at + 28);
+    if (forged.toString('utf8', at + 46, at + 46 + nameLength) === name) forged.writeUInt32LE(size, at + 24);
+    at += 46 + nameLength + forged.readUInt16LE(at + 30) + forged.readUInt16LE(at + 32);
+  }
+  return forged;
+}
+
+describe('fixes from the code review of 2026-11-26', () => {
+  it('refuses a DOCX, PPTX, ODT or ODP that unpacks to over 200 MB, on its own or inside a ZIP (D-032)', async () => {
+    const huge = 250 * 1024 * 1024;
+    const docx = claimSize(docxWithAuthor(), 'word/document.xml', huge);
+    expect(() => cleanOffice(docx)).toThrow(ZIP_TOO_LARGE);
+    expect(() => cleanOffice(claimSize(pptxWithAuthor(), 'ppt/slides/slide1.xml', huge))).toThrow(ZIP_TOO_LARGE);
+    expect(() => cleanOpenDocument(claimSize(openDocumentWithAuthor('text'), 'content.xml', huge))).toThrow(ZIP_TOO_LARGE);
+    const outer = Buffer.from(zipSync({ 'proiect/raport.docx': [new Uint8Array(docx), { level: 0 }] }));
+    await expect(cleanZip(outer)).rejects.toThrow(ZIP_TOO_LARGE);
+  });
+
+  it('reads backslashes in ZIP entry names as folders (D-032)', async () => {
+    const zip = Buffer.from(
+      zipSync({
+        'Popescu_Ion\\index.js': strToU8('1'),
+        'Popescu_Ion\\.git\\config': strToU8(`name = ${NAME}`),
+        'Popescu_Ion\\node_modules\\x\\index.js': strToU8('1'),
+      }),
+    );
+
+    expect(zipEntries(await cleanZip(zip)).map((e) => e.name)).toEqual(['proiect/index.js']);
+  });
+
+  it('removes Word people and custom properties together with what points to them (D-032)', () => {
+    const files: Record<string, string> = {
+      '[Content_Types].xml':
+        '<Types xmlns="t"><Override PartName="/word/document.xml" ContentType="d"/><Override PartName="/word/people.xml" ContentType="p"/><Override PartName="/docProps/custom.xml" ContentType="c"/></Types>',
+      '_rels/.rels':
+        '<Relationships xmlns="r"><Relationship Id="rId1" Type="office" Target="word/document.xml"/><Relationship Id="rId9" Type="custom" Target="docProps/custom.xml"/></Relationships>',
+      'word/_rels/document.xml.rels':
+        '<Relationships xmlns="r"><Relationship Id="rId5" Type="people" Target="people.xml"/><Relationship Id="rId6" Type="styles" Target="styles.xml"/></Relationships>',
+      'word/document.xml': '<w:document xmlns:w="w"><w:body/></w:document>',
+      'word/styles.xml': '<w:styles xmlns:w="w"/>',
+      'word/people.xml': `<w15:people xmlns:w15="w15"><w15:person w15:author="${NAME}"/></w15:people>`,
+      'docProps/custom.xml': `<Properties xmlns="c"><property name="Autor"><vt:lpwstr>${NAME}</vt:lpwstr></property></Properties>`,
+    };
+    const docx = Buffer.from(zipSync(Object.fromEntries(Object.entries(files).map(([path, text]) => [path, strToU8(text)]))));
+
+    const cleaned = unzipSync(new Uint8Array(cleanOffice(docx)));
+    expect(cleaned['word/people.xml']).toBeUndefined();
+    expect(cleaned['docProps/custom.xml']).toBeUndefined();
+    const types = strFromU8(cleaned['[Content_Types].xml']);
+    expect(types).not.toContain('people.xml');
+    expect(types).not.toContain('custom.xml');
+    expect(types).toContain('/word/document.xml');
+    expect(strFromU8(cleaned['_rels/.rels'])).not.toContain('custom.xml');
+    expect(strFromU8(cleaned['_rels/.rels'])).toContain('word/document.xml');
+    expect(strFromU8(cleaned['word/_rels/document.xml.rels'])).not.toContain('people.xml');
+    expect(strFromU8(cleaned['word/_rels/document.xml.rels'])).toContain('styles.xml');
+  });
+
+  it('removes repository, homepage, bugs, funding and support from manifests (D-032)', async () => {
+    const zip = Buffer.from(
+      zipSync({
+        'proiect/package.json': strToU8(
+          JSON.stringify({ name: 'app', repository: 'github:ionpopescu/app', homepage: 'https://ionpopescu.dev', bugs: { url: 'x' }, funding: 'y', private: true }),
+        ),
+        'proiect/composer.json': strToU8(JSON.stringify({ name: 'a/b', support: { email: 'ion@example.com' }, type: 'project' })),
+      }),
+    );
+
+    const files = unzipSync(new Uint8Array(await cleanZip(zip)));
+    expect(JSON.parse(strFromU8(files['proiect/package.json']))).toEqual({ name: 'app', private: true });
+    expect(JSON.parse(strFromU8(files['proiect/composer.json']))).toEqual({ name: 'a/b', type: 'project' });
+  });
+
+  it('removes comment initials and user-defined properties from an ODT (D-032)', () => {
+    const odt = Buffer.from(
+      zipSync({
+        mimetype: [strToU8('application/vnd.oasis.opendocument.text'), { level: 0 }],
+        'content.xml': [
+          strToU8(
+            '<office:document-content xmlns:office="o" xmlns:dc="dc" xmlns:meta="m"><office:annotation><dc:creator>Ion Popescu</dc:creator><meta:creator-initials>IP</meta:creator-initials></office:annotation></office:document-content>',
+          ),
+          {},
+        ],
+        'meta.xml': [
+          strToU8(
+            '<office:document-meta xmlns:office="o" xmlns:meta="m"><office:meta><meta:user-defined meta:name="Echipa">Popescu si Ionescu</meta:user-defined><meta:generator>LibreOffice</meta:generator></office:meta></office:document-meta>',
+          ),
+          {},
+        ],
+      }),
+    );
+
+    const files = unzipSync(new Uint8Array(cleanOpenDocument(odt)));
+    expect(strFromU8(files['content.xml'])).not.toContain('IP<');
+    expect(strFromU8(files['meta.xml'])).not.toContain('Popescu');
+    expect(strFromU8(files['meta.xml'])).toContain('LibreOffice');
+  });
+});

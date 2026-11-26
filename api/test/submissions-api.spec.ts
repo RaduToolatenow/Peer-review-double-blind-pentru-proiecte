@@ -225,6 +225,37 @@ describe('submissions API (D-016)', () => {
     // Building 20,001 entries is slow on the CI runner; the server refuses them fast.
   }, 30_000);
 
+  it('refuses a DOCX that unpacks to over 200 MB and stores nothing (D-032, code review)', async () => {
+    const { student, assignment } = await setup();
+    const file = Buffer.from(docx());
+    let end = file.length - 22;
+    while (file.readUInt32LE(end) !== 0x06054b50) end -= 1;
+    let at = file.readUInt32LE(end + 16);
+    for (let i = 0; i < file.readUInt16LE(end + 10); i += 1) {
+      const nameLength = file.readUInt16LE(at + 28);
+      if (file.toString('utf8', at + 46, at + 46 + nameLength) === 'word/document.xml') file.writeUInt32LE(250 * 1024 * 1024, at + 24);
+      at += 46 + nameLength + file.readUInt16LE(at + 30) + file.readUInt16LE(at + 32);
+    }
+
+    const res = await submit(student, assignment.id, file, 'proiect.docx').expect(400);
+    expect(res.body.message).toBe('Arhiva ZIP e prea mare după dezarhivare (cel mult 200 MB și 20.000 de fișiere).');
+    expect(await ctx.prisma.submission.count()).toBe(0);
+  });
+
+  it('keeps exactly the stored file the submission points to when two members replace it at once (code review)', async () => {
+    const { student, klass, assignment } = await setup();
+    const { agent: mate, user: mateUser } = await signedIn(ctx, 'coleg@test.example', Role.STUDENT);
+    await ctx.prisma.teamMember.create({ data: { teamId: klass.teams[0].id, classId: klass.id, userId: mateUser.id } });
+    await submit(student, assignment.id, await pdf()).expect(200);
+
+    for (let round = 0; round < 3; round += 1) {
+      await Promise.all([submit(student, assignment.id, await pdf()).expect(200), submit(mate, assignment.id, docx(), 'p.docx').expect(200)]);
+    }
+
+    const row = await ctx.prisma.submission.findFirstOrThrow();
+    expect(readdirSync(TEST_FILE_DIR)).toEqual([row.fileKey]);
+  });
+
   it('is only for students', async () => {
     const { professor } = await setup();
     await professor.get('/api/my/assignments').expect(403);

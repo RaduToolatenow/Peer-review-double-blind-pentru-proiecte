@@ -30,3 +30,10 @@ describe('CSV for Excel set to Romanian (D-029)', () => {
     expect(csvDecimal(null)).toBeNull();
   });
 });
+
+describe('CSV formula guard for tab and carriage return (D-029, code review)', () => {
+  it("puts ' before a cell starting with a tab or a carriage return", () => {
+    expect(toCsv(['x'], [['\t=1+1']])).toBe(`${BOM}x\r\n'\t=1+1\r\n`);
+    expect(toCsv(['x'], [['\r=1+1']])).toBe(`${BOM}x\r\n"'\r=1+1"\r\n`);
+  });
+});

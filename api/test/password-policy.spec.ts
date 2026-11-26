@@ -39,3 +39,12 @@ describe('new password check (D-030)', () => {
     }
   });
 });
+
+describe('short email names (D-030, code review)', () => {
+  it('ignores a whole name part shorter than 4 characters, and still refuses the longer pieces', () => {
+    expect(weakPassword('Cabana-de-munte-2026', 'ab@ulbsibiu.ro')).toBeNull();
+    expect(weakPassword('o-zi-la-mare-2026', 'a@ulbsibiu.ro')).toBeNull();
+    expect(weakPassword('Dogaru2026!', 'radu.dogaru@ulbsibiu.ro')).toBe(WEAK_PASSWORD);
+    expect(weakPassword('salut-ana.pop-77', 'ana.pop@ulbsibiu.ro')).toBe(WEAK_PASSWORD);
+  });
+});
