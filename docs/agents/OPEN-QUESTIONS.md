@@ -21,7 +21,7 @@
 - Q-010 · What is a "round", and should a reviewer avoid a team they already reviewed? · _answered_
 - Q-011 · Should members of a team the rubric does not apply to see the assignment in their list? · _answered_
 - Q-012 · What password security check should be added, after colleagues' feedback? · _answered_
-- Q-013 · What protection against refresh spam should be added, after colleagues' feedback?
+- Q-013 · What protection against refresh spam should be added, after colleagues' feedback? · _answered_
 
 ---
 
@@ -111,9 +111,11 @@
 - **Recorded as:** D-030
 
 ## Q-013 · What protection against refresh spam should be added, after colleagues' feedback?
-- **Status:** open
+- **Status:** answered 2026-11-26
 - **Raised:** 2026-11-26, by the user, from colleagues' feedback: "protecție anti spam de refresh spam".
 - **Today:** only failed logins are limited (D-017); other routes have no request limit.
 - **Blocks:** a request limit on the API; it counts toward the 3 changes from feedback.
 - **Who answers:** the user
+- **Answer:** Holding F5 on any page. A limit in the app, per account or per IP without a session, counters in server memory, 120 requests a minute, then 429.
+- **Recorded as:** D-031
 

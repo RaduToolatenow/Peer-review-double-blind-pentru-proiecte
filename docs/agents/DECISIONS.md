@@ -14,6 +14,7 @@
 - D-018 · Visitor IP behind Cloudflare and Render
 - D-020 · Email, sign-up, confirmation and password reset
 - D-030 · New passwords checked against common ones
+- D-031 · Request limit against refresh spam
 
 ### [Classes and assignments](decisions/classes-and-assignments.md)
 - D-007 · A submission belongs to a team
