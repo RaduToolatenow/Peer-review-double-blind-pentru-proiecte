@@ -47,7 +47,7 @@
 
 ### [Submissions and reviews](decisions/submissions-and-reviews.md)
 - D-014 · Nobody can see who reviewed
-- D-016 · Submissions: link and cleaned PDF or DOCX file
 - D-022 · Reviewer allocation, withdrawals and late arrivals
 - D-023 · A review is sent once, complete and final
+- D-032 · Submissions: link and a cleaned PDF, DOCX, PPTX, ODT, ODP or ZIP file
 

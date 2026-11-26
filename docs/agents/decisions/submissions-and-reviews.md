@@ -13,14 +13,13 @@
 - **Confirmed:** 2026-11-26
 
 ## D-016 · Submissions: link and cleaned PDF or DOCX file
-- **Status:** approved
+- **Status:** superseded-by D-032
 - **Date:** 2026-11-17
 - **Rule:** A submission has a link and a PDF or DOCX file of at most 10 MB, both required, plus an optional description. Any member who joined a team that the assignment evaluates may submit, once per team, and may replace it until the submission deadline; after it the server refuses. The file is cleaned of author metadata before it is stored in a private Supabase Storage bucket, and is only served through the server under a generic name. The student is warned not to put their name in the link; the link is not checked further, since the account already has a verified university email (D-010).
 - **Why:** The brief requires link plus file, metadata cleaning and a proxy. Only PDF and DOCX can be cleaned reliably.
 - **Rejected:** Real Google Forms, which would take answers out of the app's control (D-014). Refusing links that contain a member's name.
 - **Evidence:** api/src/submissions/ (`clean-pdf.ts`, `clean-docx.ts`, `file-store.ts`), api/prisma/migrations/20261117220000_submission_files/, api/test/clean-files.spec.ts, api/test/submissions-api.spec.ts.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-17
 
 ## D-022 · Reviewer allocation, withdrawals and late arrivals
 - **Status:** approved
@@ -41,3 +40,14 @@
 - **Evidence:** api/src/reviews/, api/prisma/migrations/20261124140000_reviews/, web/src/pages/ReviewPage.tsx, api/test/reviews-api.spec.ts.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
+
+## D-032 · Submissions: link and a cleaned PDF, DOCX, PPTX, ODT, ODP or ZIP file
+- **Status:** approved
+- **Date:** 2026-11-26
+- **Rule:** A submission has a link and a file, both required, plus an optional description. Any member who joined a team that the assignment evaluates may submit, once per team, and may replace it until the submission deadline; after it the server refuses. The file is PDF, DOCX, PPTX, ODT, ODP or a ZIP, judged by its bytes, never its name; at most 10 MB, a ZIP at most 20 MB. It is cleaned before it is stored in a private Supabase Storage bucket and is only served through the server under a generic name. PDF, DOCX and PPTX lose their document properties and the authors of comments, annotations and tracked changes; ODT and ODP lose `meta.xml`'s authors and comment authors. A ZIP is refused over 200 MB unpacked or 20,000 entries; otherwise it loses, at any depth, `.git/`, `.svn/`, `__MACOSX/`, `.idea/`, `.vscode/`, `node_modules/`, `vendor/`, `dist/`, `build/`, `.DS_Store` and `Thumbs.db`, the `author`, `contributors`, `maintainers` and `authors` of `package.json` and `composer.json`, and the authors of every PDF, DOCX, PPTX, ODT or ODP inside it; every entry gets the date 1 January 1980 and a single top folder is renamed `proiect/`. A ZIP inside the ZIP is left as it is. Names written in code, comments or README text stay: the student is warned to remove them. The student is also warned not to put their name in the link.
+- **Why:** The user wants presentations, LibreOffice documents and source code accepted, each cleaned as far as it can be reliably.
+- **Rejected:** Removing names from code text automatically (not reliable); cleaning a ZIP inside a ZIP; RAR and 7z; images; a new ZIP library (fflate already does it); refusing a ZIP that holds `.git/` or `node_modules/` instead of removing them.
+- **Evidence:** the file types plan of 2026-11-26.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-26
+

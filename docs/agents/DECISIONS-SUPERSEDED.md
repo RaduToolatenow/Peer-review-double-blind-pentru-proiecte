@@ -10,6 +10,9 @@
 ## Index
 - D-003 · Cookie sessions, argon2 and invitation-only accounts · _superseded-by D-010_
 
+### [Submissions and reviews](decisions/submissions-and-reviews.md)
+- D-016 · Submissions: link and cleaned PDF or DOCX file · _superseded-by D-032_
+
 ---
 
 ## D-003 · Cookie sessions, argon2 and invitation-only accounts
