@@ -222,7 +222,8 @@ describe('submissions API (D-016)', () => {
     const res = await submit(student, assignment.id, Buffer.from(zipSync(many)), 'proiect.zip').expect(400);
     expect(res.body.message).toBe('Arhiva ZIP e prea mare după dezarhivare (cel mult 200 MB și 20.000 de fișiere).');
     expect(await ctx.prisma.submission.count()).toBe(0);
-  });
+    // Building 20,001 entries is slow on the CI runner; the server refuses them fast.
+  }, 30_000);
 
   it('is only for students', async () => {
     const { professor } = await setup();

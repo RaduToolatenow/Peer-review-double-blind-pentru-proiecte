@@ -273,6 +273,7 @@ describe('cleanZip (D-032)', () => {
     while (forged.readUInt32LE(end) !== 0x06054b50) end -= 1;
     forged.writeUInt32LE(250 * 1024 * 1024, forged.readUInt32LE(end + 16) + 24);
     await expect(cleanZip(forged)).rejects.toThrow(ZIP_TOO_LARGE);
-  });
+    // Building 20,001 entries is slow on the CI runner.
+  }, 30_000);
 });
 
