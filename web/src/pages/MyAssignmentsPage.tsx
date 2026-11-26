@@ -261,7 +261,7 @@ function SubmissionForm({
     setError(null);
     setNotice(null);
     if (!file) {
-      setError('Încarcă fișierul proiectului (PDF sau DOCX).');
+      setError('Încarcă fișierul proiectului (PDF, DOCX, PPTX, ODT, ODP sau ZIP).');
       return;
     }
     if (file.size > MAX_FILE_BYTES) {
@@ -309,15 +309,17 @@ function SubmissionForm({
         />
       </div>
       <div className="field">
-        <label htmlFor={id('file')}>Fișierul proiectului (PDF sau DOCX, cel mult 10 MB)</label>
+        <label htmlFor={id('file')}>Fișierul proiectului (PDF, DOCX, PPTX, ODT, ODP sau ZIP; cel mult 10 MB, ZIP 20 MB)</label>
         <input
           id={id('file')}
           type="file"
-          accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          accept=".pdf,.docx,.pptx,.odt,.odp,.zip"
           onChange={(event) => setFile(event.target.files?.[0] ?? null)}
         />
       </div>
       <p className="muted">Autorul din fișier se șterge automat înainte să fie salvat.</p>
+      {/* D-032: names written inside code cannot be removed automatically. */}
+      <p className="muted">La ZIP, șterge numele tău din cod, comentarii și README: din text nu se poate șterge automat.</p>
       {error && <ErrorText message={error} />}
       {notice && <p role="status">{notice}</p>}
       <button className="primary inline" type="submit" disabled={sending}>

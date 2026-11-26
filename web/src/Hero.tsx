@@ -17,7 +17,7 @@ export function HeroFrame({ children }: { children: ReactNode }) {
         </p>
         <ul className="points">
           <li>Nu vezi al cui e proiectul, iar autorul nu vede cine l-a evaluat.</li>
-          <li>Numele autorului dispare automat din fișierele PDF și DOCX.</li>
+          <li>Numele autorului dispare automat din fișierele încărcate.</li>
           <li>Termenele de predare și de evaluare sunt verificate de server.</li>
         </ul>
       </section>

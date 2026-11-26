@@ -5,9 +5,9 @@ designs:
   - id: DS-pr-login
     kind: screen
     source: web/src/LoginPage.tsx
-    screenshots: [screens/DS-pr-login.light.png, screens/DS-pr-login.dark.png]
+    screenshots: [screens/DS-pr-login.light.png, screens/DS-pr-login.dark.png, screens/DS-pr-login.file-types.light.png, screens/DS-pr-login.file-types.dark.png, screens/DS-pr-login.file-types.narrow.light.png, screens/DS-pr-login.file-types.narrow.dark.png]
     design_ref: mocks/DS-pr-login.html
-    status: draft  # D-032: file types drafted
+    status: implemented  # D-032: file types
   - id: DS-pr-home
     kind: screen
     source: null   # replaced by DS-pr-my-assignments
@@ -77,9 +77,9 @@ designs:
   - id: DS-pr-my-assignments
     kind: screen
     source: web/src/pages/MyAssignmentsPage.tsx
-    screenshots: [screens/DS-pr-my-assignments.light.png, screens/DS-pr-my-assignments.dark.png, screens/DS-pr-my-assignments.reviewer-only.light.png, screens/DS-pr-my-assignments.reviewer-only.dark.png, screens/DS-pr-my-assignments.reviews.light.png, screens/DS-pr-my-assignments.reviews.dark.png, screens/DS-pr-my-assignments.reviewer-grade.light.png, screens/DS-pr-my-assignments.reviewer-grade.dark.png, screens/DS-pr-my-assignments.reviewer-grade.narrow.light.png, screens/DS-pr-my-assignments.reviewer-grade.narrow.dark.png]
+    screenshots: [screens/DS-pr-my-assignments.light.png, screens/DS-pr-my-assignments.dark.png, screens/DS-pr-my-assignments.reviewer-only.light.png, screens/DS-pr-my-assignments.reviewer-only.dark.png, screens/DS-pr-my-assignments.reviews.light.png, screens/DS-pr-my-assignments.reviews.dark.png, screens/DS-pr-my-assignments.reviewer-grade.light.png, screens/DS-pr-my-assignments.reviewer-grade.dark.png, screens/DS-pr-my-assignments.reviewer-grade.narrow.light.png, screens/DS-pr-my-assignments.reviewer-grade.narrow.dark.png, screens/DS-pr-my-assignments.file-types.light.png, screens/DS-pr-my-assignments.file-types.dark.png, screens/DS-pr-my-assignments.file-types.narrow.light.png, screens/DS-pr-my-assignments.file-types.narrow.dark.png]
     design_ref: mocks/DS-pr-my-assignments.html
-    status: draft   # D-028: the student's own reviewer grade  # D-032: file types drafted
+    status: implemented   # D-028: the student's own reviewer grade; D-032: file types
   - id: DS-pr-style-tile
     kind: foundation
     source: web/src/styles.css
@@ -91,7 +91,7 @@ designs:
     source: web/src/pages/AccountPages.tsx
     screenshots: [screens/DS-pr-register.light.png, screens/DS-pr-register.dark.png, screens/DS-pr-register.password-check.light.png, screens/DS-pr-register.password-check.dark.png, screens/DS-pr-register.password-check.narrow.light.png, screens/DS-pr-register.password-check.narrow.dark.png]
     design_ref: mocks/DS-pr-register.html
-    status: draft  # D-030: password hint  # D-032: file types drafted
+    status: implemented  # D-030: password hint; D-032: start page line (same Hero as DS-pr-login)
   - id: DS-pr-check-email
     kind: screen
     source: web/src/pages/AccountPages.tsx
