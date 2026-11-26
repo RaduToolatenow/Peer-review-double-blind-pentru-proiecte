@@ -5,6 +5,7 @@ import { clearDatabase, createAssignment, createClass, createRubric, createTestA
 
 const EMAIL = 'ana.pop@ulbsibiu.ro';
 const PASSWORD = 'o-parola-buna-10';
+const WEAK = 'Alege o parolă mai greu de ghicit: nu una des folosită și nu numele din adresa ta de email.';
 const SENT = 'Ți-am trimis un email. Deschide linkul din el ca să-ți confirmi contul. Verifică și folderul Spam.';
 
 describe('sign-up and email confirmation (D-010, D-020)', () => {
@@ -39,6 +40,28 @@ describe('sign-up and email confirmation (D-010, D-020)', () => {
     const short = await http().post('/api/auth/register').send({ email: EMAIL, password: 'scurta' }).expect(400);
     expect(short.body.message).toContain('Parola are cel puțin 10 caractere.');
     expect(mailer.sent).toHaveLength(0);
+  });
+
+  it('refuses a weak new password the same way for a new and a confirmed address, and sends nothing (D-030)', async () => {
+    await createUser(ctx.prisma, 'confirmat@ulbsibiu.ro', PASSWORD, Role.STUDENT);
+
+    const answers = [];
+    for (const email of [EMAIL, 'confirmat@ulbsibiu.ro']) {
+      const res = await http().post('/api/auth/register').send({ email, password: 'Qwertyuiop' }).expect(400);
+      answers.push(res.body);
+    }
+    expect(answers[0].message).toBe(WEAK);
+    expect(answers[1]).toEqual(answers[0]);
+    const named = await http().post('/api/auth/register').send({ email: 'radu.dogaru@ulbsibiu.ro', password: 'Dogaru2026!' }).expect(400);
+    expect(named.body.message).toBe(WEAK);
+    expect(await ctx.prisma.user.count({ where: { email: { not: 'confirmat@ulbsibiu.ro' } } })).toBe(0);
+    expect(mailer.sent).toHaveLength(0);
+  });
+
+  it('lets an existing account with a weak password still log in (D-030)', async () => {
+    await createUser(ctx.prisma, 'vechi@ulbsibiu.ro', 'qwertyuiop', Role.STUDENT);
+
+    await http().post('/api/auth/login').send({ email: 'vechi@ulbsibiu.ro', password: 'qwertyuiop' }).expect(200);
   });
 
   it('creates an unconfirmed account, which cannot log in until the emailed link is opened', async () => {

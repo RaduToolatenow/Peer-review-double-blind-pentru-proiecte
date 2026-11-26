@@ -52,6 +52,18 @@ describe('password reset (D-020)', () => {
     expect(again.body.message).toBe('Linkul nu mai este valid. Cere unul nou din pagina de autentificare.');
   });
 
+  it('refuses a weak new password and keeps both the old password and the link (D-030)', async () => {
+    await http().post('/api/auth/forgot-password').send({ email: EMAIL }).expect(202);
+    const token = resetToken();
+
+    for (const password of ['1q2w3e4r5t', 'mereu-ana.pop', 'aaaaaaaaaaaa']) {
+      const res = await http().post('/api/auth/reset-password').send({ token, password }).expect(400);
+      expect(res.body.message).toBe('Alege o parolă mai greu de ghicit: nu una des folosită și nu numele din adresa ta de email.');
+    }
+    await http().post('/api/auth/login').send({ email: EMAIL, password: TEST_PASSWORD }).expect(200);
+    await http().post('/api/auth/reset-password').send({ token, password: NEW_PASSWORD }).expect(200);
+  });
+
   it('refuses an expired link and a short password', async () => {
     await http().post('/api/auth/forgot-password').send({ email: EMAIL }).expect(202);
     const token = resetToken();
