@@ -20,7 +20,7 @@
 - Q-009 · What is the maximum number of criteria in a rubric, and what does a rubric apply to? · _answered_
 - Q-010 · What is a "round", and should a reviewer avoid a team they already reviewed? · _answered_
 - Q-011 · Should members of a team the rubric does not apply to see the assignment in their list? · _answered_
-- Q-012 · What password security check should be added, after colleagues' feedback?
+- Q-012 · What password security check should be added, after colleagues' feedback? · _answered_
 - Q-013 · What protection against refresh spam should be added, after colleagues' feedback?
 
 ---
@@ -102,11 +102,13 @@
 - **Answer:** `GET /api/my/assignments` also lists an assignment where the student is a member of a team in the class that the rubric does not apply to; the student sees no submission section, only their reviews, and can withdraw.
 
 ## Q-012 · What password security check should be added, after colleagues' feedback?
-- **Status:** open
+- **Status:** answered 2026-11-26
 - **Raised:** 2026-11-26, by the user, from colleagues' feedback: "verificare securitate parole, posibilă îmbunătățire".
 - **Today:** a password needs at least 10 characters (D-020), is hashed with argon2, and login has an attempt limit (D-017).
 - **Blocks:** a change to sign-up and password reset; it counts toward the 3 changes from feedback.
 - **Who answers:** the user
+- **Answer:** A local common-password list (NCSC 100k from SecLists, entries of at least 10 characters), no single repeated character, nothing containing the email's name; new passwords only; a hint under the field.
+- **Recorded as:** D-030
 
 ## Q-013 · What protection against refresh spam should be added, after colleagues' feedback?
 - **Status:** open
