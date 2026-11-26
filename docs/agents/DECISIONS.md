@@ -34,6 +34,7 @@
 - D-026 · Results page that explains the grade
 - D-027 · Disputes per criterion, decided by the professor
 - D-028 · Reviewer grade from accuracy and the professor's feedback rating
+- D-029 · CSV export of an assignment's results
 
 ---
 
@@ -165,7 +166,7 @@
 - **Rejected:** Double-blind only between students, with the professor seeing reviewers.
 - **Evidence:** api/src/users/users.controller.ts still lists every email; changed in S2 step 1.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-25
+- **Confirmed:** 2026-11-26
 
 ## D-015 · Professor and admin menu
 - **Status:** approved
@@ -295,7 +296,7 @@
 - **Rejected:** Excluding the whole review, or ignoring the reviewer's level, when upheld; disputing a whole review; unlimited disputes on one item; notifying the reviewer; a separate history table.
 - **Evidence:** not built yet; the disputes plan of 2026-11-25.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-25
+- **Confirmed:** 2026-11-26
 
 ## D-028 · Reviewer grade from accuracy and the professor's feedback rating
 - **Status:** approved
@@ -306,3 +307,13 @@
 - **Evidence:** api/src/grades/grade.ts (`reviewerGrades`), api/src/grades/grading.ts (`loadReviewerGrades`), api/prisma/migrations/20261125220000_review_ratings/, api/test/reviewer-grades-api.spec.ts
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
+
+## D-029 · CSV export of an assignment's results
+- **Status:** approved
+- **Date:** 2026-11-26
+- **Rule:** From allocation on, the professor who created an assignment downloads two files from the assignment's page, computed on read by the same functions as its grades (D-025, D-028) and never stored. `note.csv` has one row per evaluated team with a submission: reviews received, calibrated, grade, disputes open, upheld and rejected (D-027) and status. `evaluatori.csv` has one row per reviewer number (D-014): reliability, flagged, measured, reviews sent, reviewer grade and status. The status is "provizorie" before the review deadline and "finală" after. Format: `;` separator, decimal comma with 2 decimals, UTF-8 with BOM, CRLF line endings, RFC 4180 quoting, yes/no as "da"/"nu", an empty cell for no value; a cell starting with `=`, `+`, `-` or `@` gets a leading `'`. Before allocation the export answers 409.
+- **Why:** The brief requires "Export CSV al tuturor rezultatelor". The user chose two files matching the grades page, the format Excel set to Romanian opens directly, availability from allocation like the grades page, and one export per assignment.
+- **Rejected:** A third, detailed file per review and criterion; one detailed file; `,` with decimal points; availability only after the review or dispute deadline; one export across all the professor's assignments; a ZIP of both files.
+- **Evidence:** the CSV export plan of 2026-11-26.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-26
