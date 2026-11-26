@@ -119,17 +119,27 @@ describe('sign-up and email confirmation (D-010, D-020)', () => {
     await http().post('/api/auth/verify').send({ token: linkToken('confirmare') }).expect(200);
   });
 
-  it('sends at most 3 emails an hour to one address and 20 from one IP', async () => {
+  it('sends at most 3 emails every 15 minutes to one address and 20 from one IP (D-033)', async () => {
     for (let i = 0; i < 3; i++) {
       await http().post('/api/auth/resend-verification').send({ email: EMAIL }).expect(202);
     }
     const tooMany = await http().post('/api/auth/resend-verification').send({ email: EMAIL }).expect(429);
-    expect(tooMany.body.message).toBe('Prea multe emailuri cerute. Încearcă din nou peste o oră.');
+    expect(tooMany.body.message).toBe('Prea multe emailuri cerute. Încearcă din nou peste 15 minute.');
 
     for (let i = 3; i < 20; i++) {
       await http().post('/api/auth/register').send({ email: `student${i}@ulbsibiu.ro`, password: PASSWORD }).expect(202);
     }
     await http().post('/api/auth/register').send({ email: 'ultimul@ulbsibiu.ro', password: PASSWORD }).expect(429);
+  });
+
+  it('lets the same address ask again once its requests are older than 15 minutes (D-033)', async () => {
+    for (let i = 0; i < 3; i++) {
+      await http().post('/api/auth/resend-verification').send({ email: EMAIL }).expect(202);
+    }
+    await http().post('/api/auth/resend-verification').send({ email: EMAIL }).expect(429);
+
+    await ctx.prisma.emailRequest.updateMany({ data: { createdAt: new Date(Date.now() - 16 * 60 * 1000) } });
+    await http().post('/api/auth/resend-verification').send({ email: EMAIL }).expect(202);
   });
 
   it('answers 503 with a clear message when the email cannot be sent', async () => {
