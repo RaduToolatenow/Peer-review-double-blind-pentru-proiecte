@@ -16,6 +16,7 @@ import { appUrl, Mailer, MAILER } from '../mail/mailer';
 import { accountExistsEmail, confirmEmail, resetPasswordEmail } from '../mail/messages';
 import { PrismaService } from '../prisma/prisma.service';
 import { hashPassword } from './password';
+import { weakPassword } from './password-policy';
 
 const HOUR_MS = 60 * 60 * 1000;
 const VERIFY_VALID_MS = 24 * HOUR_MS;
@@ -46,6 +47,7 @@ export class AccountService {
   ) {}
 
   async register(email: string, password: string, joinCode: string | undefined, ip: string) {
+    refuseWeak(password, email);
     const assignment = joinCode
       ? await this.prisma.assignment.findUnique({ where: { joinCode }, select: { id: true } })
       : null;
@@ -128,6 +130,10 @@ export class AccountService {
 
   /** Sets the new password, confirms the address the link was sent to, and closes every session. */
   async resetPassword(token: string, password: string) {
+    // D-030: checked before the link is used up, so a refused password leaves it working.
+    const pending = await this.validToken(token, EmailTokenPurpose.RESET);
+    const owner = await this.prisma.user.findUniqueOrThrow({ where: { id: pending.userId }, select: { email: true } });
+    refuseWeak(password, owner.email);
     const stored = await this.useToken(token, EmailTokenPurpose.RESET);
     const passwordHash = await hashPassword(password);
     const user = await this.prisma.user.findUniqueOrThrow({ where: { id: stored.userId } });
@@ -159,11 +165,17 @@ export class AccountService {
   }
 
   /** Marks a valid token used and returns it; one message for unknown, used and expired. */
-  private async useToken(token: string, purpose: EmailTokenPurpose) {
+  /** The stored token when the link is still valid for this purpose; otherwise 400. */
+  private async validToken(token: string, purpose: EmailTokenPurpose) {
     const stored = await this.prisma.emailToken.findUnique({ where: { tokenHash: sha256(token) } });
     if (!stored || stored.purpose !== purpose || stored.usedAt || stored.expiresAt <= new Date()) {
       throw new BadRequestException(INVALID_LINK);
     }
+    return stored;
+  }
+
+  private async useToken(token: string, purpose: EmailTokenPurpose) {
+    const stored = await this.validToken(token, purpose);
     const claimed = await this.prisma.emailToken.updateMany({
       where: { id: stored.id, usedAt: null },
       data: { usedAt: new Date() },
@@ -204,5 +216,13 @@ export class AccountService {
       );
     }
     await this.prisma.emailRequest.create({ data: { email, ip } });
+  }
+}
+
+/** D-030: 400 for a new password that is easy to guess. */
+function refuseWeak(password: string, email: string): void {
+  const message = weakPassword(password, email);
+  if (message) {
+    throw new BadRequestException(message);
   }
 }
