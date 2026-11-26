@@ -40,7 +40,7 @@
 - [ ] Pilot real: minim 8 predări, fiecare cu minim 2 evaluări; `PILOT.md`
 - [ ] Minim 3 modificări din feedback-ul colegilor, în `docs/agents/DECISIONS.md`
   - [x] Verificarea securității parolelor: parole des folosite, repetate sau cu numele din adresă refuzate (D-030, Q-012)
-  - [ ] Protecție anti-spam la refresh repetat (Q-013)
-- [ ] Minim 8 decizii, minim 10 intrări în `AI_LOG.md`, `SUBMISSION.md` (30 de decizii; `AI_LOG.md` și `SUBMISSION.md` nu există încă)
-- [ ] Minim 25 de commit-uri pe minim 8 zile diferite (pe 26 nov., pe ramura `feat/password-check`: 118 commit-uri, pe 8 zile; contează după push)
+  - [x] Protecție anti-spam la refresh repetat: 120 de cereri pe minut per cont sau IP, apoi 429 (D-031, Q-013)
+- [ ] Minim 8 decizii, minim 10 intrări în `AI_LOG.md`, `SUBMISSION.md` (31 de decizii; `AI_LOG.md` și `SUBMISSION.md` nu există încă)
+- [ ] Minim 25 de commit-uri pe minim 8 zile diferite (pe 26 nov., pe ramura `feat/request-limit`: 122 commit-uri, pe 8 zile; contează după push)
 - [ ] Video demo de 3–5 minute

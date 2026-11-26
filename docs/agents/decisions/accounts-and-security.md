@@ -68,7 +68,7 @@
 - **Rule:** Every `/api` request except `/api/health` counts per signed-in account, or per IP (D-018) without a session, in fixed one-minute windows kept in server memory. Over 120 requests a minute the API answers 429 with "Prea multe cereri. Așteaptă un minut și încearcă din nou." and `Retry-After`, until the window ends. Counters are lost on restart, which is acceptable for a one-minute window. The login limit stays as D-017.
 - **Why:** Colleagues' feedback: anyone could hold F5 on any page (Q-013). Counting per account keeps students behind the shared university IP from blocking each other; memory avoids a database write on every request on the free plan.
 - **Rejected:** A Cloudflare rule (per IP only); counters in PostgreSQL (a write per request); `@nestjs/throttler`; 60 or 300 requests a minute.
-- **Evidence:** the refresh spam plan of 2026-11-26.
+- **Evidence:** api/src/rate-limit.ts, api/src/configure-app.ts, api/test/rate-limit.spec.ts, api/test/rate-limit-api.spec.ts.
 - **Source:** user · colleagues' feedback · confidence high
 - **Confirmed:** 2026-11-26
 

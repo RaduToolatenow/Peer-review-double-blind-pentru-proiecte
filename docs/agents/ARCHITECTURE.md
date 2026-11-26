@@ -22,7 +22,7 @@ Browser ──> React (web/)
 | Part | Path | Responsibility | Talks to |
 |---|---|---|---|
 | Web | `web/src/` | login page and start page | API through `web/src/api.ts` |
-| App setup | `api/src/main.ts`, `api/src/configure-app.ts` | prefix, validation, sessions, static files | PostgreSQL session table |
+| App setup | `api/src/main.ts`, `api/src/configure-app.ts` | prefix, validation, sessions, the request limit (`rate-limit.ts`, D-031), static files | PostgreSQL session table |
 | Auth | `api/src/auth/` | login, logout, current user, session and role guard, sign-up and password reset, the new-password check (`password-policy.ts`, D-030) | PrismaService |
 | Users | `api/src/users/` | admin user list, public user shape, test accounts | PrismaService |
 | Allocation | `api/src/allocation/` | pure allocation rules (`allocate.ts`), the service that writes them in a locked transaction, the withdraw route (D-022) | PrismaService |
@@ -65,5 +65,6 @@ CI is in `.github/workflows/ci.yml`. Every push to `main` deploys to Render, wit
 ## Boundaries
 - Authentication and roles are enforced on the server by `SessionGuard` (D-005, D-010).
 - New passwords are checked on the server against common ones, repeats and the email's name (D-030).
+- Every `/api` request except the health check counts toward 120 a minute per account, or per IP without a session; over it, 429 (D-031).
 - `PUBLIC_USER_SELECT` limits which user fields leave the server.
 - Allocation keeps who reviews what inside the server: no route returns another reviewer's id or email (D-014, D-022).

@@ -2,6 +2,8 @@
 
 Toate rutele sunt sub `/api` și folosesc JSON, în afară de exporturile CSV (D-029). Sesiunea este un cookie `sid`, `httpOnly`.
 
+Orice rută în afară de `/api/health` poate răspunde `429` cu `{ statusCode: 429, message: "Prea multe cereri. Așteaptă un minut și încearcă din nou." }` și antetul `Retry-After` (secunde): peste 120 de cereri pe minut de la același cont autentificat sau, fără sesiune, de la același IP (D-031).
+
 ## `GET /api/health`
 
 Disponibil fără autentificare.
