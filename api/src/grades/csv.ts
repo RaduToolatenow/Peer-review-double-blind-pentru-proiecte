@@ -4,7 +4,7 @@ export type CsvCell = string | number | boolean | null;
 /**
  * D-029: CSV that Excel set to Romanian opens directly: a BOM for the diacritics, `;` between
  * cells, CRLF after every line, RFC 4180 quotes. A text cell starting with = + - or @ gets a
- * leading ' so Excel never runs it as a formula.
+ * leading ' so Excel never runs it as a formula; so does one starting with a tab or a carriage return.
  */
 export function toCsv(header: string[], rows: CsvCell[][]): string {
   return '﻿' + [header, ...rows].map((row) => row.map(cell).join(';') + '\r\n').join('');
@@ -25,6 +25,6 @@ function cell(value: CsvCell): string {
   if (typeof value === 'number') {
     return String(value);
   }
-  const text = /^[=+\-@]/.test(value) ? `'${value}` : value;
+  const text = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
   return /[;"\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 }

@@ -7,7 +7,9 @@ import { useLoad } from '../useLoad';
 import { decimal } from './ActiveRubricDetailPage';
 import { PHASE_LABELS, PHASE_TONES } from './ActiveRubricsPage';
 
+// D-032: the server judges the type by content; here the name decides only which limit applies.
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
+const MAX_ZIP_BYTES = 20 * 1024 * 1024;
 
 /**
  * DS-pr-my-assignments: a student's assignments, their team's submission (D-016), their
@@ -264,8 +266,8 @@ function SubmissionForm({
       setError('Încarcă fișierul proiectului (PDF, DOCX, PPTX, ODT, ODP sau ZIP).');
       return;
     }
-    if (file.size > MAX_FILE_BYTES) {
-      setError('Fișierul are cel mult 10 MB.');
+    if (file.size > (file.name.toLowerCase().endsWith('.zip') ? MAX_ZIP_BYTES : MAX_FILE_BYTES)) {
+      setError('Fișierul are cel mult 10 MB; o arhivă ZIP, cel mult 20 MB.');
       return;
     }
     setSending(true);

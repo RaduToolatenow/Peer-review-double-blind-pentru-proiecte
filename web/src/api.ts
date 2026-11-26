@@ -305,7 +305,6 @@ async function call(path: string, init?: RequestInit): Promise<Response> {
   }
 }
 
-/** Throws the server's Romanian message when there is one. */
 /** An error from the API, with its HTTP status so a page can react to it (403: unconfirmed). */
 export class ApiError extends Error {
   constructor(
@@ -316,6 +315,7 @@ export class ApiError extends Error {
   }
 }
 
+/** The server's Romanian message when there is one, as an error to throw. */
 async function failure(response: Response): Promise<ApiError> {
   const body = await response.json().catch(() => null);
   const message = Array.isArray(body?.message) ? body.message[0] : body?.message;

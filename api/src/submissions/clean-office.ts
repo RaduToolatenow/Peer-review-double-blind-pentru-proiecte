@@ -1,4 +1,6 @@
-import { strFromU8, strToU8, unzipSync, zipSync } from 'fflate';
+import { posix } from 'node:path';
+import { strFromU8, strToU8, zipSync } from 'fflate';
+import { newBudget, UnzipBudget, unzipLimited } from './unzip-limited';
 
 const EMPTY_CORE =
   '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
@@ -18,14 +20,21 @@ const PPT_AUTHOR_ATTRIBUTES = /\b(name|initials|userId)="[^"]*"/g;
 
 /**
  * Removes who wrote a DOCX or PPTX (D-032): document properties, Word's people list, and the
- * authors of comments and tracked changes. The text and slides themselves are kept.
+ * authors of comments and tracked changes. A removed part also loses the relationships and
+ * content types that point to it, so Office opens the file without a repair prompt. The text and
+ * slides themselves are kept.
  */
-export function cleanOffice(file: Buffer): Buffer {
-  const files = unzipSync(new Uint8Array(file));
+export function cleanOffice(file: Buffer, budget: UnzipBudget = newBudget()): Buffer {
+  const files = unzipLimited(file, budget);
+  const removed = new Set(Object.keys(files).filter((path) => path === 'word/people.xml' || path.startsWith('docProps/custom')));
   const cleaned: Record<string, Uint8Array> = {};
 
   for (const [path, content] of Object.entries(files)) {
-    if (path === 'word/people.xml' || path.startsWith('docProps/custom')) {
+    if (removed.has(path)) {
+      continue;
+    }
+    if (path === '[Content_Types].xml' || path.endsWith('.rels')) {
+      cleaned[path] = strToU8(dropReferences(path, strFromU8(content), removed));
       continue;
     }
     if (path === 'docProps/core.xml') {
@@ -49,3 +58,16 @@ export function cleanOffice(file: Buffer): Buffer {
 
   return Buffer.from(zipSync(cleaned));
 }
+
+/** Drops the content-type overrides and relationships that point to a removed part. */
+function dropReferences(path: string, xml: string, removed: Set<string>): string {
+  if (path === '[Content_Types].xml') {
+    return xml.replace(/<Override\b[^>]*PartName="\/([^"]+)"[^>]*\/>/g, (tag, part: string) => (removed.has(part) ? '' : tag));
+  }
+  const base = path.replace(/_rels\/[^/]*\.rels$/, '');
+  return xml.replace(/<Relationship\b[^>]*Target="([^"]+)"[^>]*\/>/g, (tag, target: string) => {
+    const part = target.startsWith('/') ? target.slice(1) : posix.normalize(base + target);
+    return removed.has(part) ? '' : tag;
+  });
+}
+

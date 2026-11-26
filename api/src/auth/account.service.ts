@@ -166,7 +166,6 @@ export class AccountService {
     return token;
   }
 
-  /** Marks a valid token used and returns it; one message for unknown, used and expired. */
   /** The stored token when the link is still valid for this purpose; otherwise 400. */
   private async validToken(token: string, purpose: EmailTokenPurpose) {
     const stored = await this.prisma.emailToken.findUnique({ where: { tokenHash: sha256(token) } });
@@ -176,6 +175,7 @@ export class AccountService {
     return stored;
   }
 
+  /** Marks a valid token used and returns it; one message for unknown, used and expired. */
   private async useToken(token: string, purpose: EmailTokenPurpose) {
     const stored = await this.validToken(token, purpose);
     const claimed = await this.prisma.emailToken.updateMany({

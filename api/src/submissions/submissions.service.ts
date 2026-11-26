@@ -8,6 +8,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { lock } from '../allocation/allocation.service';
 import { teamIsEvaluated } from '../assignments/assignment-scope';
 import { phaseAt } from '../assignments/assignments.service';
 import { DisputeStatus } from '../generated/prisma/enums';
@@ -181,13 +182,15 @@ export class SubmissionsService {
     await this.files.put(fileKey, cleaned, CONTENT_TYPES[fileType]);
 
     const where = { assignmentId_teamId: { assignmentId, teamId: membership.teamId } };
-    const previous = await this.prisma.submission.findUnique({ where });
     const data = { link: dto.link, description: dto.description || null, fileKey, fileType };
+    let previous: { fileKey: string } | null;
     try {
-      await this.prisma.submission.upsert({
-        where,
-        create: { assignmentId, teamId: membership.teamId, ...data },
-        update: data,
+      // PATTERN-004: two members replacing at once take turns, so each deletes the file it replaced.
+      previous = await this.prisma.$transaction(async (tx) => {
+        await lock(tx, assignmentId);
+        const replaced = await tx.submission.findUnique({ where, select: { fileKey: true } });
+        await tx.submission.upsert({ where, create: { assignmentId, teamId: membership.teamId, ...data }, update: data });
+        return replaced;
       });
     } catch (error) {
       await this.files.delete(fileKey);
