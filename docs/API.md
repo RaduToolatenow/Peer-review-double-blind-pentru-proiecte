@@ -1,6 +1,6 @@
 # API
 
-Toate rutele sunt sub `/api` și folosesc JSON. Sesiunea este un cookie `sid`, `httpOnly`.
+Toate rutele sunt sub `/api` și folosesc JSON, în afară de exporturile CSV (D-029). Sesiunea este un cookie `sid`, `httpOnly`.
 
 ## `GET /api/health`
 
