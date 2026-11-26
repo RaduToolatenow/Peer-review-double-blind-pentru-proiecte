@@ -27,7 +27,7 @@ Roluri: student, profesor, admin. Aplicația finală acoperă:
 | Teste și CI | Jest, supertest, GitHub Actions | |
 | Deploy | Render (aplicația), Supabase (PostgreSQL), Frankfurt | D-009 |
 
-Deciziile sunt în [docs/agents/DECISIONS.md](docs/agents/DECISIONS.md).
+Deciziile sunt în [docs/agents/DECISIONS.md](docs/agents/DECISIONS.md): indexul, pe teme, cu legături la fișierele din [docs/agents/decisions/](docs/agents/decisions/).
 
 ## Client și date reale
 
