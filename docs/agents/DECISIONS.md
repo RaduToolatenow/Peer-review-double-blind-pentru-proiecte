@@ -15,6 +15,7 @@
 - D-020 · Email, sign-up, confirmation and password reset
 - D-030 · New passwords checked against common ones
 - D-031 · Request limit against refresh spam
+- D-033 · Email limit over 15 minutes
 
 ### [Classes and assignments](decisions/classes-and-assignments.md)
 - D-007 · A submission belongs to a team

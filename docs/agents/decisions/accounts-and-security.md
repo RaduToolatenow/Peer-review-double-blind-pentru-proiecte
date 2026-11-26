@@ -45,12 +45,12 @@
 ## D-020 · Email, sign-up, confirmation and password reset
 - **Status:** approved
 - **Date:** 2026-11-22
-- **Rule:** Email goes out over SMTP, through Brevo in production. Sign-up asks only for an `@ulbsibiu.ro` email and a password of at least 10 characters, no name. An account is confirmed through an emailed link valid 24 hours; a password is reset through an emailed link valid one hour. Both tokens are stored only as a hash and work once. Sign-up, resending the confirmation and password reset answer the same whatever the address, so they never reveal which addresses have accounts. At most 3 emails an hour per address and 20 per IP. An unconfirmed account cannot log in. A password reset closes the account's other sessions. The reviewers of an assignment are the members of its class's teams plus anyone who joined through the assignment's link.
+- **Rule:** Email goes out over SMTP, through Brevo in production. Sign-up asks only for an `@ulbsibiu.ro` email and a password of at least 10 characters, no name. An account is confirmed through an emailed link valid 24 hours; a password is reset through an emailed link valid one hour. Both tokens are stored only as a hash and work once. Sign-up, resending the confirmation and password reset answer the same whatever the address, so they never reveal which addresses have accounts. At most 3 emails per address and 20 per IP, over the window set by D-033. An unconfirmed account cannot log in. A password reset closes the account's other sessions. The reviewers of an assignment are the members of its class's teams plus anyone who joined through the assignment's link.
 - **Why:** D-010 needs a verified university email. Brevo sends from a confirmed address without owning a domain, which Resend's free plan cannot. Hashed single-use tokens and equal answers protect accounts and the list of students.
 - **Rejected:** Resend (free plan sends only to the account owner without a verified domain); Gmail SMTP (sends from a personal account, which Google may throttle); a 6-digit code instead of a link; asking for a name.
 - **Evidence:** api/src/auth/account.service.ts, api/src/mail/, api/prisma/migrations/20261122120000_sign_up_and_email/, web/src/pages/AccountPages.tsx, api/test/register.spec.ts, api/test/password-reset.spec.ts.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-22
+- **Confirmed:** 2026-11-26
 
 ## D-030 · New passwords checked against common ones
 - **Status:** approved
@@ -69,6 +69,16 @@
 - **Why:** Colleagues' feedback: anyone could hold F5 on any page (Q-013). Counting per account keeps students behind the shared university IP from blocking each other; memory avoids a database write on every request on the free plan.
 - **Rejected:** A Cloudflare rule (per IP only); counters in PostgreSQL (a write per request); `@nestjs/throttler`; 60 or 300 requests a minute.
 - **Evidence:** api/src/rate-limit.ts, api/src/configure-app.ts, api/test/rate-limit.spec.ts, api/test/rate-limit-api.spec.ts.
+- **Source:** user · colleagues' feedback · confidence high
+- **Confirmed:** 2026-11-26
+
+## D-033 · Email limit over 15 minutes
+- **Status:** approved
+- **Date:** 2026-11-26
+- **Rule:** Sign-up, resending the confirmation and password reset share one limit: 3 emails per address and 20 per IP over the last 15 minutes, rolling. Over it the API answers 429 "Prea multe emailuri cerute. Încearcă din nou peste 15 minute." Every request counts, whether or not an account exists, so the limit reveals no account (D-020). The password reset link stays valid one hour.
+- **Why:** Colleagues' feedback: the one-hour block after a few requests was too long. 15 minutes matches the login limit (D-017).
+- **Rejected:** 20 minutes; lowering the counts; counting only failed requests (it would reveal which addresses have accounts).
+- **Evidence:** the email limit plan of 2026-11-26.
 - **Source:** user · colleagues' feedback · confidence high
 - **Confirmed:** 2026-11-26
 
